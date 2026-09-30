@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="OnlineCourses.App/OnlineCourses.App.csproj" />
+  <Project Path="OnlineCourses.Core/OnlineCourses.Core.csproj" />
+</Solution>
