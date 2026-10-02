@@ -28,7 +28,7 @@ dotnet_naming_symbols.priv_field.applicable_accessibilities = private
 dotnet_naming_style.underscore_camel.capitalization = camel_case
 dotnet_naming_style.underscore_camel.required_prefix = _
 
-# StyleCop: свідомо вимкнені правила
+# StyleCop: свідомо вимкнені прав~ила
 # заголовок з ліцензією та копірайтом у навчальному проєкті не потрібен
 dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1634.severity = none

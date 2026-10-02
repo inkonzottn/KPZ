@@ -23,7 +23,7 @@ registration.AddItem(new RegistrationItem
     Price = 2300.00m,
 });
 
-string total = registration.Total()
+string total = registration.CalculateTotal()
     .ToString("F2", CultureInfo.InvariantCulture);
 Console.WriteLine($"Заявка #{registration.Id}");
 Console.WriteLine($"Стан: {registration.Status}");

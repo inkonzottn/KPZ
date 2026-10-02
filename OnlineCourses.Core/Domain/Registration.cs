@@ -22,7 +22,7 @@ public sealed class Registration
 
     /// <summary>Обчислює суму заявки.</summary>
     /// <returns></returns>
-    public decimal Total()
+    public decimal CalculateTotal()
     {
         decimal sum = 0m;
         foreach (RegistrationItem item in this.items)

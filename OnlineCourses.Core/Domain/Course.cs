@@ -5,6 +5,8 @@
 /// <summary>Курс у каталозі курсів.</summary>
 public sealed class Course
 {
+    public const int MaxSeats = 100;
+
     public string Code { get; init; } = string.Empty;
 
     public string Title { get; init; } = string.Empty;
