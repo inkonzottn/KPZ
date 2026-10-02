@@ -1,3 +1,7 @@
+// <copyright file="RegistrationStatus.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 /// <summary>Стан реєстрації в її життєвому циклі.</summary>
 public enum RegistrationStatus
 {
@@ -6,5 +10,5 @@ public enum RegistrationStatus
     Active = 2,
     Confirmed = 3,
     Cancelled = 4,
-    Refunded = 5
+    Refunded = 5,
 }

@@ -1,4 +1,8 @@
-﻿using System.Globalization;
+// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using System.Globalization;
 
 Registration registration = new()
 {
@@ -9,14 +13,14 @@ Registration registration = new()
 
 registration.AddItem(new RegistrationItem
 {
-    Code = "C-SHARP-1", 
-    Price = 4500.50m
+    Code = "C-SHARP-1",
+    Price = 4500.50m,
 });
 
 registration.AddItem(new RegistrationItem
 {
-    Code = "SQL-BASICS", 
-    Price = 2300.00m
+    Code = "SQL-BASICS",
+    Price = 2300.00m,
 });
 
 string total = registration.Total()
