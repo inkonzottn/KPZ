@@ -1,31 +1,14 @@
-// <copyright file="Program.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+using System.Text;
+using OnlineCourses.Domain;
 
-using System.Globalization;
+Console.OutputEncoding = Encoding.UTF8;
 
-Registration registration = new()
-{
-    Id = 1,
-    MemberId = 10,
-    CreatedAt = DateTimeOffset.Now,
-};
+var order = new Order("A-1001", "Іваненко");
+order.AddLine("SKU-1", 3, 250m);
+order.AddLine("SKU-2", 12, 90m);
 
-registration.AddItem(new RegistrationItem
-{
-    Code = "C-SHARP-1",
-    Price = 4500.50m,
-});
-
-registration.AddItem(new RegistrationItem
-{
-    Code = "SQL-BASICS",
-    Price = 2300.00m,
-});
-
-string total = registration.CalculateTotal()
-    .ToString("F2", CultureInfo.InvariantCulture);
-Console.WriteLine($"Заявка #{registration.Id}");
-Console.WriteLine($"Стан: {registration.Status}");
-Console.WriteLine($"Позицій (курсів): {registration.Items.Count}");
-Console.WriteLine($"Сума: {total}");
+Console.WriteLine(order.CalculateTotal(false));
+Console.WriteLine(order.CalculateTotal(true));
+Console.WriteLine(order.IsValid());
+Console.WriteLine(order.TryChangeStatus(1));
+Console.Write(order.BuildReport());
