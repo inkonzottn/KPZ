@@ -48,6 +48,10 @@ dotnet_diagnostic.SA1602.severity = none
 # кома в кінці багаторядкового ініціалізатора необов’язкова
 dotnet_diagnostic.SA1413.severity = none
 
+# борг
+dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.IDE1006.severity = none
+
 # правила, які лишаємо суворими
 dotnet_diagnostic.SA1028.severity = warning 
 dotnet_diagnostic.SA1201.severity = warning 

@@ -34,7 +34,7 @@ public class Order
 
     /// <summary>Найкоротше ім’я покупця.</summary>
     private const int MinCustomerNameLength = 2;
-    
+
     /// <summary>Стан замовлення - Нове.</summary>
     private const int StatusNew = 0;
 
@@ -50,6 +50,7 @@ public class Order
     private readonly List<string[]> _lines = new List<string[]>();
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Order"/> class.
     /// Ініціалізує новий екземпляр класу <see cref="Order"/>.
     /// </summary>
     /// <param name="id">Ідентифікатор замовлення.</param>
@@ -62,22 +63,22 @@ public class Order
     }
 
     /// <summary>
-    /// Отримує ідентифікатор замовлення.
+    /// Gets отримує ідентифікатор замовлення.
     /// </summary>
     public string Id { get; private set; }
 
     /// <summary>
-    /// Отримує ім'я покупця.
+    /// Gets отримує ім'я покупця.
     /// </summary>
     public string CustomerName { get; private set; }
 
     /// <summary>
-    /// Отримує поточний стан замовлення (0 - новий, 1 - оплачений, 2 - відправлений, 3 - скасований).
+    /// Gets отримує поточний стан замовлення (0 - новий, 1 - оплачений, 2 - відправлений, 3 - скасований).
     /// </summary>
     public int Status { get; private set; }
 
     /// <summary>
-    /// Отримує дату та час створення замовлення.
+    /// Gets отримує дату та час створення замовлення.
     /// </summary>
     public DateTime CreatedAt { get; private set; }
 
@@ -135,16 +136,16 @@ public class Order
         // нарахування знижок до ПДВ
         if (isRegularCustomer && total > RegularDiscountThreshold)
         {
-        total *= 1m - RegularDiscountRate;
+            total *= 1m - RegularDiscountRate;
         }
         else if (total > LargeOrderThreshold)
         {
-        total *= 1m - LargeOrderDiscountRate;
+            total *= 1m - LargeOrderDiscountRate;
         }
 
         if (lineCount > BulkLineCount)
         {
-        total -= BulkDiscountAmount;
+            total -= BulkDiscountAmount;
         }
 
         // нарахування ПДВ після всіх знижок
@@ -210,8 +211,8 @@ public class Order
         string reportString = string.Empty;
         for (int i = 0; i < _lines.Count; i++)
         {
-            reportString = reportString + "Товар: " + _lines[i][0] + "; кількість: " + 
-            _lines[i][1] + "; ціна: " + _lines[i][2] + "; сума: " + 
+            reportString = reportString + "Товар: " + _lines[i][0] + "; кількість: " +
+            _lines[i][1] + "; ціна: " + _lines[i][2] + "; сума: " +
             (int.Parse(_lines[i][1]) * decimal.Parse(_lines[i][2])) + "\n";
         }
 
