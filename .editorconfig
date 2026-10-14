@@ -42,6 +42,7 @@ dotnet_diagnostic.CA1050.severity = none
 dotnet_diagnostic.SA1309.severity = none
 # XML-документацію вимагатимемо з ЛР No 4, поки що ні
 dotnet_diagnostic.SA0001.severity = none
+dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.SA1600.severity = none 
 dotnet_diagnostic.SA1601.severity = none 
 dotnet_diagnostic.SA1602.severity = none 
