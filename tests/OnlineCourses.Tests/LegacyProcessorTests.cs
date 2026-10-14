@@ -1,3 +1,4 @@
+using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Legacy;
 using Xunit;
 
@@ -15,10 +16,10 @@ public class LegacyProcessorTests
         };
         decimal total = LegacyProcessor.Process(
             1, "Іваненко", "i@ex.com", true, lines,
-            new DateOnly(2026, 3, 10), "", "New", false,
-            60m, out string next);
+            new DateOnly(2026, 3, 10), null , DocumentStatus.New, false,
+            60m, out DocumentStatus next);
         Assert.Equal(1292.70m, total);
-        Assert.Equal("Paid", next);
+        Assert.Equal(DocumentStatus.Paid, next);
     }
 
     [Fact]
@@ -30,20 +31,30 @@ public class LegacyProcessorTests
         };
         decimal total = LegacyProcessor.Process(
             2, "Петренко", "p@ex.com", false, lines,
-            new DateOnly(2026, 3, 10), "SALE10", "Paid",
-            false, 60m, out string next);
+            new DateOnly(2026, 3, 10), PricingRules.SaleCoupon, DocumentStatus.Paid,
+            false, 60m, out DocumentStatus next);
         Assert.Equal(420m, total);
-        Assert.Equal("Shipped", next);
+        Assert.Equal(DocumentStatus.Confirmed, next);
     }
 
     [Fact]
-    public void Process_NoLines_ReturnsMinusOne()
+    public void Calculate_NoLines_ThrowsArgument()
     {
-        decimal total = LegacyProcessor.Process(
-            3, "Коваль", "k@ex.com", false,
-            new List<RegistrationItem>(),
-            new DateOnly(2026, 3, 10), "", "New", false,
-            60m, out string next);
-        Assert.Equal(-1m, total);
+        Assert.Throws<ArgumentException>(() =>
+        DocumentGuards.EnsureLinesValid(
+        new List<RegistrationItem>()));
+    }
+
+    [Fact]
+    public void Calculate_ZeroQuantity_ThrowsRange()
+    {
+        RegistrationItem line = new()
+        {
+            Sku = "A1",
+            Quantity = 0,
+            UnitPrice = 10m
+        };
+        Assert.Throws<ArgumentOutOfRangeException>(
+        () => DocumentGuards.EnsureLineValid(line));
     }
 }
