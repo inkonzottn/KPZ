@@ -4,6 +4,25 @@ using OnlineCourses.Core.Legacy;
 
 public static class DocumentTotalCalculator
 {
+    public static TotalResult Calculate(TotalRequest request)
+    {
+        DocumentGuards.EnsureRequestValid(request);
+        decimal total = SubtotalOf(request.Lines);
+        total -= ClientDiscountOf(total, request.Client.IsRegular);
+        total -= VolumeDiscountOf(total);
+        total -= CouponDiscountOf(total, request.CouponCode);
+        total -= WeekendDiscountOf(total, request.CreatedAt);
+        total += DeliveryFeeOf(total, request.DeliveryPrice);
+
+        total = request.Status == DocumentStatus.Cancelled
+            ? 0m
+            : Math.Round(Math.Max(total, 0m), 2);
+
+        return new TotalResult(
+            total,
+            NextStatusOf(request.Status, total));
+    }
+
     public static decimal SubtotalOf(
     IReadOnlyList<RegistrationItem> lines)
     {

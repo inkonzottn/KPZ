@@ -4,6 +4,19 @@ using OnlineCourses.Core.Legacy;
 
 public static class DocumentGuards
 {
+    public static void EnsureRequestValid(TotalRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(request.Client);
+        EnsureHeaderValid(
+        request.DocumentId,
+        request.Client.Name,
+        request.Client.Email);
+        EnsureLinesValid(request.Lines);
+        ArgumentOutOfRangeException.ThrowIfNegative(
+        request.DeliveryPrice);
+    }
+
     public static void EnsureHeaderValid(
     int documentId,
     string clientName,

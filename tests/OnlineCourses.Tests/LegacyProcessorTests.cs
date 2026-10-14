@@ -7,34 +7,50 @@ namespace OnlineCourses.Core.Legacy;
 public class LegacyProcessorTests
 {
     [Fact]
-    public void Process_RegularClient_Returns1292()
+    public void Calculate_RegularClient_Returns1292()
     {
-        List<RegistrationItem> lines = new()
-        {
-            new RegistrationItem { Sku = "A1", Quantity = 12, UnitPrice = 100m },
-            new RegistrationItem { Sku = "B2", Quantity = 1, UnitPrice = 250m }
-        };
-        decimal total = LegacyProcessor.Process(
-            1, "Іваненко", "i@ex.com", true, lines,
-            new DateOnly(2026, 3, 10), null , DocumentStatus.New, false,
-            60m, out DocumentStatus next);
-        Assert.Equal(1292.70m, total);
-        Assert.Equal(DocumentStatus.Paid, next);
+        TotalRequest request = new(
+            DocumentId: 1,
+            Client: new ClientInfo(
+            "Іваненко", "i@ex.com", true),
+            Lines: new List<RegistrationItem>
+            {
+                new() { Sku = "A1", Quantity = 12,
+                UnitPrice = 100m },
+                new() { Sku = "B2", Quantity = 1,
+                UnitPrice = 250m }
+            },
+            CreatedAt: new DateOnly(2026, 3, 10),
+            CouponCode: null,
+            Status: DocumentStatus.New,
+            DeliveryPrice: 60m);
+
+        TotalResult result = DocumentTotalCalculator.Calculate(request);
+
+        Assert.Equal(1292.70m, result.Total);
+        Assert.Equal(DocumentStatus.Paid, result.Status);
     }
 
     [Fact]
-    public void Process_SmallOrder_AddsDelivery()
+    public void Calculate_SmallOrder_AddsDelivery()
     {
-        List<RegistrationItem> lines = new()
-        {
-            new RegistrationItem { Sku = "A1", Quantity = 2, UnitPrice = 200m }
-        };
-        decimal total = LegacyProcessor.Process(
-            2, "Петренко", "p@ex.com", false, lines,
-            new DateOnly(2026, 3, 10), PricingRules.SaleCoupon, DocumentStatus.Paid,
-            false, 60m, out DocumentStatus next);
-        Assert.Equal(420m, total);
-        Assert.Equal(DocumentStatus.Confirmed, next);
+        TotalRequest request = new(
+            DocumentId: 2,
+            Client: new ClientInfo(
+                "Петренко", "p@ex.com", false),
+            Lines: new List<RegistrationItem>
+            {
+                new() { Sku = "A1", Quantity = 2, UnitPrice = 200m }
+            },
+            CreatedAt: new DateOnly(2026, 3, 10),
+            CouponCode: PricingRules.SaleCoupon,
+            Status: DocumentStatus.Paid,
+            DeliveryPrice: 60m);
+
+        TotalResult result = DocumentTotalCalculator.Calculate(request);
+
+        Assert.Equal(420m, result.Total);
+        Assert.Equal(DocumentStatus.Confirmed, result.Status);
     }
 
     [Fact]
@@ -56,5 +72,42 @@ public class LegacyProcessorTests
         };
         Assert.Throws<ArgumentOutOfRangeException>(
         () => DocumentGuards.EnsureLineValid(line));
+    }
+
+    [Fact]
+    public void TextOf_ContainsTotalLine()
+    {
+        TotalRequest request = BuildSampleRequest();
+        TotalResult result =
+        DocumentTotalCalculator.Calculate(request);
+        string text =
+        DocumentReport.TextOf(request, result);
+        Assert.Contains("Разом: 1292.70", text);
+    }
+
+    [Fact]
+    public void Print_WritesReportToOutput()
+    {
+        StringWriter writer = new();
+        DocumentReportPrinter printer = new(writer);
+        printer.Print("Разом: 10.00");
+        Assert.Contains("10.00", writer.ToString());
+    }
+
+    private static TotalRequest BuildSampleRequest()
+    {
+        return new(
+            DocumentId: 1,
+            Client: new ClientInfo(
+                "Іваненко", "i@ex.com", true),
+            Lines: new List<RegistrationItem>
+            {
+            new() { Sku = "A1", Quantity = 12, UnitPrice = 100m },
+            new() { Sku = "B2", Quantity = 1, UnitPrice = 250m }
+            },
+            CreatedAt: new DateOnly(2026, 3, 10),
+            CouponCode: null,
+            Status: DocumentStatus.New,
+            DeliveryPrice: 60m);
     }
 }
