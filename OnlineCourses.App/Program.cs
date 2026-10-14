@@ -1,9 +1,11 @@
 using System.Text;
+using OnlineCourses.App;
+using OnlineCourses.Core.Documents;
 using OnlineCourses.Domain;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-TotalRequest request = BuildRequestFromInput();
+TotalRequest request = DocumentInputParser.BuildRequestFromInput();
 TotalResult result =
 DocumentTotalCalculator.Calculate(request);
 string report = DocumentReport.TextOf(request, result);
