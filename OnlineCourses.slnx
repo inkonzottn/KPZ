@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/OnlineCourses.Tests/OnlineCourses.Tests.csproj" />
+  </Folder>
   <Project Path="OnlineCourses.App/OnlineCourses.App.csproj" />
   <Project Path="OnlineCourses.Core/OnlineCourses.Core.csproj" />
 </Solution>
