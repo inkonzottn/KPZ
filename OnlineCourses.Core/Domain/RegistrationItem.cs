@@ -9,15 +9,8 @@ public sealed record RegistrationItem
             throw new ArgumentException("Порожній артикул", nameof(sku));
         }
 
-        if (quantity <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(quantity));
-        }
-
-        if (unitPrice < 0m)
-        {
-            throw new ArgumentOutOfRangeException(nameof(unitPrice));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity, nameof(quantity));
+        ArgumentOutOfRangeException.ThrowIfNegative(unitPrice, nameof(unitPrice));
 
         Sku = sku;
         Quantity = quantity;
@@ -25,7 +18,10 @@ public sealed record RegistrationItem
     }
 
     public string Sku { get; }
+
     public int Quantity { get; }
+
     public decimal UnitPrice { get; }
+
     public decimal Amount => UnitPrice * Quantity;
 }

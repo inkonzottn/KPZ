@@ -25,7 +25,10 @@ public sealed record Member
     }
 
     public int Id { get; }
+
     public string Name { get; }
+
     public string Email { get; }
+
     public bool IsRegular { get; init; }
 }

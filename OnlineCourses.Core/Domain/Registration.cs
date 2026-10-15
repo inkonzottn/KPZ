@@ -1,20 +1,15 @@
 namespace OnlineCourses.Core.Domain;
 
+using OnlineCourses.Core.Documents;
+
 public sealed class Registration
 {
     private readonly List<RegistrationItem> _lines = new();
 
     public Registration(int id, int memberId, DateOnly createdAt)
     {
-        if (id <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        if (memberId <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(memberId));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(memberId);
 
         Id = id;
         MemberId = memberId;
@@ -23,9 +18,15 @@ public sealed class Registration
     }
 
     public int Id { get; }
+
     public int MemberId { get; }
+
+    public decimal Total { get; set; }
+
     public DateOnly CreatedAt { get; }
+
     public DocumentStatus Status { get; private set; }
+
     public IReadOnlyList<RegistrationItem> Lines => _lines;
 
     public void AddLine(RegistrationItem line)
