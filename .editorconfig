@@ -48,6 +48,8 @@ dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.SA1602.severity = none 
 # кома в кінці багаторядкового ініціалізатора необов’язкова
 dotnet_diagnostic.SA1413.severity = none
+# підкреслення в назвах методів
+dotnet_diagnostic.CA1707.severity = none 
 
 # борг
 dotnet_diagnostic.CA1305.severity = none
