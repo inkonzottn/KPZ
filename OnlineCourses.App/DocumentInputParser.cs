@@ -17,7 +17,7 @@ public static class DocumentInputParser
         string email = Console.ReadLine() ?? "i@ex.com";
 
         Console.Write("Чи є клієнт постійним (y/n): ");
-        bool isRegular = Console.ReadLine()?.Trim().ToLower() == "y";
+        bool isRegular = Console.ReadLine()?.Trim().ToLowerInvariant() == "y";
 
         return new TotalRequest(
             DocumentId: id,
