@@ -62,14 +62,7 @@ public sealed class RegistrationService
     // АНТИПАТЕРН 1: порожній catch, дефект зникає
     public Registration? Load(int registrationId)
     {
-        try
-        {
-            return _repo.GetById(registrationId);
-        }
-        catch (Exception)
-        {
-        }
-        return null;
+        return _repository.GetById(registrationId);
     }
 
     // АНТИПАТЕРНИ 2 і 3: широке перехоплення, throw ex
@@ -77,14 +70,14 @@ public sealed class RegistrationService
     {
         try
         {
-            var registration = _repo.GetById(registrationId);
-            registration.Status = DocumentStatus.Cancelled;
-            _repo.Save(registration);
+            var registration = _repository.GetById(registrationId)
+            ?? throw new DomainRuleException("registration.exists", $"Реєстрацію {registrationId} не знайдено");
+            registration.Cancel();
+            _repository.Save(registration);
         }
-        catch (Exception ex)
+        catch (IOException ex)
         {
-            Console.WriteLine("Щось пішло не так");
-            throw ex;
+            throw;
         }
     }
 
@@ -94,17 +87,9 @@ public sealed class RegistrationService
         var valid = 0;
         foreach (var row in rows)
         {
-            try
+            if (int.TryParse(row, out var q) && q > 0)
             {
-                var q = int.Parse(row);
-                if (q > 0)
-                {
-                    valid++;
-                }
-            }
-            catch (FormatException)
-            {
-                // не число — пропускаємо
+                valid++;
             }
         }
         return valid;
