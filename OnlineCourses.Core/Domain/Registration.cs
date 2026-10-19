@@ -56,14 +56,15 @@ public sealed class Registration
         Status = DocumentStatus.Confirmed;
     }
 
-    public void Pay()
+    public int Pay(decimal amount)
     {
         if (Status != DocumentStatus.Confirmed)
         {
-            throw new InvalidOperationException("Перехід до стану Paid можливий лише з підтвердженого стану.");
+            return -1;
         }
-
+        
         Status = DocumentStatus.Paid;
+        return 0;
     }
 
     public void Activate()
