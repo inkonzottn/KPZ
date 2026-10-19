@@ -47,7 +47,7 @@ public class Order
     /// <summary>Стан замовлення - Скасовано.</summary>
     private const int StatusCancelled = 3;
 
-    private readonly List<string[]> _lines = new List<string[]>();
+    private readonly List<RegistrationItem> _lines;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Order"/> class.
@@ -127,8 +127,8 @@ public class Order
         int lineCount = 0;
         for (int i = 0; i < _lines.Count; i++)
         {
-            int quantity = int.Parse(_lines[i][1]);
-            decimal unitPrice = decimal.Parse(_lines[i][2]);
+            int quantity = _lines[i].Quantity;
+            decimal unitPrice = _lines[i].UnitPrice;
             total = total + (quantity * unitPrice);
             lineCount = lineCount + 1;
         }
@@ -213,7 +213,7 @@ public class Order
         {
             reportString = reportString + "Товар: " + _lines[i][0] + "; кількість: " +
             _lines[i][1] + "; ціна: " + _lines[i][2] + "; сума: " +
-            (int.Parse(_lines[i][1]) * decimal.Parse(_lines[i][2])) + "\n";
+            _lines[i].Quantity * _lines[i].UnitPrice + "\n";
         }
 
         reportString = reportString + "Разом: " + CalculateTotal(false) + "\n";

@@ -40,16 +40,20 @@ public sealed class RegistrationService
         return total;
     }
 
-    // ПОГАНИЙ ВАРІАНТ (Антипатерн Anemic Domain Model + потік даних без валідації)
-    public void AddLineUnsafe(int registrationId, string courseName, string quantityStr, string priceStr)
+    public void AddLine(int registrationId, RegistrationItem line)
     {
-        var registration = _repository.GetById(registrationId);
-        
-        var quantity = int.Parse(quantityStr);
-        var price = decimal.Parse(priceStr);
-        
-        registration.Items.Add(new RegistrationItem(courseName, quantity, price));
-        
+        ArgumentNullException.ThrowIfNull(line);
+
+        var registration = _repository.GetById(registrationId)
+            ?? throw new DomainRuleException("registration.exists", $"Реєстрацію з ID {registrationId} не знайдено.");
+
+        if (registration.Status != DocumentStatus.New)
+        {
+            throw new DomainRuleException("registration.editable", "Додавати позиції можна лише до нового документа.");
+        }
+
+        registration.AddLine(line);
+
         _repository.Save(registration);
     }
 }
