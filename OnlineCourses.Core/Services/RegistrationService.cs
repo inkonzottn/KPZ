@@ -58,4 +58,55 @@ public sealed class RegistrationService
 
         _repository.Save(registration);
     }
+
+    // АНТИПАТЕРН 1: порожній catch, дефект зникає
+    public Registration? Load(int registrationId)
+    {
+        try
+        {
+            return _repo.GetById(registrationId);
+        }
+        catch (Exception)
+        {
+        }
+        return null;
+    }
+
+    // АНТИПАТЕРНИ 2 і 3: широке перехоплення, throw ex
+    public void Cancel(int registrationId, string reason)
+    {
+        try
+        {
+            var registration = _repo.GetById(registrationId);
+            registration.Status = DocumentStatus.Cancelled;
+            _repo.Save(registration);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Щось пішло не так");
+            throw ex;
+        }
+    }
+
+    // АНТИПАТЕРН 4: try/catch замість звичайної умови
+    public int CountValidQuantities(string[] rows)
+    {
+        var valid = 0;
+        foreach (var row in rows)
+        {
+            try
+            {
+                var q = int.Parse(row);
+                if (q > 0)
+                {
+                    valid++;
+                }
+            }
+            catch (FormatException)
+            {
+                // не число — пропускаємо
+            }
+        }
+        return valid;
+    }
 }
