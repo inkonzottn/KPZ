@@ -1,5 +1,6 @@
 namespace OnlineCourses.Core.Services;
 
+using Microsoft.Extensions.Logging;
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
@@ -10,11 +11,13 @@ public sealed class RegistrationService
     private readonly IRegistrationRepository _repository;
     private readonly IPricingPolicy _pricing;
     private readonly INotifier _notifier;
+    private readonly ILogger<RegistrationService> _logger;
 
     public RegistrationService(
         IRegistrationRepository repository,
         IPricingPolicy pricing,
-        INotifier notifier)
+        INotifier notifier,
+        ILogger<RegistrationService> logger)
     {
         _repository = repository
             ?? throw new ArgumentNullException(nameof(repository));
@@ -22,6 +25,23 @@ public sealed class RegistrationService
             ?? throw new ArgumentNullException(nameof(pricing));
         _notifier = notifier
             ?? throw new ArgumentNullException(nameof(notifier));
+        _logger = logger
+            ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    // АНТИПАТЕРН 4: try/catch замість звичайної умови
+    public static int CountValidQuantities(string[] rows)
+    {
+        var valid = 0;
+        foreach (var row in rows)
+        {
+            if (int.TryParse(row, out var q) && q > 0)
+            {
+                valid++;
+            }
+        }
+
+        return valid;
     }
 
     public void Place(Registration registration)
@@ -44,6 +64,9 @@ public sealed class RegistrationService
 
     public void AddLine(int registrationId, RegistrationItem line)
     {
+        using var scope = _logger.BeginScope("Registration:{RegistrationId}", registrationId);
+        _logger.LogDebug("Початок додавання позиції з SKU {Sku}", line.Sku);
+
         ArgumentNullException.ThrowIfNull(line);
 
         var registration = _repository.GetById(registrationId)
@@ -54,9 +77,15 @@ public sealed class RegistrationService
             throw new DomainRuleException("registration.editable", "Додавати позиції можна лише до нового документа.");
         }
 
-        registration.AddLine(line);
+        if (line.Quantity > 10)
+        {
+            _logger.LogWarning("Велика кількість позицій у замовленні: {Quantity}", line.Quantity);
+        }
 
+        registration.AddLine(line);
         _repository.Save(registration);
+
+        _logger.LogInformation("Успішно додано позицію SKU {Sku} у реєстрацію {RegistrationId}", line.Sku, registrationId);
     }
 
     // АНТИПАТЕРН 1: порожній catch, дефект зникає
@@ -75,23 +104,9 @@ public sealed class RegistrationService
             registration.Cancel();
             _repository.Save(registration);
         }
-        catch (IOException ex)
+        catch (IOException)
         {
             throw;
         }
-    }
-
-    // АНТИПАТЕРН 4: try/catch замість звичайної умови
-    public int CountValidQuantities(string[] rows)
-    {
-        var valid = 0;
-        foreach (var row in rows)
-        {
-            if (int.TryParse(row, out var q) && q > 0)
-            {
-                valid++;
-            }
-        }
-        return valid;
     }
 }

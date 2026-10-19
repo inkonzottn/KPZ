@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
 using OnlineCourses.App;
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Documents;
@@ -8,13 +9,25 @@ using OnlineCourses.Core.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
 
+using var factory = LoggerFactory.Create(builder =>
+{
+    builder.AddSimpleConsole(options =>
+    {
+        options.TimestampFormat = "HH:mm:ss ";
+        options.IncludeScopes = true;
+    });
+    builder.SetMinimumLevel(LogLevel.Debug);
+});
+
+var logger = factory.CreateLogger<RegistrationService>();
+
 var repository = new InMemoryRegistrationRepository();
 IPricingPolicy pricing = new DiscountPricingPolicy(0.05m);
 var notifier = new SmtpMailer();
 
-var service = new RegistrationService(repository, pricing, notifier);
-int registrationId = 1;
+var service = new RegistrationService(repository, pricing, notifier, logger);
 
+int registrationId = 1;
 var registration = new Registration(registrationId, 100, DateOnly.FromDateTime(DateTime.Today));
 repository.Add(registration);
 

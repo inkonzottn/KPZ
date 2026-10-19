@@ -51,8 +51,12 @@ dotnet_diagnostic.SA1413.severity = none
 # підкреслення в назвах методів
 dotnet_diagnostic.CA1707.severity = none 
 
-#оголошеня статичних методів всередині дженерик-класів
+# оголошеня статичних методів всередині дженерик-класів
 dotnet_diagnostic.CA1000.severity = none 
+
+# використання ILogger без LoggerMessage delegates
+dotnet_diagnostic.CA1848.severity = none 
+
 
 # борг
 dotnet_diagnostic.CA1305.severity = none

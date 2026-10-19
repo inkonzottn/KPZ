@@ -31,6 +31,6 @@ public sealed class InMemoryRegistrationRepository : IRegistrationRepository
 
     public void Save(Registration registration)
     {
-        throw new NotImplementedException();
+        _storage[registration.Id] = registration;
     }
 }
