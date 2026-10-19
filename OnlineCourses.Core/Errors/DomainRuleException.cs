@@ -2,8 +2,6 @@ namespace OnlineCourses.Core.Errors;
 
 public class DomainRuleException : Exception
 {
-    public string Rule { get; }
-
     public DomainRuleException(string rule, string message)
         : base(message)
     {
@@ -15,4 +13,6 @@ public class DomainRuleException : Exception
     {
         Rule = rule;
     }
+
+    public string Rule { get; }
 }

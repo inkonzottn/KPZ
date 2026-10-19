@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OnlineCourses.Core.Domain;
 
 namespace OnlineCourses.Domain;
 
@@ -47,7 +48,7 @@ public class Order
     /// <summary>Стан замовлення - Скасовано.</summary>
     private const int StatusCancelled = 3;
 
-    private readonly List<RegistrationItem> _lines;
+    private readonly List<RegistrationItem> _lines = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Order"/> class.
@@ -102,18 +103,13 @@ public class Order
     }
 
     /// <summary>
-    /// Додає до замовлення рядок із товаром.
+    /// Додає до замовлення позицію.
     /// </summary>
-    /// <param name="sku">Артикул товару.</param>
-    /// <param name="quantity">Кількість одиниць.</param>
-    /// <param name="unitPrice">Ціна за одиницю, грн.</param>
-    public void AddLine(string sku, int quantity, decimal unitPrice)
+    /// <param name="item">Позиція реєстрації.</param>
+    public void AddLine(RegistrationItem item)
     {
-        string[] lineParts = new string[3];
-        lineParts[0] = sku;
-        lineParts[1] = quantity.ToString();
-        lineParts[2] = unitPrice.ToString();
-        _lines.Add(lineParts);
+        ArgumentNullException.ThrowIfNull(item);
+        _lines.Add(item);
     }
 
     /// <summary>
@@ -211,9 +207,9 @@ public class Order
         string reportString = string.Empty;
         for (int i = 0; i < _lines.Count; i++)
         {
-            reportString = reportString + "Товар: " + _lines[i][0] + "; кількість: " +
-            _lines[i][1] + "; ціна: " + _lines[i][2] + "; сума: " +
-            _lines[i].Quantity * _lines[i].UnitPrice + "\n";
+            reportString = reportString + "Товар: " + _lines[i].Sku + "; кількість: " +
+            _lines[i].Quantity + "; ціна: " + _lines[i].UnitPrice + "; сума: " +
+            (_lines[i].Quantity * _lines[i].UnitPrice) + "\n";
         }
 
         reportString = reportString + "Разом: " + CalculateTotal(false) + "\n";

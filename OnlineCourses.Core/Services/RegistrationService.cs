@@ -1,7 +1,9 @@
 namespace OnlineCourses.Core.Services;
 
 using OnlineCourses.Core.Abstractions;
+using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Errors;
 
 public sealed class RegistrationService
 {

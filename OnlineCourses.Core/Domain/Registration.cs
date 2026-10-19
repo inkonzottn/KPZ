@@ -1,6 +1,7 @@
 namespace OnlineCourses.Core.Domain;
 
 using OnlineCourses.Core.Documents;
+using OnlineCourses.Core.Errors;
 
 public sealed class Registration
 {

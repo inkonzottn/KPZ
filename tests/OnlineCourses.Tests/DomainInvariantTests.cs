@@ -1,7 +1,7 @@
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Legacy;
 using OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Services;
-using OnlineCourses.Core.Legacy;
 using Xunit;
 
 public class DomainInvariantTests

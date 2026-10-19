@@ -1,6 +1,7 @@
 namespace OnlineCourses.App;
 
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Errors;
 
 public static class RegistrationItemParser
 {
