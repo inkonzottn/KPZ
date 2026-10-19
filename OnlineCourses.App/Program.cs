@@ -5,6 +5,7 @@ using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Legacy;
+using OnlineCourses.Core.Reporting;
 using OnlineCourses.Core.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
@@ -57,4 +58,7 @@ while (true)
     {
         Console.WriteLine($"Помилка домену: {ex.Message}");
     }
+
+    using var auditLog = new FileAuditLog("audit.log");
+    auditLog.Write("AddLine", registrationId);
 }

@@ -109,4 +109,12 @@ public sealed class RegistrationService
             throw;
         }
     }
+
+    // СТАЛО: using звільняє потік навіть при винятку
+    public void ExportReport(string path, Registration registration)
+    {
+        using var writer = new StreamWriter(path);
+        writer.WriteLine($"Замовлення {registration.Id}");
+        writer.WriteLine(TotalOf(registration));
+    }
 }
