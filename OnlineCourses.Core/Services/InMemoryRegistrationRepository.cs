@@ -28,4 +28,9 @@ public sealed class InMemoryRegistrationRepository : IRegistrationRepository
     {
         return _storage.Values.ToList();
     }
+
+    public void Save(Registration registration)
+    {
+        _storage[registration.Id] = registration;
+    }
 }

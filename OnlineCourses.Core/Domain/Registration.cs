@@ -1,6 +1,7 @@
 namespace OnlineCourses.Core.Domain;
 
 using OnlineCourses.Core.Documents;
+using OnlineCourses.Core.Errors;
 
 public sealed class Registration
 {
@@ -60,7 +61,7 @@ public sealed class Registration
     {
         if (Status != DocumentStatus.Confirmed)
         {
-            throw new InvalidOperationException("Перехід до стану Paid можливий лише з підтвердженого стану.");
+            throw new DomainRuleException("document.status", "Перехід до стану Paid можливий лише з підтвердженого стану.");
         }
 
         Status = DocumentStatus.Paid;

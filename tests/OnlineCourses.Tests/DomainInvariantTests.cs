@@ -1,7 +1,8 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Legacy;
 using OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Services;
-using OnlineCourses.Core.Legacy;
 using Xunit;
 
 public class DomainInvariantTests
@@ -29,7 +30,8 @@ public class DomainInvariantTests
         var service = new RegistrationService(
         new InMemoryRegistrationRepository(),
         new OnlineCourses.Core.Pricing.DiscountPricingPolicy(0.10m),
-        new SmtpMailer());
+        new SmtpMailer(),
+        NullLogger<RegistrationService>.Instance);
 
         var registration = NewRegistration(2);
         registration.AddLine(new OnlineCourses.Core.Domain.RegistrationItem("SKU-1", 2, 100m));

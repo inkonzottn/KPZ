@@ -14,7 +14,6 @@ public class RegistrationManager
         }
 
         File.WriteAllText("report.csv", text);
-        Console.WriteLine("Звіт збережено");
         return text;
     }
 
