@@ -56,15 +56,14 @@ public sealed class Registration
         Status = DocumentStatus.Confirmed;
     }
 
-    public int Pay(decimal amount)
+    public void Pay()
     {
         if (Status != DocumentStatus.Confirmed)
         {
-            return -1;
+            throw new DomainRuleException("document.status", "Перехід до стану Paid можливий лише з підтвердженого стану.");
         }
-        
+
         Status = DocumentStatus.Paid;
-        return 0;
     }
 
     public void Activate()
