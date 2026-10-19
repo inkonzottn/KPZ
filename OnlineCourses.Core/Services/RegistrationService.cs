@@ -39,4 +39,17 @@ public sealed class RegistrationService
 
         return total;
     }
+
+    // ПОГАНИЙ ВАРІАНТ (Антипатерн Anemic Domain Model + потік даних без валідації)
+    public void AddLineUnsafe(int registrationId, string courseName, string quantityStr, string priceStr)
+    {
+        var registration = _repository.GetById(registrationId);
+        
+        var quantity = int.Parse(quantityStr);
+        var price = decimal.Parse(priceStr);
+        
+        registration.Items.Add(new RegistrationItem(courseName, quantity, price));
+        
+        _repository.Save(registration);
+    }
 }
