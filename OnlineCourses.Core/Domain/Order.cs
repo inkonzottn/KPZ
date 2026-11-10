@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using OnlineCourses.Core.Domain;
 
-namespace OnlineCourses.Domain;
+namespace OnlineCourses.Core.Domain;
 
 /// <summary>
 /// Замовлення в системі курсів.
@@ -89,17 +89,14 @@ public class Order
     /// <param name="orders">Список замовлень для пошуку.</param>
     /// <param name="orderId">Шуканий ідентифікатор замовлення.</param>
     /// <returns>Знайдене замовлення або null, якщо нічого не знайдено.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// orders або orderId дорівнює null.
+    /// </exception>
     public static Order? FindById(List<Order> orders, string orderId)
     {
-        for (int i = 0; i < orders.Count; i++)
-        {
-            if (orders[i].Id == orderId)
-            {
-                return orders[i];
-            }
-        }
-
-        return null;
+        ArgumentNullException.ThrowIfNull(orders);
+        ArgumentNullException.ThrowIfNull(orderId);
+        return orders.FirstOrDefault(o => o.Id == orderId);
     }
 
     /// <summary>

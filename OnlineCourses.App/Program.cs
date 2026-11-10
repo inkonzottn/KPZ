@@ -32,6 +32,8 @@ int registrationId = 1;
 var registration = new Registration(registrationId, 100, DateOnly.FromDateTime(DateTime.Today));
 repository.Add(registration);
 
+var order = Order.FindById(new List<Order>(), "order123");
+
 while (true)
 {
     Console.Write("SKU: ");

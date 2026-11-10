@@ -1,3 +1,5 @@
+namespace OnlineCourses.Core.Reporting;
+
 using System;
 using System.IO;
 
