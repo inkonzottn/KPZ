@@ -1,15 +1,22 @@
 using System;
 using System.Collections.Generic;
-namespace Variant.Legacy;
+namespace OnlineCourses.src.Legacy;
 
-public class Member
+public enum ClientKind { Regular, Vip, Staff }
+public enum DocState { Draft, New, Paid, Closed }
+
+public sealed class Member
 {
-    public int Id;
-    public string Name = "";
-    public string Email = "";
-    public string Kind = "regular";
-    public int DoneCount;
-    public DateTime SinceUtc;
+    public int Id { get; init; }
+    public string Name { get; init; } = "";
+    public string Email { get; init; } = "";
+    public ClientKind Kind { get; init; }
+    public int DoneCount { get; init; }
+    public DateTime SinceUtc { get; init; }
+    public bool HasValidEmail =>
+        Email is not null && Email.Contains("@");
+    public bool IsLoyal =>
+        DoneCount > PricingRules.LoyalOrders;
 }
 
 public class RegistrationItem
@@ -27,15 +34,15 @@ public class LegacyRegistrationProcessor
     private readonly List<string> _log = new();
     public string Handle(int docId, int clientId,
     string clientName, string? clientMail,
-    string clientKind, int clientDone,
-    List<RegistrationItem>? items, string state,
+    ClientKind clientKind, int clientDone,
+    List<RegistrationItem>? items, DocState state,
     string currency, DateTime createdAt, bool sendMail)
     {
         if (items != null)
         {
             if (items.Count > 0)
             {
-                if (state == "new" || state == "paid")
+                if (state == DocState.New || state == DocState.Paid)
                 {
                     if (clientMail != null &&
                     clientMail.Contains("@"))
@@ -68,7 +75,7 @@ public class LegacyRegistrationProcessor
             _tmpSum += items[i].Qty * items[i].Price;
         }
         _tmpDiscount = 0m;
-        if (clientKind == "vip")
+        if (clientKind == ClientKind.Vip)
         {
             _tmpDiscount = _tmpSum * PricingRules.VipRate;
             if (_tmpDiscount > PricingRules.MaxDiscount)
@@ -76,7 +83,7 @@ public class LegacyRegistrationProcessor
                 _tmpDiscount = PricingRules.MaxDiscount;
             }
         }
-        else if (clientKind == "staff")
+        else if (clientKind == ClientKind.Staff)
         {
             _tmpDiscount = _tmpSum * PricingRules.StaffRate;
             if (_tmpDiscount > PricingRules.MaxDiscount)
@@ -119,7 +126,7 @@ public class LegacyRegistrationProcessor
         }
         return txt;
     }
-    public decimal Preview(string clientKind, int clientDone,
+    public decimal Preview(ClientKind clientKind, int clientDone,
     List<RegistrationItem> items)
     {
         decimal s = 0m;
@@ -128,7 +135,7 @@ public class LegacyRegistrationProcessor
             s += it.Qty * it.Price;
         }
         decimal d = 0m;
-        if (clientKind == "vip")
+        if (clientKind == ClientKind.Vip)
         {
             d = s * PricingRules.VipRate;
             if (d > PricingRules.MaxDiscount)
@@ -136,7 +143,7 @@ public class LegacyRegistrationProcessor
                 d = PricingRules.MaxDiscount;
             }
         }
-        else if (clientKind == "staff")
+        else if (clientKind == ClientKind.Staff)
         {
             d = s * PricingRules.StaffRate;
             if (d > PricingRules.MaxDiscount)
@@ -163,7 +170,7 @@ public class LegacyRegistrationProcessor
     public string DescribeClient(Member c)
     {
         string s = c.Name.Trim().ToUpper();
-        if (c.Kind == "vip")
+        if (c.Kind == ClientKind.Vip)
         {
             s += " [VIP]";
         }

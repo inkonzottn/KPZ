@@ -1,5 +1,5 @@
 using System.Globalization;
-using Variant.Legacy;
+using OnlineCourses.src.Legacy;
 using Xunit;
 
 public class LegacyCharacterizationTests
@@ -26,12 +26,12 @@ public class LegacyCharacterizationTests
     private static readonly DateTime Created = new(2026, 3, 1);
 
     [Theory]
-    [InlineData(null, "new", "a@b.c", "ERR: null")]
-    [InlineData("empty", "new", "a@b.c", "ERR: empty")]
-    [InlineData("two", "draft", "a@b.c", "ERR: state")]
-    [InlineData("two", "new", "no-mail", "ERR: mail")]
+    [InlineData(null, DocState.New, "a@b.c", "ERR: null")]
+    [InlineData("empty", DocState.New, "a@b.c", "ERR: empty")]
+    [InlineData("two", DocState.Draft, "a@b.c", "ERR: state")]
+    [InlineData("two", DocState.New, "no-mail", "ERR: mail")]
     public void Handle_BadInput_ReturnsErrorCode(
-        string? kindOfItems, string state, string mail, string expected)
+        string? kindOfItems, DocState state, string mail, string expected)
     {
         var items = kindOfItems switch
         {
@@ -41,7 +41,7 @@ public class LegacyCharacterizationTests
         };
         var sut = new LegacyRegistrationProcessor();
 
-        var actual = sut.Handle(1001, 7, "Іван", mail, "regular", 0,
+        var actual = sut.Handle(1001, 7, "Іван", mail, ClientKind.Regular, 0,
             items, state, "UAH", Created, false);
 
         Assert.Equal(expected, actual);
@@ -52,8 +52,8 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var report = sut.Handle(1001, 7, "Іван", Ok, "vip", 3,
-            TwoLines(), "new", "UAH", Created, false);
+        var report = sut.Handle(1001, 7, "Іван", Ok, ClientKind.Vip, 3,
+            TwoLines(), DocState.New, "UAH", Created, false);
 
         var expected =
             "Документ #1001\n" +
@@ -67,11 +67,11 @@ public class LegacyCharacterizationTests
     }
 
     [Theory]
-    [InlineData("regular", 0, 760)]
-    [InlineData("vip", 0, 655)]
-    [InlineData("staff", 0, 550)]
-    [InlineData("regular", 11, 725)]
-    public void Preview_ByKind_ReturnsTotal(string kind, int done, decimal expected)
+    [InlineData(ClientKind.Regular, 0, 760)]
+    [InlineData(ClientKind.Vip, 0, 655)]
+    [InlineData(ClientKind.Staff, 0, 550)]
+    [InlineData(ClientKind.Regular, 11, 725)]
+    public void Preview_ByKind_ReturnsTotal(ClientKind kind, int done, decimal expected)
     {
         var sut = new LegacyRegistrationProcessor();
 
@@ -81,10 +81,10 @@ public class LegacyCharacterizationTests
     }
 
     [Theory]
-    [InlineData("vip", 0, 5000, 4500)]
-    [InlineData("staff", 0, 2000, 1500)]
-    [InlineData("regular", 11, 20000, 19500)]
-    public void Preview_DiscountIsCappedAt500(string kind, int done,
+    [InlineData(ClientKind.Vip, 0, 5000, 4500)]
+    [InlineData(ClientKind.Staff, 0, 2000, 1500)]
+    [InlineData(ClientKind.Regular, 11, 20000, 19500)]
+    public void Preview_DiscountIsCappedAt500(ClientKind kind, int done,
         decimal price, decimal expected)
     {
         var sut = new LegacyRegistrationProcessor();
@@ -99,7 +99,7 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var total = sut.Preview("regular", 0, OneLine(1000m));
+        var total = sut.Preview(ClientKind.Regular, 0, OneLine(1000m));
 
         Assert.Equal(1000m, total);
     }
@@ -109,7 +109,7 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var total = sut.Preview("regular", 0, OneLine(999.99m));
+        var total = sut.Preview(ClientKind.Regular, 0, OneLine(999.99m));
 
         Assert.Equal(1059.99m, total);
     }
@@ -121,7 +121,7 @@ public class LegacyCharacterizationTests
         {
             Name = " іван ",
             Email = "IVAN@MAIL.COM",
-            Kind = "vip",
+            Kind = ClientKind.Vip,
             DoneCount = 12,
             SinceUtc = new DateTime(2020, 1, 1)
         };
@@ -139,8 +139,8 @@ public class LegacyCharacterizationTests
     public void DumpLog_AfterSuccessWithoutMail_ContainsOnlyOkLine()
     {
         var sut = new LegacyRegistrationProcessor();
-        sut.Handle(1001, 7, "Іван", Ok, "regular", 0,
-            TwoLines(), "new", "UAH", Created, false);
+        sut.Handle(1001, 7, "Іван", Ok, ClientKind.Regular, 0,
+            TwoLines(), DocState.New, "UAH", Created, false);
 
         Assert.Equal("ok 1001\n", sut.DumpLog());
     }
@@ -149,8 +149,8 @@ public class LegacyCharacterizationTests
     public void DumpLog_AfterSuccessWithMail_ContainsMailLine()
     {
         var sut = new LegacyRegistrationProcessor();
-        sut.Handle(1001, 7, "Іван", Ok, "regular", 0,
-            TwoLines(), "new", "UAH", Created, true);
+        sut.Handle(1001, 7, "Іван", Ok, ClientKind.Regular, 0,
+            TwoLines(), DocState.New, "UAH", Created, true);
 
         Assert.Equal("ok 1001\nmail -> a@b.c\n", sut.DumpLog());
     }

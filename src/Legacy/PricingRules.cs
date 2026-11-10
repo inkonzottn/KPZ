@@ -1,4 +1,4 @@
-namespace Variant.Legacy;
+namespace OnlineCourses.src.Legacy;
 
 public static class PricingRules
 {
