@@ -70,32 +70,32 @@ public class LegacyRegistrationProcessor
         _tmpDiscount = 0m;
         if (clientKind == "vip")
         {
-            _tmpDiscount = _tmpSum * 0.15m;
-            if (_tmpDiscount > 500m)
+            _tmpDiscount = _tmpSum * PricingRules.VipRate;
+            if (_tmpDiscount > PricingRules.MaxDiscount)
             {
-                _tmpDiscount = 500m;
+                _tmpDiscount = PricingRules.MaxDiscount;
             }
         }
         else if (clientKind == "staff")
         {
-            _tmpDiscount = _tmpSum * 0.30m;
-            if (_tmpDiscount > 500m)
+            _tmpDiscount = _tmpSum * PricingRules.StaffRate;
+            if (_tmpDiscount > PricingRules.MaxDiscount)
             {
-                _tmpDiscount = 500m;
+                _tmpDiscount = PricingRules.MaxDiscount;
             }
         }
-        else if (clientDone > 10)
+        else if (clientDone > PricingRules.LoyalOrders)
         {
-            _tmpDiscount = _tmpSum * 0.05m;
-            if (_tmpDiscount > 500m)
+            _tmpDiscount = _tmpSum * PricingRules.LoyalRate;
+            if (_tmpDiscount > PricingRules.MaxDiscount)
             {
-                _tmpDiscount = 500m;
+                _tmpDiscount = PricingRules.MaxDiscount;
             }
         }
         decimal ship = 0m;
-        if (_tmpSum - _tmpDiscount < 1000m)
+        if (_tmpSum - _tmpDiscount < PricingRules.FreeShipFrom)
         {
-            ship = 60m;
+            ship = PricingRules.ShipCost;
         }
 
         decimal total = _tmpSum - _tmpDiscount + ship;
@@ -130,32 +130,32 @@ public class LegacyRegistrationProcessor
         decimal d = 0m;
         if (clientKind == "vip")
         {
-            d = s * 0.15m;
-            if (d > 500m)
+            d = s * PricingRules.VipRate;
+            if (d > PricingRules.MaxDiscount)
             {
-                d = 500m;
+                d = PricingRules.MaxDiscount;
             }
         }
         else if (clientKind == "staff")
         {
-            d = s * 0.30m;
-            if (d > 500m)
+            d = s * PricingRules.StaffRate;
+            if (d > PricingRules.MaxDiscount)
             {
-                d = 500m;
+                d = PricingRules.MaxDiscount;
             }
         }
-        else if (clientDone > 10)
+        else if (clientDone > PricingRules.LoyalOrders)
         {
-            d = s * 0.05m;
-            if (d > 500m)
+            d = s * PricingRules.LoyalRate;
+            if (d > PricingRules.MaxDiscount)
             {
-                d = 500m;
+                d = PricingRules.MaxDiscount;
             }
         }
         decimal sh = 0m;
-        if (s - d < 1000m)
+        if (s - d < PricingRules.FreeShipFrom)
         {
-            sh = 60m;
+            sh = PricingRules.ShipCost;
         }
 
         return s - d + sh;
@@ -168,7 +168,7 @@ public class LegacyRegistrationProcessor
             s += " [VIP]";
         }
 
-        if (c.DoneCount > 10)
+        if (c.DoneCount > PricingRules.LoyalOrders)
         {
             s += " [ЛОЯЛЬНИЙ]";
         }
