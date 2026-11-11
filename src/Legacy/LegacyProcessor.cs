@@ -32,6 +32,7 @@ public class LegacyRegistrationProcessor
     private decimal _tmpSum;
     private decimal _tmpDiscount;
     private readonly List<string> _log = new();
+    private readonly ReportBuilder _report = new();
 
     public string Handle(OrderRequest req)
     {
@@ -76,25 +77,11 @@ public class LegacyRegistrationProcessor
         }
 
         decimal total = _tmpSum - _tmpDiscount + ship;
-        string txt = "Документ #" + req.DocId + "\n";
-        txt += "Клієнт: " + req.Client.Name + "\n";
-        for (int i = 0; i < req.Items!.Count; i++)
-        {
-            txt += req.Items[i].Code + " x" + req.Items[i].Qty + " = " +
-            (req.Items[i].Qty * req.Items[i].Price)
-            .ToString("0.00") + " " + req.Currency + "\n";
-        }
-        txt += "Знижка: " + _tmpDiscount.ToString("0.00") +
-        " " + req.Currency + "\n";
-        txt += "Доставка: " + ship.ToString("0.00") +
-        " " + req.Currency + "\n";
-        txt += "Разом: " + total.ToString("0.00") +
-        " " + req.Currency + "\n";
         if (req.SendMail)
         {
             _log.Add("mail -> " + req.Client.Email);
         }
-        return txt;
+        return _report.Build(req, _tmpDiscount, ship, total);
     }
 
 
