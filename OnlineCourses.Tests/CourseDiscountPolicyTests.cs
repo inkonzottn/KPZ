@@ -32,4 +32,12 @@ public class CourseDiscountPolicyTests
             () => policy.DiscountFor((decimal)amount, true));
         Assert.Equal("amount", ex.ParamName);
     }
+
+    [Fact]
+    public void DiscountFor_HugeOrder_IsCappedAtMax()
+    {
+        var policy = new CourseDiscountPolicy();
+        decimal actual = policy.DiscountFor(5000m, true);
+        Assert.Equal(150m, actual);
+    }
 }
