@@ -1,9 +1,14 @@
-using System;
-
 namespace OnlineCourses.src.Legacy;
 
 public sealed class DiscountPolicy
 {
+    private readonly IReadOnlyList<IDiscountRule> _rules = new IDiscountRule[]
+    {
+        new VipDiscountRule(),
+        new StaffDiscountRule(),
+        new LoyalDiscountRule()
+    };
+
     public decimal For(decimal subtotal, Member c)
     {
         var rate = RateFor(c);
@@ -11,11 +16,13 @@ public sealed class DiscountPolicy
             PricingRules.MaxDiscount);
     }
 
-    private static decimal RateFor(Member c) => c.Kind
-        switch
+    private decimal RateFor(Member c)
     {
-        ClientKind.Vip => PricingRules.VipRate,
-        ClientKind.Staff => PricingRules.StaffRate,
-        _ => c.IsLoyal ? PricingRules.LoyalRate : 0m
-    };
+        foreach (var rule in _rules)
+        {
+            var rate = rule.RateFor(c);
+            if (rate.HasValue) return rate.Value;
+        }
+        return 0m;
+    }
 }
