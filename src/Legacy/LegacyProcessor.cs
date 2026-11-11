@@ -21,8 +21,16 @@ public sealed class Member
     public string DescribeClient()
     {
         var s = Name.Trim().ToUpper();
-        if (Kind == ClientKind.Vip) s += " [VIP]";
-        if (IsLoyal) s += " [ЛОЯЛЬНИЙ]";
+        if (Kind == ClientKind.Vip)
+        {
+            s += " [VIP]";
+        }
+
+        if (IsLoyal)
+        {
+            s += " [ЛОЯЛЬНИЙ]";
+        }
+
         s += " <" + Email.ToLower() + ">";
         return s + " стаж " +
             (DateTime.Now.Year - SinceUtc.Year);
@@ -47,14 +55,21 @@ public class LegacyRegistrationProcessor
     public string Handle(OrderRequest req)
     {
         var error = Validate(req);
-        if (error != null) return error;
+        if (error != null)
+        {
+            return error;
+        }
+
         _log.Add("ok " + req.DocId);
         var subtotal = Subtotal(req.Items!);
         var discount = _discounts.For(subtotal, req.Client);
         var shipping = _shipping.For(subtotal - discount);
         var total = subtotal - discount + shipping;
         if (req.SendMail)
+        {
             _log.Add("mail -> " + req.Client.Email);
+        }
+
         return _report.Build(req, discount, shipping, total);
     }
     public decimal Preview(Member client, IReadOnlyList<RegistrationItem> items)

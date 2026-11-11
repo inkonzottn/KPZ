@@ -11,4 +11,5 @@
   </Folder>
   <Project Path="OnlineCourses.App/OnlineCourses.App.csproj" />
   <Project Path="OnlineCourses.Core/OnlineCourses.Core.csproj" />
+  <Project Path="OnlineCourses.Tests/OnlineCourses.Tests.csproj" />
 </Solution>
