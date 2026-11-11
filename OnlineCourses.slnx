@@ -6,6 +6,9 @@
   <Folder Name="/tests/">
     <Project Path="tests/OnlineCourses.Tests/OnlineCourses.Tests.csproj" />
   </Folder>
+  <Folder Name="/tests/Legacy.Tests/">
+    <Project Path="tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj" />
+  </Folder>
   <Project Path="OnlineCourses.App/OnlineCourses.App.csproj" />
   <Project Path="OnlineCourses.Core/OnlineCourses.Core.csproj" />
 </Solution>
