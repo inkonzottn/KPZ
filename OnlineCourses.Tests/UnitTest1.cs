@@ -1,4 +1,4 @@
-﻿namespace OnlineCourses.Tests;
+namespace OnlineCourses.Tests;
 
 public class UnitTest1
 {
