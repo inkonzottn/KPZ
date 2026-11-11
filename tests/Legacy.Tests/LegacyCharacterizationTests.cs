@@ -41,8 +41,8 @@ public class LegacyCharacterizationTests
         };
         var sut = new LegacyRegistrationProcessor();
 
-        var actual = sut.Handle(1001, 7, "Іван", mail, ClientKind.Regular, 0,
-            items, state, "UAH", Created, false);
+        var client = new Member { Id = 7, Name = "Іван", Email = mail, Kind = ClientKind.Regular, DoneCount = 0 };
+        var actual = sut.Handle(new OrderRequest(1001, client, items, state, "UAH", false));
 
         Assert.Equal(expected, actual);
     }
@@ -52,8 +52,8 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var report = sut.Handle(1001, 7, "Іван", Ok, ClientKind.Vip, 3,
-            TwoLines(), DocState.New, "UAH", Created, false);
+        var client = new Member { Id = 7, Name = "Іван", Email = Ok, Kind = ClientKind.Vip, DoneCount = 3 };
+        var report = sut.Handle(new OrderRequest(1001, client, TwoLines(), DocState.New, "UAH", false));
 
         var expected =
             "Документ #1001\n" +
@@ -75,7 +75,7 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var total = sut.Preview(kind, done, TwoLines());
+        var total = sut.Preview(new Member { Kind = kind, DoneCount = done }, TwoLines());
 
         Assert.Equal(expected, total);
     }
@@ -89,7 +89,7 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var total = sut.Preview(kind, done, OneLine(price));
+        var total = sut.Preview(new Member { Kind = kind, DoneCount = done }, OneLine(price));
 
         Assert.Equal(expected, total);
     }
@@ -99,7 +99,7 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var total = sut.Preview(ClientKind.Regular, 0, OneLine(1000m));
+        var total = sut.Preview(new Member { Kind = ClientKind.Regular, DoneCount = 0 }, OneLine(1000m));
 
         Assert.Equal(1000m, total);
     }
@@ -109,7 +109,7 @@ public class LegacyCharacterizationTests
     {
         var sut = new LegacyRegistrationProcessor();
 
-        var total = sut.Preview(ClientKind.Regular, 0, OneLine(999.99m));
+        var total = sut.Preview(new Member { Kind = ClientKind.Regular, DoneCount = 0 }, OneLine(999.99m));
 
         Assert.Equal(1059.99m, total);
     }
@@ -139,9 +139,8 @@ public class LegacyCharacterizationTests
     public void DumpLog_AfterSuccessWithoutMail_ContainsOnlyOkLine()
     {
         var sut = new LegacyRegistrationProcessor();
-        sut.Handle(1001, 7, "Іван", Ok, ClientKind.Regular, 0,
-            TwoLines(), DocState.New, "UAH", Created, false);
-
+        var client = new Member { Id = 7, Name = "Іван", Email = Ok, Kind = ClientKind.Regular, DoneCount = 0 };
+        sut.Handle(new OrderRequest(1001, client, TwoLines(), DocState.New, "UAH", false));
         Assert.Equal("ok 1001\n", sut.DumpLog());
     }
 
@@ -149,9 +148,8 @@ public class LegacyCharacterizationTests
     public void DumpLog_AfterSuccessWithMail_ContainsMailLine()
     {
         var sut = new LegacyRegistrationProcessor();
-        sut.Handle(1001, 7, "Іван", Ok, ClientKind.Regular, 0,
-            TwoLines(), DocState.New, "UAH", Created, true);
-
+        var client = new Member { Id = 7, Name = "Іван", Email = Ok, Kind = ClientKind.Regular, DoneCount = 0 };
+        sut.Handle(new OrderRequest(1001, client, TwoLines(), DocState.New, "UAH", true));
         Assert.Equal("ok 1001\nmail -> a@b.c\n", sut.DumpLog());
     }
 }

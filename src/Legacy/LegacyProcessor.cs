@@ -32,22 +32,19 @@ public class LegacyRegistrationProcessor
     private decimal _tmpSum;
     private decimal _tmpDiscount;
     private readonly List<string> _log = new();
-    public string Handle(int docId, int clientId,
-    string clientName, string? clientMail,
-    ClientKind clientKind, int clientDone,
-    List<RegistrationItem>? items, DocState state,
-    string currency, DateTime createdAt, bool sendMail)
+    
+    public string Handle(OrderRequest req)
     {
-        var error = Validate(items, state, clientMail);
+        var error = Validate(req);
         if (error != null) return error;
-        _log.Add("ok " + docId);
+        _log.Add("ok " + req.DocId);
         _tmpSum = 0m;
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < req.Items!.Count; i++)
         {
-            _tmpSum += items[i].Qty * items[i].Price;
+            _tmpSum += req.Items[i].Qty * req.Items[i].Price;
         }
         _tmpDiscount = 0m;
-        if (clientKind == ClientKind.Vip)
+        if (req.Client.Kind == ClientKind.Vip)
         {
             _tmpDiscount = _tmpSum * PricingRules.VipRate;
             if (_tmpDiscount > PricingRules.MaxDiscount)
@@ -55,7 +52,7 @@ public class LegacyRegistrationProcessor
                 _tmpDiscount = PricingRules.MaxDiscount;
             }
         }
-        else if (clientKind == ClientKind.Staff)
+        else if (req.Client.Kind == ClientKind.Staff)
         {
             _tmpDiscount = _tmpSum * PricingRules.StaffRate;
             if (_tmpDiscount > PricingRules.MaxDiscount)
@@ -63,7 +60,7 @@ public class LegacyRegistrationProcessor
                 _tmpDiscount = PricingRules.MaxDiscount;
             }
         }
-        else if (clientDone > PricingRules.LoyalOrders)
+        else if (req.Client.DoneCount > PricingRules.LoyalOrders)
         {
             _tmpDiscount = _tmpSum * PricingRules.LoyalRate;
             if (_tmpDiscount > PricingRules.MaxDiscount)
@@ -78,67 +75,69 @@ public class LegacyRegistrationProcessor
         }
 
         decimal total = _tmpSum - _tmpDiscount + ship;
-        string txt = "Документ #" + docId + "\n";
-        txt += "Клієнт: " + clientName + "\n";
-        for (int i = 0; i < items.Count; i++)
+        string txt = "Документ #" + req.DocId + "\n";
+        txt += "Клієнт: " + req.Client.Name + "\n";
+        for (int i = 0; i < req.Items.Count; i++)
         {
-            txt += items[i].Code + " x" + items[i].Qty + " = " +
-            (items[i].Qty * items[i].Price)
-            .ToString("0.00") + " " + currency + "\n";
+            txt += req.Items[i].Code + " x" + req.Items[i].Qty + " = " +
+            (req.Items[i].Qty * req.Items[i].Price)
+            .ToString("0.00") + " " + req.Currency + "\n";
         }
         txt += "Знижка: " + _tmpDiscount.ToString("0.00") +
-        " " + currency + "\n";
+        " " + req.Currency + "\n";
         txt += "Доставка: " + ship.ToString("0.00") +
-        " " + currency + "\n";
+        " " + req.Currency + "\n";
         txt += "Разом: " + total.ToString("0.00") +
-        " " + currency + "\n";
-        if (sendMail)
+        " " + req.Currency + "\n";
+        if (req.SendMail)
         {
-            _log.Add("mail -> " + clientMail);
+            _log.Add("mail -> " + req.Client.Email);
         }
         return txt;
     }
-    public decimal Preview(ClientKind clientKind, int clientDone,
-    List<RegistrationItem> items)
+    
+    
+    public decimal Preview(Member client, IReadOnlyList<RegistrationItem> items)
+{
+    decimal s = 0m;
+    foreach (var it in items)
     {
-        decimal s = 0m;
-        foreach (var it in items)
-        {
-            s += it.Qty * it.Price;
-        }
-        decimal d = 0m;
-        if (clientKind == ClientKind.Vip)
-        {
-            d = s * PricingRules.VipRate;
-            if (d > PricingRules.MaxDiscount)
-            {
-                d = PricingRules.MaxDiscount;
-            }
-        }
-        else if (clientKind == ClientKind.Staff)
-        {
-            d = s * PricingRules.StaffRate;
-            if (d > PricingRules.MaxDiscount)
-            {
-                d = PricingRules.MaxDiscount;
-            }
-        }
-        else if (clientDone > PricingRules.LoyalOrders)
-        {
-            d = s * PricingRules.LoyalRate;
-            if (d > PricingRules.MaxDiscount)
-            {
-                d = PricingRules.MaxDiscount;
-            }
-        }
-        decimal sh = 0m;
-        if (s - d < PricingRules.FreeShipFrom)
-        {
-            sh = PricingRules.ShipCost;
-        }
-
-        return s - d + sh;
+        s += it.Qty * it.Price;
     }
+    decimal d = 0m;
+    if (client.Kind == ClientKind.Vip)
+    {
+        d = s * PricingRules.VipRate;
+        if (d > PricingRules.MaxDiscount)
+        {
+            d = PricingRules.MaxDiscount;
+        }
+    }
+    else if (client.Kind == ClientKind.Staff)
+    {
+        d = s * PricingRules.StaffRate;
+        if (d > PricingRules.MaxDiscount)
+        {
+            d = PricingRules.MaxDiscount;
+        }
+    }
+    else if (client.DoneCount > PricingRules.LoyalOrders)
+    {
+        d = s * PricingRules.LoyalRate;
+        if (d > PricingRules.MaxDiscount)
+        {
+            d = PricingRules.MaxDiscount;
+        }
+    }
+    decimal sh = 0m;
+    if (s - d < PricingRules.FreeShipFrom)
+    {
+        sh = PricingRules.ShipCost;
+    }
+
+    return s - d + sh;
+}
+
     public string DescribeClient(Member c)
     {
         string s = c.Name.Trim().ToUpper();
@@ -167,15 +166,14 @@ public class LegacyRegistrationProcessor
 
         return r;
     }
-    private static string? Validate(List<RegistrationItem>? items,
-    DocState state, string? clientMail)
+    
+    private static string? Validate(OrderRequest req)
 {
-    if (items is null) return "ERR: null";
-    if (items.Count == 0) return "ERR: empty";
-    if (state is not (DocState.New or DocState.Paid))
+    if (req.Items is null) return "ERR: null";
+    if (req.Items.Count == 0) return "ERR: empty";
+    if (req.State is not (DocState.New or DocState.Paid))
         return "ERR: state";
-    if (clientMail is null || !clientMail.Contains("@"))
-        return "ERR: mail";
+    if (!req.Client.HasValidEmail) return "ERR: mail";
     return null;
 }
 }
