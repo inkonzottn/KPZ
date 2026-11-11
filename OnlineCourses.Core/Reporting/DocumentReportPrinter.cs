@@ -1,3 +1,5 @@
+namespace OnlineCourses.Core.Reporting;
+
 public sealed class DocumentReportPrinter
 {
     private readonly TextWriter _output;

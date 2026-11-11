@@ -1,5 +1,6 @@
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Legacy;
+using OnlineCourses.Core.Reporting;
 using Xunit;
 
 namespace OnlineCourses.Core.Legacy;
