@@ -17,6 +17,16 @@ public sealed class Member
         Email is not null && Email.Contains("@");
     public bool IsLoyal =>
         DoneCount > PricingRules.LoyalOrders;
+
+    public string DescribeClient()
+    {
+        var s = Name.Trim().ToUpper();
+        if (Kind == ClientKind.Vip) s += " [VIP]";
+        if (IsLoyal) s += " [ЛОЯЛЬНИЙ]";
+        s += " <" + Email.ToLower() + ">";
+        return s + " стаж " +
+            (DateTime.Now.Year - SinceUtc.Year);
+    }
 }
 
 public class RegistrationItem
@@ -66,24 +76,6 @@ public class LegacyRegistrationProcessor
         return payable + _shipping.For(payable);
     }
 
-    public string DescribeClient(Member c)
-    {
-        string s = c.Name.Trim().ToUpper();
-        if (c.Kind == ClientKind.Vip)
-        {
-            s += " [VIP]";
-        }
-
-        if (c.DoneCount > PricingRules.LoyalOrders)
-        {
-            s += " [ЛОЯЛЬНИЙ]";
-        }
-
-        s += " <" + c.Email.ToLower() + ">";
-        int years = DateTime.Now.Year - c.SinceUtc.Year;
-        s += " стаж " + years;
-        return s;
-    }
     public string DumpLog()
     {
         string r = "";
