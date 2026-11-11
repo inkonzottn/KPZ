@@ -39,8 +39,6 @@ public class RegistrationItem
 
 public class LegacyRegistrationProcessor
 {
-    private decimal _tmpSum;
-    private decimal _tmpDiscount;
     private readonly List<string> _log = new();
     private readonly ReportBuilder _report = new();
     private readonly DiscountPolicy _discounts = new();
@@ -49,25 +47,16 @@ public class LegacyRegistrationProcessor
     public string Handle(OrderRequest req)
     {
         var error = Validate(req);
-        if (error != null)
-        {
-            return error;
-        }
-
+        if (error != null) return error;
         _log.Add("ok " + req.DocId);
-        _tmpSum = Subtotal(req.Items!);
-        _tmpDiscount = _discounts.For(_tmpSum, req.Client);
-        var shipping = _shipping.For(_tmpSum - _tmpDiscount);
-        var total = _tmpSum - _tmpDiscount + shipping;
+        var subtotal = Subtotal(req.Items!);
+        var discount = _discounts.For(subtotal, req.Client);
+        var shipping = _shipping.For(subtotal - discount);
+        var total = subtotal - discount + shipping;
         if (req.SendMail)
-        {
             _log.Add("mail -> " + req.Client.Email);
-        }
-
-        return _report.Build(req, _tmpDiscount, shipping, total);
+        return _report.Build(req, discount, shipping, total);
     }
-
-
     public decimal Preview(Member client, IReadOnlyList<RegistrationItem> items)
     {
         var subtotal = Subtotal(items);
