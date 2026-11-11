@@ -32,17 +32,18 @@ public class LegacyRegistrationProcessor
     private decimal _tmpSum;
     private decimal _tmpDiscount;
     private readonly List<string> _log = new();
-    
+
     public string Handle(OrderRequest req)
     {
         var error = Validate(req);
-        if (error != null) return error;
-        _log.Add("ok " + req.DocId);
-        _tmpSum = 0m;
-        for (int i = 0; i < req.Items!.Count; i++)
+        if (error != null)
         {
-            _tmpSum += req.Items[i].Qty * req.Items[i].Price;
+            return error;
         }
+
+        _log.Add("ok " + req.DocId);
+
+        _tmpSum = Subtotal(req.Items!);
         _tmpDiscount = 0m;
         if (req.Client.Kind == ClientKind.Vip)
         {
@@ -77,7 +78,7 @@ public class LegacyRegistrationProcessor
         decimal total = _tmpSum - _tmpDiscount + ship;
         string txt = "Документ #" + req.DocId + "\n";
         txt += "Клієнт: " + req.Client.Name + "\n";
-        for (int i = 0; i < req.Items.Count; i++)
+        for (int i = 0; i < req.Items!.Count; i++)
         {
             txt += req.Items[i].Code + " x" + req.Items[i].Qty + " = " +
             (req.Items[i].Qty * req.Items[i].Price)
@@ -95,48 +96,44 @@ public class LegacyRegistrationProcessor
         }
         return txt;
     }
-    
-    
-    public decimal Preview(Member client, IReadOnlyList<RegistrationItem> items)
-{
-    decimal s = 0m;
-    foreach (var it in items)
-    {
-        s += it.Qty * it.Price;
-    }
-    decimal d = 0m;
-    if (client.Kind == ClientKind.Vip)
-    {
-        d = s * PricingRules.VipRate;
-        if (d > PricingRules.MaxDiscount)
-        {
-            d = PricingRules.MaxDiscount;
-        }
-    }
-    else if (client.Kind == ClientKind.Staff)
-    {
-        d = s * PricingRules.StaffRate;
-        if (d > PricingRules.MaxDiscount)
-        {
-            d = PricingRules.MaxDiscount;
-        }
-    }
-    else if (client.DoneCount > PricingRules.LoyalOrders)
-    {
-        d = s * PricingRules.LoyalRate;
-        if (d > PricingRules.MaxDiscount)
-        {
-            d = PricingRules.MaxDiscount;
-        }
-    }
-    decimal sh = 0m;
-    if (s - d < PricingRules.FreeShipFrom)
-    {
-        sh = PricingRules.ShipCost;
-    }
 
-    return s - d + sh;
-}
+
+    public decimal Preview(Member client, IReadOnlyList<RegistrationItem> items)
+    {
+        decimal s = Subtotal(items);
+        decimal d = 0m;
+        if (client.Kind == ClientKind.Vip)
+        {
+            d = s * PricingRules.VipRate;
+            if (d > PricingRules.MaxDiscount)
+            {
+                d = PricingRules.MaxDiscount;
+            }
+        }
+        else if (client.Kind == ClientKind.Staff)
+        {
+            d = s * PricingRules.StaffRate;
+            if (d > PricingRules.MaxDiscount)
+            {
+                d = PricingRules.MaxDiscount;
+            }
+        }
+        else if (client.DoneCount > PricingRules.LoyalOrders)
+        {
+            d = s * PricingRules.LoyalRate;
+            if (d > PricingRules.MaxDiscount)
+            {
+                d = PricingRules.MaxDiscount;
+            }
+        }
+        decimal sh = 0m;
+        if (s - d < PricingRules.FreeShipFrom)
+        {
+            sh = PricingRules.ShipCost;
+        }
+
+        return s - d + sh;
+    }
 
     public string DescribeClient(Member c)
     {
@@ -166,14 +163,41 @@ public class LegacyRegistrationProcessor
 
         return r;
     }
-    
+
     private static string? Validate(OrderRequest req)
-{
-    if (req.Items is null) return "ERR: null";
-    if (req.Items.Count == 0) return "ERR: empty";
-    if (req.State is not (DocState.New or DocState.Paid))
-        return "ERR: state";
-    if (!req.Client.HasValidEmail) return "ERR: mail";
-    return null;
-}
+    {
+        if (req.Items is null)
+        {
+            return "ERR: null";
+        }
+
+        if (req.Items.Count == 0)
+        {
+            return "ERR: empty";
+        }
+
+        if (req.State is not (DocState.New or DocState.Paid))
+        {
+            return "ERR: state";
+        }
+
+        if (!req.Client.HasValidEmail)
+        {
+            return "ERR: mail";
+        }
+
+        return null;
+    }
+
+    private static decimal Subtotal(
+        IReadOnlyList<RegistrationItem> items)
+    {
+        decimal sum = 0m;
+        foreach (var it in items)
+        {
+            sum += it.Qty * it.Price;
+        }
+
+        return sum;
+    }
 }
