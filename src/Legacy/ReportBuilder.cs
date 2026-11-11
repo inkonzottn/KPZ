@@ -13,7 +13,10 @@ public sealed class ReportBuilder
         sb.Append("Клієнт: ").Append(req.Client.Name)
             .Append('\n');
         foreach (var it in req.Items!)
+        {
             sb.Append(Line(it, req.Currency));
+        }
+
         sb.Append(Money("Знижка", discount, req.Currency));
         sb.Append(Money("Доставка", shipping, req.Currency));
         sb.Append(Money("Разом", total, req.Currency));

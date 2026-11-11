@@ -33,6 +33,8 @@ public class LegacyRegistrationProcessor
     private decimal _tmpDiscount;
     private readonly List<string> _log = new();
     private readonly ReportBuilder _report = new();
+    private readonly DiscountPolicy _discounts = new();
+    private readonly ShippingPolicy _shipping = new();
 
     public string Handle(OrderRequest req)
     {
@@ -43,83 +45,25 @@ public class LegacyRegistrationProcessor
         }
 
         _log.Add("ok " + req.DocId);
-
         _tmpSum = Subtotal(req.Items!);
-        _tmpDiscount = 0m;
-        if (req.Client.Kind == ClientKind.Vip)
-        {
-            _tmpDiscount = _tmpSum * PricingRules.VipRate;
-            if (_tmpDiscount > PricingRules.MaxDiscount)
-            {
-                _tmpDiscount = PricingRules.MaxDiscount;
-            }
-        }
-        else if (req.Client.Kind == ClientKind.Staff)
-        {
-            _tmpDiscount = _tmpSum * PricingRules.StaffRate;
-            if (_tmpDiscount > PricingRules.MaxDiscount)
-            {
-                _tmpDiscount = PricingRules.MaxDiscount;
-            }
-        }
-        else if (req.Client.DoneCount > PricingRules.LoyalOrders)
-        {
-            _tmpDiscount = _tmpSum * PricingRules.LoyalRate;
-            if (_tmpDiscount > PricingRules.MaxDiscount)
-            {
-                _tmpDiscount = PricingRules.MaxDiscount;
-            }
-        }
-        decimal ship = 0m;
-        if (_tmpSum - _tmpDiscount < PricingRules.FreeShipFrom)
-        {
-            ship = PricingRules.ShipCost;
-        }
-
-        decimal total = _tmpSum - _tmpDiscount + ship;
+        _tmpDiscount = _discounts.For(_tmpSum, req.Client);
+        var shipping = _shipping.For(_tmpSum - _tmpDiscount);
+        var total = _tmpSum - _tmpDiscount + shipping;
         if (req.SendMail)
         {
             _log.Add("mail -> " + req.Client.Email);
         }
-        return _report.Build(req, _tmpDiscount, ship, total);
+
+        return _report.Build(req, _tmpDiscount, shipping, total);
     }
 
 
     public decimal Preview(Member client, IReadOnlyList<RegistrationItem> items)
     {
-        decimal s = Subtotal(items);
-        decimal d = 0m;
-        if (client.Kind == ClientKind.Vip)
-        {
-            d = s * PricingRules.VipRate;
-            if (d > PricingRules.MaxDiscount)
-            {
-                d = PricingRules.MaxDiscount;
-            }
-        }
-        else if (client.Kind == ClientKind.Staff)
-        {
-            d = s * PricingRules.StaffRate;
-            if (d > PricingRules.MaxDiscount)
-            {
-                d = PricingRules.MaxDiscount;
-            }
-        }
-        else if (client.DoneCount > PricingRules.LoyalOrders)
-        {
-            d = s * PricingRules.LoyalRate;
-            if (d > PricingRules.MaxDiscount)
-            {
-                d = PricingRules.MaxDiscount;
-            }
-        }
-        decimal sh = 0m;
-        if (s - d < PricingRules.FreeShipFrom)
-        {
-            sh = PricingRules.ShipCost;
-        }
-
-        return s - d + sh;
+        var subtotal = Subtotal(items);
+        var discount = _discounts.For(subtotal, client);
+        var payable = subtotal - discount;
+        return payable + _shipping.For(payable);
     }
 
     public string DescribeClient(Member c)
