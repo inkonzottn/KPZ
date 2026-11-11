@@ -131,7 +131,7 @@ public class LegacyCharacterizationTests
         var expected = "ІВАН [VIP] [ЛОЯЛЬНИЙ] <ivan@mail.com> стаж " + years;
 
         var actual = c.DescribeClient();
-        
+
         Assert.Equal(expected, actual);
     }
 
