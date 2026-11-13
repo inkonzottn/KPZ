@@ -1,14 +1,17 @@
 using System.Text;
 using Microsoft.Extensions.Logging;
 using OnlineCourses.App;
+using OnlineCourses.Core;
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Legacy;
+using OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Reporting;
 using OnlineCourses.Core.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
+Console.WriteLine($"OnlineCourses v{VersionInfo.Current()}");
 
 using var factory = LoggerFactory.Create(builder =>
 {

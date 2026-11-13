@@ -9,6 +9,7 @@ namespace OnlineCourses.Tests;
 
 public class RegistrationServiceTests
 {
+    private static readonly string[] MixedRows = { "3", "0", "-1", "abc", "7" };
     private static RegistrationService CreateService(
         FakeRegistrationRepository repository, decimal price) =>
         new(repository,
@@ -124,8 +125,7 @@ public class RegistrationServiceTests
     [Fact]
     public void CountValidQuantities_MixedRows_CountsOnlyPositiveIntegers()
     {
-        int actual = RegistrationService.CountValidQuantities(
-            new[] { "3", "0", "-1", "abc", "7" });
+        int actual = RegistrationService.CountValidQuantities(MixedRows);
 
         Assert.Equal(2, actual);
     }
