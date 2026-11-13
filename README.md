@@ -1,6 +1,5 @@
 # OnlineCourses
 
-# OnlineCourses
 ![CI](https://github.com/ЛОГІН/РЕПО/actions/workflows/ci.yml/badge.svg)
 Навчальний проєкт із дисципліни «Конструювання програмного забезпечення». Варіант № 17: Реєстрація слухачів на онлайн-курси.
 
