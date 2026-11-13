@@ -25,5 +25,8 @@ dotnet run --project OnlineCourses.App
 dotnet format --verify-no-changes
 ```
 
+## Конвеєр CI
+На кожен push і pull request запускаються: перевірка форматування (`dotnet format --verify-no-changes`), складання Release з аналізаторами (попередження як помилки, NuGetAudit), тести та покриття з порогом 60 %.
+
 ## Автор
 Хромова Анастасія, група 471
