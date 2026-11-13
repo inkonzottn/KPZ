@@ -1,0 +1,6 @@
+[*.cs]
+# борг Legacy (реєстр TD-01, TD-02, TD-04): код не змінюємо, щоб зберегти поведінку
+dotnet_diagnostic.CA1051.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1311.severity = none
+dotnet_diagnostic.CA1847.severity = none
