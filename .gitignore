@@ -489,3 +489,7 @@ bin/
 obj/
 TestResults/
 coverage/
+
+appsettings.Local.json
+**/*.secrets.json
+.env
