@@ -19,4 +19,10 @@ public sealed class TextReport
 
         return text.ToString();
     }
+
+    public string Describe(int count)
+    {
+        string note;
+        return "Позицій: " + count;
+    }
 }
