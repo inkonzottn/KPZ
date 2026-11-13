@@ -1,0 +1,40 @@
+name: CI
+on:
+  push:
+    branches: [ main, 'feature/**' ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Отримати код
+        uses: actions/checkout@v4
+      - name: Установити .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - name: Відновити залежності
+        run: dotnet restore OnlineCourses.slnx
+      - name: Перевірка форматування
+        run: dotnet format OnlineCourses.slnx --verify-no-changes --no-restore
+      - name: Складання Release з аналізаторами
+        run: dotnet build OnlineCourses.slnx -c Release --no-restore
+      - name: Тести Legacy
+        run: dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release --no-build
+      - name: Тести й покриття
+        run: >
+          dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj
+          -c Release --no-build
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=cobertura
+          /p:Threshold=60 /p:ThresholdType=line
+          "/p:Include=[OnlineCourses.Core]OnlineCourses.Core.Pricing.CourseDiscountPolicy%2c[OnlineCourses.Core]OnlineCourses.Core.Services.RegistrationService%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Registration%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.RegistrationItem"
+      - name: Зберегти звіт про покриття
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: '**/coverage.cobertura.xml'
