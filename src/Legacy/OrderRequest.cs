@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace OnlineCourses.src.Legacy;
 
 public sealed record OrderRequest(

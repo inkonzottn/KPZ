@@ -1,5 +1,4 @@
 using OnlineCourses.Core.Pricing;
-using Xunit;
 
 namespace OnlineCourses.Tests;
 

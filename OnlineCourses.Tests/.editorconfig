@@ -1,0 +1,5 @@
+[*.cs]
+# N-15: у тестових методах підкреслення дозволені
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.CA1861.severity = error

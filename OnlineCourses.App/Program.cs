@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using OnlineCourses.App;
 using OnlineCourses.Core;
 using OnlineCourses.Core.Abstractions;
-using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Legacy;
 using OnlineCourses.Core.Pricing;

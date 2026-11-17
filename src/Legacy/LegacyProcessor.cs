@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 namespace OnlineCourses.src.Legacy;
 
 public enum ClientKind { Regular, Vip, Staff }

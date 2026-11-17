@@ -1,5 +1,4 @@
 using OnlineCourses.Core;
-using Xunit;
 
 namespace OnlineCourses.Tests;
 

@@ -1,72 +1,91 @@
 root = true
+
 [*]
 charset = utf-8
 insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
+
 [*.{csproj,props,targets,json,yml}]
 indent_size = 2
+
 [*.cs]
 max_line_length = 100
-# форматування у стилі Allman
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
-csharp_prefer_braces = true:warning
+csharp_new_line_before_finally = true
+csharp_prefer_braces = true:error
 csharp_indent_case_contents = true
 dotnet_sort_system_directives_first = true
-# сучасний синтаксис C#
-csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_namespace_declarations = file_scoped:error
 csharp_style_var_for_built_in_types = false:suggestion
-# іменування: приватні поля з підкресленням
+csharp_style_var_when_type_is_apparent = true:suggestion
+dotnet_style_qualification_for_field = false:warning
+
+# N-04: приватні поля з підкресленням
 dotnet_naming_rule.priv_underscore.symbols = priv_field
 dotnet_naming_rule.priv_underscore.style = underscore_camel
-dotnet_naming_rule.priv_underscore.severity = warning
+dotnet_naming_rule.priv_underscore.severity = error
 dotnet_naming_symbols.priv_field.applicable_kinds = field
 dotnet_naming_symbols.priv_field.applicable_accessibilities = private
 dotnet_naming_style.underscore_camel.capitalization = camel_case
 dotnet_naming_style.underscore_camel.required_prefix = _
 
-# StyleCop: свідомо вимкнені прав~ила
-# заголовок з ліцензією та копірайтом у навчальному проєкті не потрібен
+# N-03: інтерфейси з префіксом I
+dotnet_naming_rule.interface_prefix.symbols = interfaces
+dotnet_naming_rule.interface_prefix.style = i_prefix
+dotnet_naming_rule.interface_prefix.severity = error
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+dotnet_naming_style.i_prefix.capitalization = pascal_case
+dotnet_naming_style.i_prefix.required_prefix = I
+
+# N-12: параметри типу з префіксом T
+dotnet_naming_rule.type_param_prefix.symbols = type_params
+dotnet_naming_rule.type_param_prefix.style = t_prefix
+dotnet_naming_rule.type_param_prefix.severity = suggestion
+dotnet_naming_symbols.type_params.applicable_kinds = type_parameter
+dotnet_naming_style.t_prefix.capitalization = pascal_case
+dotnet_naming_style.t_prefix.required_prefix = T
+
+# Правила, які тримаємо суворими (ОБОВ'ЯЗКОВО = error)
+dotnet_diagnostic.SA1503.severity = error
+dotnet_diagnostic.SA1516.severity = error
+dotnet_diagnostic.SA1201.severity = error
+dotnet_diagnostic.SA1402.severity = error
+dotnet_diagnostic.SA1649.severity = error
+dotnet_diagnostic.SA1518.severity = error
+dotnet_diagnostic.IDE0055.severity = error
+dotnet_diagnostic.IDE0005.severity = error
+dotnet_diagnostic.CA2200.severity = error
+dotnet_diagnostic.CA1031.severity = error
+
+# Придушення (обґрунтування в стандарті, розділ 6)
+# Придушення 1: SA1309 вимагає протилежного до N-04
+dotnet_diagnostic.SA1309.severity = none
+# Придушення 2: префікс this. суперечить N-04 і конвенції .NET
+dotnet_diagnostic.SA1101.severity = none
+# Заголовок із ліцензією не потрібен у навчальному проєкті
 dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1634.severity = none
-# префікс this. суперечить конвенції .NET
-dotnet_diagnostic.SA1101.severity = none
-# Правила щодо просторів імен: 
-# using поза namespace та типи без нього є нормою в сучасних шаблонах .NET
+# using поза namespace є нормою сучасних шаблонів
 dotnet_diagnostic.SA1200.severity = none
 dotnet_diagnostic.CA1050.severity = none
-# приватні поля іменуємо з _, як прийнято в .NET
-dotnet_diagnostic.SA1309.severity = none
-# XML-документацію вимагатимемо з ЛР No 4, поки що ні
-dotnet_diagnostic.SA0001.severity = none
+# XML-документацію вимагаємо лише в Core (див. OnlineCourses.Core/.editorconfig)
 dotnet_diagnostic.CS1591.severity = none
-dotnet_diagnostic.SA1600.severity = none 
-dotnet_diagnostic.SA1601.severity = none 
-dotnet_diagnostic.SA1602.severity = none 
-# кома в кінці багаторядкового ініціалізатора необов’язкова
+dotnet_diagnostic.SA0001.severity = none
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1601.severity = none
+dotnet_diagnostic.SA1602.severity = none
+# кома в кінці багаторядкового ініціалізатора необов'язкова
 dotnet_diagnostic.SA1413.severity = none
-# підкреслення в назвах методів
-dotnet_diagnostic.CA1707.severity = none 
-
-# оголошеня статичних методів всередині дженерик-класів
-dotnet_diagnostic.CA1000.severity = none 
-
-# використання ILogger без LoggerMessage delegates
-dotnet_diagnostic.CA1848.severity = none 
-
-
-# борг
+# ILogger без LoggerMessage delegates: навчальний проєкт
+dotnet_diagnostic.CA1848.severity = none
+# статичні члени в generic-класах (Result<T>)
+dotnet_diagnostic.CA1000.severity = none
+# борг TD-01: ToString без культури (Legacy і звіти)
 dotnet_diagnostic.CA1305.severity = none
-dotnet_diagnostic.IDE1006.severity = none
-
+# CA1822 придушено атрибутом у CourseDiscountPolicy; глобально лишаємо none
 dotnet_diagnostic.CA1822.severity = none
-
-# правила, які лишаємо суворими
-dotnet_diagnostic.SA1028.severity = warning 
-dotnet_diagnostic.SA1201.severity = warning 
-dotnet_diagnostic.SA1503.severity = warning 
-dotnet_diagnostic.SA1516.severity = warning 
-dotnet_diagnostic.IDE0055.severity = warning 

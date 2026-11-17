@@ -1,7 +1,6 @@
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Errors;
-using Xunit;
 
 namespace OnlineCourses.Tests;
 

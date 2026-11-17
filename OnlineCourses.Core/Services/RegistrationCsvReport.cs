@@ -1,6 +1,5 @@
 namespace OnlineCourses.Core.Services;
 
-using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 
 public sealed class RegistrationCsvReport

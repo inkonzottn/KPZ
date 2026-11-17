@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using OnlineCourses.Core.Domain;
-
 namespace OnlineCourses.Core.Domain;
 
 /// <summary>

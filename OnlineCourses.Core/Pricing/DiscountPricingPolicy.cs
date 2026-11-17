@@ -1,7 +1,6 @@
 namespace OnlineCourses.Core.Pricing;
 
 using OnlineCourses.Core.Abstractions;
-using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 
 public sealed class DiscountPricingPolicy : IPricingPolicy

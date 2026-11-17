@@ -1,0 +1,12 @@
+[*.cs]
+# C-08, C-12: XML-документація рекомендована; для нового коду (чекліст),
+# для успадкованого коду Core записано борг TD-07
+dotnet_diagnostic.CS1591.severity = suggestion
+dotnet_diagnostic.SA1611.severity = suggestion
+dotnet_diagnostic.SA1615.severity = suggestion
+# S-03: перевірка null-аргументів; успадкований код у боргу TD-08
+dotnet_diagnostic.CA1062.severity = suggestion
+# D-12, N-14: публічні колекції; успадкований код у боргу TD-09
+dotnet_diagnostic.CA1002.severity = suggestion
+# S-15: цикломатична складність
+dotnet_diagnostic.CA1502.severity = error

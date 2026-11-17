@@ -1,6 +1,5 @@
 using System.Globalization;
 using OnlineCourses.src.Legacy;
-using Xunit;
 
 public class LegacyCharacterizationTests
 {
