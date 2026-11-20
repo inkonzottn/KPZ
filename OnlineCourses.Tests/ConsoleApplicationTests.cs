@@ -9,6 +9,18 @@ using OnlineCourses.Core.Services;
 
 public sealed class ConsoleApplicationTests
 {
+
+    [Fact]
+    public void Run_ExitsWhenInputStreamEnds()
+    {
+        var console = new TestConsole();
+        var application = CreateApplication(CreateRepository(), console);
+
+        application.Run();
+
+        Assert.Contains("OnlineCourses", console.Output);
+    }
+
     [Fact]
     public void Run_EnrollsMemberUsingConsoleInput()
     {
