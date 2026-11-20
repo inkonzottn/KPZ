@@ -19,9 +19,9 @@ public sealed class CourseDiscountPolicy
 /// <summary>Defines the MaxDiscount member.</summary>
     public const decimal MaxDiscount = 150m;
 
+    /// <summary>Calculates the discount for the supplied amount.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Performance", "CA1822:Mark members as static", Justification = "Метод викликається як екземплярний, як у тестах")]
-/// <summary>Performs the DiscountFor operation.</summary>
     public decimal DiscountFor(decimal amount, bool isRegular)
     {
         EnsureAmountIsValid(amount);
