@@ -1,6 +1,6 @@
 namespace OnlineCourses.Core.Errors;
 
-public class DomainRuleException : Exception
+public sealed class DomainRuleException : InvalidOperationException
 {
     public DomainRuleException(string rule, string message)
         : base(message)
