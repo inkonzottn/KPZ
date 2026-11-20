@@ -2,6 +2,7 @@ namespace OnlineCourses.Core.Abstractions;
 
 using OnlineCourses.Core.Domain;
 
+/// <summary>Defines the contract for IEnrollmentRepository.</summary>
 public interface IEnrollmentRepository
 {
     Member? GetMember(int memberId);
