@@ -3,7 +3,7 @@ namespace OnlineCourses.Core.Domain;
 /// <summary>Represents the Member type.</summary>
 public sealed record Member
 {
-/// <summary>Initializes a new instance of the <see cref="Member"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Member"/> class.</summary>
     public Member(int id, string name, string email)
     {
         if (id <= 0)
@@ -26,15 +26,15 @@ public sealed record Member
         Email = email;
     }
 
-/// <summary>Gets the Id value.</summary>
+    /// <summary>Gets the Id value.</summary>
     public int Id { get; }
 
-/// <summary>Gets the Name value.</summary>
+    /// <summary>Gets the Name value.</summary>
     public string Name { get; }
 
-/// <summary>Gets the Email value.</summary>
+    /// <summary>Gets the Email value.</summary>
     public string Email { get; }
 
-/// <summary>Gets the IsRegular value.</summary>
+    /// <summary>Gets the IsRegular value.</summary>
     public bool IsRegular { get; init; }
 }
