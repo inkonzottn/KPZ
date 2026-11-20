@@ -6,6 +6,7 @@ using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Errors;
 
+/// <summary>Represents the RegistrationService type.</summary>
 public sealed class RegistrationService
 {
     private readonly IRegistrationRepository _repository;
@@ -13,6 +14,7 @@ public sealed class RegistrationService
     private readonly INotifier _notifier;
     private readonly ILogger<RegistrationService> _logger;
 
+/// <summary>Initializes a new instance of the <see cref="RegistrationService"/> class.</summary>
     public RegistrationService(
         IRegistrationRepository repository,
         IPricingPolicy pricing,
@@ -30,6 +32,7 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРН 4: try/catch замість звичайної умови
+/// <summary>Performs the CountValidQuantities operation.</summary>
     public static int CountValidQuantities(string[] rows)
     {
         var valid = 0;
@@ -44,12 +47,14 @@ public sealed class RegistrationService
         return valid;
     }
 
+/// <summary>Performs the Place operation.</summary>
     public void Place(Registration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
         _repository.Add(registration);
     }
 
+/// <summary>Performs the TotalOf operation.</summary>
     public decimal TotalOf(Registration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
@@ -62,6 +67,7 @@ public sealed class RegistrationService
         return total;
     }
 
+/// <summary>Performs the AddLine operation.</summary>
     public void AddLine(int registrationId, RegistrationItem line)
     {
         using var scope = _logger.BeginScope("Registration:{RegistrationId}", registrationId);
@@ -89,12 +95,14 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРН 1: порожній catch, дефект зникає
+/// <summary>Performs the Load operation.</summary>
     public Registration? Load(int registrationId)
     {
         return _repository.GetById(registrationId);
     }
 
     // АНТИПАТЕРНИ 2 і 3: широке перехоплення, throw ex
+/// <summary>Performs the Cancel operation.</summary>
     public void Cancel(int registrationId, string reason)
     {
         try
@@ -111,6 +119,7 @@ public sealed class RegistrationService
     }
 
     // СТАЛО: using звільняє потік навіть при винятку
+/// <summary>Performs the ExportReport operation.</summary>
     public void ExportReport(string path, Registration registration)
     {
         using var writer = new StreamWriter(path);
