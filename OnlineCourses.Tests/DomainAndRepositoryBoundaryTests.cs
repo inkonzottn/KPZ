@@ -1,7 +1,9 @@
 namespace OnlineCourses.Tests;
 
 using OnlineCourses.Core.Abstractions;
+using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Services;
 
 public sealed class DomainAndRepositoryBoundaryTests
@@ -74,6 +76,61 @@ public sealed class DomainAndRepositoryBoundaryTests
         service.Transfer(1, 12);
 
         Assert.Equal(12, repository.GetById(1)!.GroupId);
+    }
+
+
+    [Fact]
+    public void Enroll_RejectsGroupWhoseCourseIsMissingFromRepository()
+    {
+        var service = new EnrollmentService(new MissingCourseRepository());
+
+        var exception = Assert.Throws<DomainRuleException>(
+            () => service.Enroll(1, 10, 11, new DateOnly(2026, 11, 20)));
+
+        Assert.Equal("COURSE_NOT_FOUND", exception.Rule);
+    }
+
+    [Fact]
+    public void OccupancyReport_RejectsGroupWhoseCourseIsMissingFromRepository()
+    {
+        var service = new EnrollmentService(new MissingCourseRepository());
+
+        var exception = Assert.Throws<DomainRuleException>(() => service.GetOccupancyReport());
+
+        Assert.Equal("COURSE_NOT_FOUND", exception.Rule);
+    }
+
+    private sealed class MissingCourseRepository : IEnrollmentRepository
+    {
+        private static readonly Member ExistingMember =
+            new(10, "Олена", "olena@example.com");
+
+        private static readonly CourseGroup OrphanGroup =
+            new(11, 999, "Група без курсу", 4);
+
+        public Member? GetMember(int memberId) => memberId == ExistingMember.Id
+            ? ExistingMember
+            : null;
+
+        public Course? GetCourse(int courseId) => null;
+
+        public CourseGroup? GetGroup(int groupId) => groupId == OrphanGroup.Id
+            ? OrphanGroup
+            : null;
+
+        public IReadOnlyList<Enrollment> GetAll() => [];
+
+        public IReadOnlyList<CourseGroup> GetGroups() => [OrphanGroup];
+
+        public Enrollment? GetById(int enrollmentId) => null;
+
+        public void Add(Enrollment enrollment) =>
+            throw new NotSupportedException();
+
+        public void Save(Enrollment enrollment) =>
+            throw new NotSupportedException();
+
+        public bool HasCompletedCourse(int memberId, int courseId) => false;
     }
 
     private static InMemoryEnrollmentRepository CreateRepository()
