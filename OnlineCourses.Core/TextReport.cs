@@ -9,6 +9,7 @@ public sealed class TextReport
     /// <summary>Gets the report title.</summary>
     public string Title { get; init; } = "Звіт";
 
+    /// <summary>Builds a report from the supplied rows.</summary>
     public string Build(IReadOnlyList<string> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
