@@ -59,11 +59,18 @@ public sealed class Enrollment
     }
 
 /// <summary>Performs the Reactivate operation.</summary>
-    public void Reactivate()
+    public void Reactivate(int occupiedSeats, int capacity)
     {
         if (Status != EnrollmentStatus.Suspended)
         {
             throw new DomainRuleException("ENROLLMENT_NOT_SUSPENDED", "Повторно активувати можна лише призупинене зарахування.");
+        }
+
+        ArgumentOutOfRangeException.ThrowIfNegative(occupiedSeats);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
+        if (occupiedSeats >= capacity)
+        {
+            throw new DomainRuleException("GROUP_CAPACITY_REACHED", "У групі немає вільних місць.");
         }
 
         Status = EnrollmentStatus.Active;
