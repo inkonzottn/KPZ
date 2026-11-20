@@ -5,9 +5,7 @@ using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Services;
 
-/// <summary>
-/// Зберігає навчальні дані у JSON-файлі та делегує пошук in-memory репозиторію.
-/// </summary>
+/// <summary>Persists online course data in a JSON file.</summary>
 public sealed class JsonEnrollmentRepository : IEnrollmentRepository
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -19,29 +17,16 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     private readonly string _path;
     private readonly InMemoryEnrollmentRepository _memory = new();
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JsonEnrollmentRepository"/> class.
-    /// </summary>
-    /// <param name="path">Шлях до робочого JSON-файлу.</param>
-    /// <param name="seedPath">Шлях до початкового набору даних.</param>
+    /// <summary>Initializes a new instance of the <see cref="JsonEnrollmentRepository"/> class.</summary>
+    /// <param name="path">Path to the working JSON file.</param>
+    /// <param name="seedPath">Path to the initial dataset.</param>
     public JsonEnrollmentRepository(string path, string seedPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         ArgumentException.ThrowIfNullOrWhiteSpace(seedPath);
         _path = Path.GetFullPath(path);
-        var fullSeedPath = Path.GetFullPath(seedPath);
         Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
-
-        if (!File.Exists(_path))
-        {
-            if (!File.Exists(fullSeedPath))
-            {
-                throw new FileNotFoundException("Не знайдено початковий набір даних.", fullSeedPath);
-            }
-
-            File.Copy(fullSeedPath, _path);
-        }
-
+        EnsureWorkingFile(Path.GetFullPath(seedPath));
         Load(File.ReadAllText(_path));
     }
 
@@ -105,171 +90,199 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     public bool HasCompletedCourse(int memberId, int courseId) =>
         _memory.HasCompletedCourse(memberId, courseId);
 
+    private void EnsureWorkingFile(string seedPath)
+    {
+        if (File.Exists(_path))
+        {
+            return;
+        }
+
+        if (!File.Exists(seedPath))
+        {
+            throw new FileNotFoundException("Не знайдено початковий набір даних.", seedPath);
+        }
+
+        File.Copy(seedPath, _path);
+    }
+
     private void Load(string json)
     {
         var snapshot = JsonSerializer.Deserialize<Snapshot>(json, JsonOptions)
             ?? throw new InvalidDataException("JSON-файл не містить коректного набору даних.");
+        LoadMembers(snapshot.Members);
+        LoadCourses(snapshot.Courses);
+        LoadGroups(snapshot.Groups);
+        LoadEnrollments(snapshot.Enrollments);
+    }
 
-        foreach (var member in snapshot.Members)
+    private void LoadMembers(IEnumerable<MemberData> members)
+    {
+        foreach (var member in members)
         {
             _memory.AddMember(new Member(member.Id, member.Name, member.Email));
         }
+    }
 
-        foreach (var course in snapshot.Courses)
+    private void LoadCourses(IEnumerable<CourseData> courses)
+    {
+        foreach (var course in courses)
         {
-            _memory.AddCourse(new Course(course.Id, course.Code, course.Title, course.Price, course.PrerequisiteCourseIds));
+            _memory.AddCourse(new Course(
+                course.Id, course.Code, course.Title, course.Price,
+                course.PrerequisiteCourseIds));
         }
+    }
 
-        foreach (var group in snapshot.Groups)
+    private void LoadGroups(IEnumerable<GroupData> groups)
+    {
+        foreach (var group in groups)
         {
             _memory.AddGroup(new CourseGroup(
                 group.Id, group.CourseId, group.Name, group.Capacity));
         }
+    }
 
-        foreach (var item in snapshot.Enrollments)
+    private void LoadEnrollments(IEnumerable<EnrollmentData> enrollments)
+    {
+        foreach (var item in enrollments)
         {
             var enrollment = new Enrollment(
                 item.Id, item.MemberId, item.CourseId, item.GroupId, item.EnrolledOn);
-
-            if (item.Status == nameof(EnrollmentStatus.Withdrawn))
-            {
-                enrollment.Withdraw(item.WithdrawalReason ?? "Причину не вказано у файлі.");
-            }
-            else if (item.Status == nameof(EnrollmentStatus.Suspended))
-            {
-                enrollment.Suspend();
-            }
-            else if (item.Status == nameof(EnrollmentStatus.Completed))
-            {
-                enrollment.Complete();
-            }
-
+            RestoreStatus(enrollment, item);
             _memory.Add(enrollment);
+        }
+    }
+
+    private static void RestoreStatus(Enrollment enrollment, EnrollmentData item)
+    {
+        switch (item.Status)
+        {
+            case nameof(EnrollmentStatus.Withdrawn):
+                enrollment.Withdraw(item.WithdrawalReason ?? "Причину не вказано у файлі.");
+                break;
+            case nameof(EnrollmentStatus.Suspended):
+                enrollment.Suspend();
+                break;
+            case nameof(EnrollmentStatus.Completed):
+                enrollment.Complete();
+                break;
         }
     }
 
     private void Persist()
     {
-        var snapshot = new Snapshot
-        {
-            Members = _memory.GetMembersForPersistence().Select(x =>
-                new MemberData { Id = x.Id, Name = x.Name, Email = x.Email }).ToList(),
-            Courses = _memory.GetCoursesForPersistence().Select(x =>
-                new CourseData
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Title = x.Title,
-                    Price = x.Price,
-                    PrerequisiteCourseIds = x.PrerequisiteCourseIds.ToList()
-                }).ToList(),
-            Groups = _memory.GetGroups().Select(x =>
-                new GroupData
-                {
-                    Id = x.Id,
-                    CourseId = x.CourseId,
-                    Name = x.Name,
-                    Capacity = x.Capacity
-                }).ToList(),
-            Enrollments = _memory.GetAll().Select(x =>
-                new EnrollmentData
-                {
-                    Id = x.Id,
-                    MemberId = x.MemberId,
-                    CourseId = x.CourseId,
-                    GroupId = x.GroupId,
-                    EnrolledOn = x.EnrolledOn,
-                    Status = x.Status.ToString(),
-                    WithdrawalReason = x.WithdrawalReason
-                }).ToList()
-        };
+        var json = JsonSerializer.Serialize(CreateSnapshot(), JsonOptions);
+        WriteAtomically(json);
+    }
 
+    private Snapshot CreateSnapshot() => new()
+    {
+        Members = _memory.GetMembersForPersistence().Select(CreateMemberData).ToList(),
+        Courses = _memory.GetCoursesForPersistence().Select(CreateCourseData).ToList(),
+        Groups = _memory.GetGroups().Select(CreateGroupData).ToList(),
+        Enrollments = _memory.GetAll().Select(CreateEnrollmentData).ToList()
+    };
+
+    private static MemberData CreateMemberData(Member member) => new()
+    {
+        Id = member.Id,
+        Name = member.Name,
+        Email = member.Email
+    };
+
+    private static CourseData CreateCourseData(Course course) => new()
+    {
+        Id = course.Id,
+        Code = course.Code,
+        Title = course.Title,
+        Price = course.Price,
+        PrerequisiteCourseIds = course.PrerequisiteCourseIds.ToList()
+    };
+
+    private static GroupData CreateGroupData(CourseGroup group) => new()
+    {
+        Id = group.Id,
+        CourseId = group.CourseId,
+        Name = group.Name,
+        Capacity = group.Capacity
+    };
+
+    private static EnrollmentData CreateEnrollmentData(Enrollment enrollment) => new()
+    {
+        Id = enrollment.Id,
+        MemberId = enrollment.MemberId,
+        CourseId = enrollment.CourseId,
+        GroupId = enrollment.GroupId,
+        EnrolledOn = enrollment.EnrolledOn,
+        Status = enrollment.Status.ToString(),
+        WithdrawalReason = enrollment.WithdrawalReason
+    };
+
+    private void WriteAtomically(string json)
+    {
         var temporaryPath = _path + ".tmp";
-        File.WriteAllText(temporaryPath, JsonSerializer.Serialize(snapshot, JsonOptions));
+        File.WriteAllText(temporaryPath, json);
         File.Move(temporaryPath, _path, overwrite: true);
     }
 
     private sealed class Snapshot
     {
-/// <summary>Gets the Members value.</summary>
         public List<MemberData> Members { get; set; } = [];
 
-/// <summary>Gets the Courses value.</summary>
         public List<CourseData> Courses { get; set; } = [];
 
-/// <summary>Gets the Groups value.</summary>
         public List<GroupData> Groups { get; set; } = [];
 
-/// <summary>Gets the Enrollments value.</summary>
         public List<EnrollmentData> Enrollments { get; set; } = [];
     }
 
     private sealed class MemberData
     {
-/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
-/// <summary>Gets the Name value.</summary>
         public string Name { get; set; } = string.Empty;
 
-/// <summary>Gets the Email value.</summary>
         public string Email { get; set; } = string.Empty;
     }
 
     private sealed class CourseData
     {
-/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
-/// <summary>Gets the Code value.</summary>
         public string Code { get; set; } = string.Empty;
 
-/// <summary>Gets the Title value.</summary>
         public string Title { get; set; } = string.Empty;
 
-/// <summary>Gets the Price value.</summary>
         public decimal Price { get; set; }
 
-/// <summary>Gets the PrerequisiteCourseIds value.</summary>
         public List<int> PrerequisiteCourseIds { get; set; } = [];
     }
 
     private sealed class GroupData
     {
-/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
-/// <summary>Gets the CourseId value.</summary>
         public int CourseId { get; set; }
 
-/// <summary>Gets the Name value.</summary>
         public string Name { get; set; } = string.Empty;
 
-/// <summary>Gets the Capacity value.</summary>
         public int Capacity { get; set; }
     }
 
     private sealed class EnrollmentData
     {
-/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
-/// <summary>Gets the MemberId value.</summary>
         public int MemberId { get; set; }
 
-/// <summary>Gets the CourseId value.</summary>
         public int CourseId { get; set; }
 
-/// <summary>Gets the GroupId value.</summary>
         public int GroupId { get; set; }
 
-/// <summary>Gets the EnrolledOn value.</summary>
         public DateOnly EnrolledOn { get; set; }
 
-/// <summary>Gets the Status value.</summary>
         public string Status { get; set; } = nameof(EnrollmentStatus.Active);
 
-/// <summary>Gets the WithdrawalReason value.</summary>
         public string? WithdrawalReason { get; set; }
     }
 }
