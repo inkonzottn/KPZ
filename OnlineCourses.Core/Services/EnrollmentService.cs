@@ -33,14 +33,14 @@ public sealed class EnrollmentService
         var group = _repository.GetGroup(groupId)
             ?? throw Reject("GROUP_NOT_FOUND", $"Групу з ID {groupId} не знайдено.");
         var course = _repository.GetCourse(group.CourseId)
-            ?? throw new DomainRuleException("COURSE_NOT_FOUND", "Курс для групи не знайдено.");
+            ?? throw Reject("COURSE_NOT_FOUND", "Курс для групи не знайдено.");
 
         if (_repository.GetAll().Any(x =>
             x.MemberId == member.Id &&
             x.CourseId == course.Id &&
             x.Status == EnrollmentStatus.Active))
         {
-            throw new DomainRuleException("DUPLICATE_ENROLLMENT", "Слухач уже має активне зарахування на цей курс.");
+            throw Reject("DUPLICATE_ENROLLMENT", "Слухач уже має активне зарахування на цей курс.");
         }
 
         var missingPrerequisites = course.PrerequisiteCourseIds
@@ -49,14 +49,14 @@ public sealed class EnrollmentService
 
         if (missingPrerequisites.Length > 0)
         {
-            throw new DomainRuleException(
+            throw Reject(
                 "PREREQUISITES_NOT_MET",
                 $"Не виконано передумови курсу: {string.Join(", ", missingPrerequisites)}.");
         }
 
         if (OccupiedSeats(group.Id) >= group.Capacity)
         {
-            throw new DomainRuleException("GROUP_CAPACITY_REACHED", "У групі немає вільних місць.");
+            throw Reject("GROUP_CAPACITY_REACHED", "У групі немає вільних місць.");
         }
 
         var enrollment = new Enrollment(enrollmentId, member.Id, course.Id, group.Id, enrolledOn);
@@ -77,21 +77,21 @@ public sealed class EnrollmentService
     {
         var enrollment = GetActiveEnrollment(enrollmentId);
         var targetGroup = _repository.GetGroup(targetGroupId)
-            ?? throw new DomainRuleException("GROUP_NOT_FOUND", $"Групу з ID {targetGroupId} не знайдено.");
+            ?? throw Reject("GROUP_NOT_FOUND", $"Групу з ID {targetGroupId} не знайдено.");
 
         if (targetGroup.CourseId != enrollment.CourseId)
         {
-            throw new DomainRuleException("TRANSFER_DIFFERENT_COURSE", "Переведення можливе лише до групи того самого курсу.");
+            throw Reject("TRANSFER_DIFFERENT_COURSE", "Переведення можливе лише до групи того самого курсу.");
         }
 
         if (targetGroup.Id == enrollment.GroupId)
         {
-            throw new DomainRuleException("TRANSFER_SAME_GROUP", "Слухач уже навчається в цій групі.");
+            throw Reject("TRANSFER_SAME_GROUP", "Слухач уже навчається в цій групі.");
         }
 
         if (OccupiedSeats(targetGroup.Id) >= targetGroup.Capacity)
         {
-            throw new DomainRuleException("TARGET_GROUP_FULL", "У цільовій групі немає вільних місць.");
+            throw Reject("TARGET_GROUP_FULL", "У цільовій групі немає вільних місць.");
         }
 
         enrollment.TransferTo(targetGroup.Id);
@@ -177,7 +177,7 @@ public sealed class EnrollmentService
             }
 
             var course = _repository.GetCourse(group.CourseId)
-                ?? throw new InvalidOperationException("Курс для групи не знайдено.");
+                ?? throw Reject("COURSE_NOT_FOUND", "Курс для групи не знайдено.");
             var occupied = groups.GetValueOrDefault(group.Id);
             result.Add(new GroupOccupancy(
                 course.Code,
