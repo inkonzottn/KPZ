@@ -5,7 +5,7 @@ using OnlineCourses.Core.Legacy;
 /// <summary>Represents the DocumentTotalCalculator type.</summary>
 public static class DocumentTotalCalculator
 {
-/// <summary>Performs the Calculate operation.</summary>
+    /// <summary>Performs the Calculate operation.</summary>
     public static TotalResult Calculate(TotalRequest request)
     {
         DocumentGuards.EnsureRequestValid(request);
@@ -25,7 +25,7 @@ public static class DocumentTotalCalculator
             NextStatusOf(request.Status, total));
     }
 
-/// <summary>Performs the SubtotalOf operation.</summary>
+    /// <summary>Performs the SubtotalOf operation.</summary>
     public static decimal SubtotalOf(
     IReadOnlyList<RegistrationItem> lines)
     {
@@ -45,7 +45,7 @@ public static class DocumentTotalCalculator
         return subtotal;
     }
 
-/// <summary>Performs the ClientDiscountOf operation.</summary>
+    /// <summary>Performs the ClientDiscountOf operation.</summary>
     public static decimal ClientDiscountOf(
     decimal amount, bool isRegularClient)
     {
@@ -55,7 +55,7 @@ public static class DocumentTotalCalculator
         : 0m;
     }
 
-/// <summary>Performs the VolumeDiscountOf operation.</summary>
+    /// <summary>Performs the VolumeDiscountOf operation.</summary>
     public static decimal VolumeDiscountOf(decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(amount);
@@ -72,7 +72,7 @@ public static class DocumentTotalCalculator
         return 0m;
     }
 
-/// <summary>Performs the CouponDiscountOf operation.</summary>
+    /// <summary>Performs the CouponDiscountOf operation.</summary>
     public static decimal CouponDiscountOf(
     decimal amount, string? couponCode)
     {
@@ -88,7 +88,7 @@ public static class DocumentTotalCalculator
         };
     }
 
-/// <summary>Performs the WeekendDiscountOf operation.</summary>
+    /// <summary>Performs the WeekendDiscountOf operation.</summary>
     public static decimal WeekendDiscountOf(
     decimal amount, DateOnly createdAt)
     {
@@ -98,7 +98,7 @@ public static class DocumentTotalCalculator
         : 0m;
     }
 
-/// <summary>Performs the DeliveryFeeOf operation.</summary>
+    /// <summary>Performs the DeliveryFeeOf operation.</summary>
     public static decimal DeliveryFeeOf(
     decimal amount, decimal deliveryPrice)
     {
@@ -109,7 +109,7 @@ public static class DocumentTotalCalculator
         : 0m;
     }
 
-/// <summary>Performs the NextStatusOf operation.</summary>
+    /// <summary>Performs the NextStatusOf operation.</summary>
     public static DocumentStatus NextStatusOf(
     DocumentStatus current, decimal total)
     => current switch
