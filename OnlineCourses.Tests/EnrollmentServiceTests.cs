@@ -130,8 +130,37 @@ public sealed class EnrollmentServiceTests
         enrollment.Suspend();
         Assert.Equal(EnrollmentStatus.Suspended, enrollment.Status);
 
-        enrollment.Reactivate();
+        enrollment.Reactivate(0, 3);
         Assert.Equal(EnrollmentStatus.Active, enrollment.Status);
+    }
+
+    [Fact]
+    public void Reactivate_RestoresSuspendedEnrollmentWhenSeatIsAvailable()
+    {
+        var repository = CreateRepository();
+        var enrollment = new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1));
+        enrollment.Suspend();
+        repository.Add(enrollment);
+        var service = new EnrollmentService(repository);
+
+        service.Reactivate(1);
+
+        Assert.Equal(EnrollmentStatus.Active, repository.GetById(1)!.Status);
+    }
+
+    [Fact]
+    public void Reactivate_RejectsFullGroup()
+    {
+        var repository = CreateRepository();
+        repository.AddGroup(new CourseGroup(12, 1, "Limited", 1));
+        repository.Add(new Enrollment(1, 10, 1, 12, new DateOnly(2026, 1, 1)));
+        var suspended = new Enrollment(2, 11, 1, 12, new DateOnly(2026, 1, 2));
+        suspended.Suspend();
+        repository.Add(suspended);
+        var service = new EnrollmentService(repository);
+
+        Assert.Throws<DomainRuleException>(() => service.Reactivate(2));
+        Assert.Equal(EnrollmentStatus.Suspended, repository.GetById(2)!.Status);
     }
 
     [Fact]
