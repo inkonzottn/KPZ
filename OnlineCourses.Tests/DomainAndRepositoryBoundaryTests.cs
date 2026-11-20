@@ -1,7 +1,6 @@
 namespace OnlineCourses.Tests;
 
 using OnlineCourses.Core.Abstractions;
-using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Services;
