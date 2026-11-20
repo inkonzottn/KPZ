@@ -223,6 +223,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
 
     private void WriteAtomically(string json)
     {
+        // TODO(TD-08): додати блокування між процесами перед підтримкою кількох екземплярів.
         var temporaryPath = _path + ".tmp";
         File.WriteAllText(temporaryPath, json);
         File.Move(temporaryPath, _path, overwrite: true);
