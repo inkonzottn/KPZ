@@ -51,7 +51,7 @@ dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release
 Для локальної перевірки, еквівалентної основним quality gates CI:
 
 ```bash
-dotnet format OnlineCourses.slnx --verify-no-changes && dotnet build OnlineCourses.slnx -c Release -warnaserror && dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=70 /p:ThresholdType=line
+dotnet format OnlineCourses.slnx --verify-no-changes && dotnet build OnlineCourses.slnx -c Release -warnaserror && dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=70 /p:ThresholdType=line && dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release
 ```
 
 Поточний поріг CI — 70 % рядкового покриття. Фактичні line та branch coverage потрібно брати з артефакту конкретного успішного запуску, а не з попереднього звіту.
