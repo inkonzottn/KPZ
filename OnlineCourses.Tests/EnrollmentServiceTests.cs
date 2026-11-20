@@ -153,6 +153,94 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public void Enroll_RejectsDuplicateActiveEnrollment()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var service = new EnrollmentService(repository);
+
+        Assert.Throws<DomainRuleException>(() => service.Enroll(2, 10, 11));
+    }
+
+    [Fact]
+    public void Transfer_MovesEnrollmentToAvailableGroup()
+    {
+        var repository = CreateRepository();
+        repository.AddGroup(new CourseGroup(12, 1, "C# morning", 2));
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var service = new EnrollmentService(repository);
+
+        service.Transfer(1, 12);
+
+        Assert.Equal(12, repository.GetById(1)!.GroupId);
+        Assert.Equal(EnrollmentStatus.Active, repository.GetById(1)!.Status);
+    }
+
+    [Fact]
+    public void Transfer_RejectsDifferentCourse()
+    {
+        var repository = CreateRepository();
+        repository.AddCourse(new Course(2, "CS-02", "Advanced", 200m));
+        repository.AddGroup(new CourseGroup(20, 2, "Advanced A", 2));
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var service = new EnrollmentService(repository);
+
+        Assert.Throws<DomainRuleException>(() => service.Transfer(1, 20));
+    }
+
+    [Fact]
+    public void Complete_ChangesActiveEnrollmentToCompleted()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var service = new EnrollmentService(repository);
+
+        service.Complete(1);
+
+        Assert.Equal(EnrollmentStatus.Completed, repository.GetById(1)!.Status);
+    }
+
+    [Fact]
+    public void Search_FiltersByCourseCode()
+    {
+        var repository = CreateRepository();
+        repository.AddCourse(new Course(2, "WEB-02", "Web", 200m));
+        repository.AddGroup(new CourseGroup(20, 2, "Web A", 2));
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        repository.Add(new Enrollment(2, 11, 2, 20, new DateOnly(2026, 1, 2)));
+        var service = new EnrollmentService(repository);
+
+        var result = service.Search(new EnrollmentSearchCriteria(CourseCode: "WEB"));
+
+        Assert.Equal(2, Assert.Single(result).CourseId);
+    }
+
+    [Fact]
+    public void Search_ReturnsEmptyWhenNoRecordsMatch()
+    {
+        var service = new EnrollmentService(CreateRepository());
+
+        var result = service.Search(new EnrollmentSearchCriteria(MemberQuery: "missing"));
+
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void OccupancyReport_DoesNotCountSuspendedEnrollments()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var suspended = new Enrollment(2, 11, 1, 11, new DateOnly(2026, 1, 2));
+        suspended.Suspend();
+        repository.Add(suspended);
+        var service = new EnrollmentService(repository);
+
+        var row = Assert.Single(service.GetOccupancyReport());
+
+        Assert.Equal(1, row.Occupied);
+    }
+
+    [Fact]
     public void Enroll_UsesFakeRepositoryAndFixedClock()
     {
         var repository = new FakeEnrollmentRepository();
