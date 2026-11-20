@@ -123,6 +123,36 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public void Enrollment_SuspendAndReactivate_ChangesState()
+    {
+        var enrollment = new Enrollment(1, 1, 1, 1, new DateOnly(2026, 1, 1));
+
+        enrollment.Suspend();
+        Assert.Equal(EnrollmentStatus.Suspended, enrollment.Status);
+
+        enrollment.Reactivate();
+        Assert.Equal(EnrollmentStatus.Active, enrollment.Status);
+    }
+
+    [Fact]
+    public void Enrollment_WithdrawnCannotBeReactivated()
+    {
+        var enrollment = new Enrollment(1, 1, 1, 1, new DateOnly(2026, 1, 1));
+        enrollment.Withdraw("Заява");
+
+        Assert.Throws<DomainRuleException>(() => enrollment.Reactivate());
+    }
+
+    [Fact]
+    public void Enrollment_SuspendedCannotBeTransferred()
+    {
+        var enrollment = new Enrollment(1, 1, 1, 1, new DateOnly(2026, 1, 1));
+        enrollment.Suspend();
+
+        Assert.Throws<DomainRuleException>(() => enrollment.TransferTo(2));
+    }
+
+    [Fact]
     public void Enroll_UsesFakeRepositoryAndFixedClock()
     {
         var repository = new FakeEnrollmentRepository();
