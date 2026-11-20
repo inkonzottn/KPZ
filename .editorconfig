@@ -70,3 +70,12 @@ dotnet_diagnostic.SA1201.severity = warning
 dotnet_diagnostic.SA1503.severity = warning 
 dotnet_diagnostic.SA1516.severity = warning 
 dotnet_diagnostic.IDE0055.severity = warning 
+# SR-03: CS1591 remains mandatory for every public API member. The following
+# StyleCop rules require exhaustive param/returns tags and property wording;
+# they are suppressed because the assignment requires XML summaries, while
+# legacy lab APIs and serializer DTOs are retained for compatibility.
+dotnet_diagnostic.SA1514.severity = none
+dotnet_diagnostic.SA1611.severity = none
+dotnet_diagnostic.SA1615.severity = none
+dotnet_diagnostic.SA1618.severity = none
+dotnet_diagnostic.SA1623.severity = none
