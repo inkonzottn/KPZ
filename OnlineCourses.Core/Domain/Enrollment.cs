@@ -1,5 +1,7 @@
 namespace OnlineCourses.Core.Domain;
 
+using OnlineCourses.Core.Errors;
+
 public sealed class Enrollment
 {
     public Enrollment(int id, int memberId, int courseId, int groupId, DateOnly enrolledOn)
@@ -56,7 +58,7 @@ public sealed class Enrollment
     {
         if (Status != EnrollmentStatus.Active)
         {
-            throw new InvalidOperationException("Операція доступна лише для активного зарахування.");
+            throw new DomainRuleException("ENROLLMENT_NOT_ACTIVE", "Операція доступна лише для активного зарахування.");
         }
     }
 }

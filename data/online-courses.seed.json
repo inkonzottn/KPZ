@@ -1,0 +1,589 @@
+{
+  "members": [
+    {
+      "id": 1,
+      "name": "Андрій Коваль",
+      "email": "learner01@example.com"
+    },
+    {
+      "id": 2,
+      "name": "Олена Коваль",
+      "email": "learner02@example.com"
+    },
+    {
+      "id": 3,
+      "name": "Іван Коваль",
+      "email": "learner03@example.com"
+    },
+    {
+      "id": 4,
+      "name": "Марія Коваль",
+      "email": "learner04@example.com"
+    },
+    {
+      "id": 5,
+      "name": "Дмитро Коваль",
+      "email": "learner05@example.com"
+    },
+    {
+      "id": 6,
+      "name": "Софія Коваль",
+      "email": "learner06@example.com"
+    },
+    {
+      "id": 7,
+      "name": "Максим Коваль",
+      "email": "learner07@example.com"
+    },
+    {
+      "id": 8,
+      "name": "Анна Коваль",
+      "email": "learner08@example.com"
+    },
+    {
+      "id": 9,
+      "name": "Богдан Коваль",
+      "email": "learner09@example.com"
+    },
+    {
+      "id": 10,
+      "name": "Катерина Коваль",
+      "email": "learner10@example.com"
+    },
+    {
+      "id": 11,
+      "name": "Андрій Мельник",
+      "email": "learner11@example.com"
+    },
+    {
+      "id": 12,
+      "name": "Олена Мельник",
+      "email": "learner12@example.com"
+    },
+    {
+      "id": 13,
+      "name": "Іван Мельник",
+      "email": "learner13@example.com"
+    },
+    {
+      "id": 14,
+      "name": "Марія Мельник",
+      "email": "learner14@example.com"
+    },
+    {
+      "id": 15,
+      "name": "Дмитро Мельник",
+      "email": "learner15@example.com"
+    },
+    {
+      "id": 16,
+      "name": "Софія Мельник",
+      "email": "learner16@example.com"
+    },
+    {
+      "id": 17,
+      "name": "Максим Мельник",
+      "email": "learner17@example.com"
+    },
+    {
+      "id": 18,
+      "name": "Анна Мельник",
+      "email": "learner18@example.com"
+    },
+    {
+      "id": 19,
+      "name": "Богдан Мельник",
+      "email": "learner19@example.com"
+    },
+    {
+      "id": 20,
+      "name": "Катерина Мельник",
+      "email": "learner20@example.com"
+    },
+    {
+      "id": 21,
+      "name": "Андрій Бондар",
+      "email": "learner21@example.com"
+    },
+    {
+      "id": 22,
+      "name": "Олена Бондар",
+      "email": "learner22@example.com"
+    },
+    {
+      "id": 23,
+      "name": "Іван Бондар",
+      "email": "learner23@example.com"
+    },
+    {
+      "id": 24,
+      "name": "Марія Бондар",
+      "email": "learner24@example.com"
+    },
+    {
+      "id": 25,
+      "name": "Дмитро Бондар",
+      "email": "learner25@example.com"
+    },
+    {
+      "id": 26,
+      "name": "Софія Бондар",
+      "email": "learner26@example.com"
+    },
+    {
+      "id": 27,
+      "name": "Максим Бондар",
+      "email": "learner27@example.com"
+    },
+    {
+      "id": 28,
+      "name": "Анна Бондар",
+      "email": "learner28@example.com"
+    },
+    {
+      "id": 29,
+      "name": "Богдан Бондар",
+      "email": "learner29@example.com"
+    },
+    {
+      "id": 30,
+      "name": "Катерина Бондар",
+      "email": "learner30@example.com"
+    },
+    {
+      "id": 31,
+      "name": "Андрій Шевченко",
+      "email": "learner31@example.com"
+    },
+    {
+      "id": 32,
+      "name": "Олена Шевченко",
+      "email": "learner32@example.com"
+    },
+    {
+      "id": 33,
+      "name": "Іван Шевченко",
+      "email": "learner33@example.com"
+    },
+    {
+      "id": 34,
+      "name": "Марія Шевченко",
+      "email": "learner34@example.com"
+    },
+    {
+      "id": 35,
+      "name": "Дмитро Шевченко",
+      "email": "learner35@example.com"
+    },
+    {
+      "id": 36,
+      "name": "Софія Шевченко",
+      "email": "learner36@example.com"
+    },
+    {
+      "id": 37,
+      "name": "Максим Шевченко",
+      "email": "learner37@example.com"
+    },
+    {
+      "id": 38,
+      "name": "Анна Шевченко",
+      "email": "learner38@example.com"
+    },
+    {
+      "id": 39,
+      "name": "Богдан Шевченко",
+      "email": "learner39@example.com"
+    },
+    {
+      "id": 40,
+      "name": "Катерина Шевченко",
+      "email": "learner40@example.com"
+    },
+    {
+      "id": 41,
+      "name": "Андрій Ткаченко",
+      "email": "learner41@example.com"
+    },
+    {
+      "id": 42,
+      "name": "Олена Ткаченко",
+      "email": "learner42@example.com"
+    },
+    {
+      "id": 43,
+      "name": "Іван Ткаченко",
+      "email": "learner43@example.com"
+    },
+    {
+      "id": 44,
+      "name": "Марія Ткаченко",
+      "email": "learner44@example.com"
+    },
+    {
+      "id": 45,
+      "name": "Дмитро Ткаченко",
+      "email": "learner45@example.com"
+    },
+    {
+      "id": 46,
+      "name": "Софія Ткаченко",
+      "email": "learner46@example.com"
+    },
+    {
+      "id": 47,
+      "name": "Максим Ткаченко",
+      "email": "learner47@example.com"
+    },
+    {
+      "id": 48,
+      "name": "Анна Ткаченко",
+      "email": "learner48@example.com"
+    },
+    {
+      "id": 49,
+      "name": "Богдан Ткаченко",
+      "email": "learner49@example.com"
+    },
+    {
+      "id": 50,
+      "name": "Катерина Ткаченко",
+      "email": "learner50@example.com"
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "code": "CS-101",
+      "title": "Основи програмування",
+      "price": 1200,
+      "prerequisiteCourseIds": []
+    },
+    {
+      "id": 2,
+      "code": "CS-201",
+      "title": "Об'єктноорієнтоване програмування",
+      "price": 1800,
+      "prerequisiteCourseIds": [
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "code": "CS-301",
+      "title": "Алгоритми та структури даних",
+      "price": 2000,
+      "prerequisiteCourseIds": [
+        1
+      ]
+    },
+    {
+      "id": 4,
+      "code": "CS-401",
+      "title": "Розроблення вебзастосунків",
+      "price": 2400,
+      "prerequisiteCourseIds": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": 5,
+      "code": "CS-501",
+      "title": "Основи тестування ПЗ",
+      "price": 1600,
+      "prerequisiteCourseIds": [
+        1
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "courseId": 1,
+      "name": "CS-101-A",
+      "capacity": 15
+    },
+    {
+      "id": 2,
+      "courseId": 1,
+      "name": "CS-101-B",
+      "capacity": 15
+    },
+    {
+      "id": 3,
+      "courseId": 2,
+      "name": "CS-201-A",
+      "capacity": 12
+    },
+    {
+      "id": 4,
+      "courseId": 2,
+      "name": "CS-201-B",
+      "capacity": 12
+    },
+    {
+      "id": 5,
+      "courseId": 3,
+      "name": "CS-301-A",
+      "capacity": 12
+    },
+    {
+      "id": 6,
+      "courseId": 3,
+      "name": "CS-301-B",
+      "capacity": 12
+    },
+    {
+      "id": 7,
+      "courseId": 4,
+      "name": "CS-401-A",
+      "capacity": 10
+    },
+    {
+      "id": 8,
+      "courseId": 4,
+      "name": "CS-401-B",
+      "capacity": 10
+    },
+    {
+      "id": 9,
+      "courseId": 5,
+      "name": "CS-501-A",
+      "capacity": 12
+    },
+    {
+      "id": 10,
+      "courseId": 5,
+      "name": "CS-501-B",
+      "capacity": 12
+    }
+  ],
+  "enrollments": [
+    {
+      "id": 1,
+      "memberId": 1,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-01",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 2,
+      "memberId": 2,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-02",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 3,
+      "memberId": 3,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-03",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 4,
+      "memberId": 4,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-04",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 5,
+      "memberId": 5,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-05",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 6,
+      "memberId": 6,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-06",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 7,
+      "memberId": 7,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-07",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 8,
+      "memberId": 8,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-08",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 9,
+      "memberId": 9,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-09",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 10,
+      "memberId": 10,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-10",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 11,
+      "memberId": 11,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-11",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 12,
+      "memberId": 12,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-12",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 13,
+      "memberId": 13,
+      "courseId": 1,
+      "groupId": 1,
+      "enrolledOn": "2026-10-13",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 14,
+      "memberId": 14,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-14",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 15,
+      "memberId": 15,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-15",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 16,
+      "memberId": 16,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-16",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 17,
+      "memberId": 17,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-17",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 18,
+      "memberId": 18,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-18",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 19,
+      "memberId": 19,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-19",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 20,
+      "memberId": 20,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-20",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 21,
+      "memberId": 21,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-21",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 22,
+      "memberId": 22,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-22",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 23,
+      "memberId": 23,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-23",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 24,
+      "memberId": 24,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-24",
+      "status": "Active",
+      "withdrawalReason": null
+    },
+    {
+      "id": 25,
+      "memberId": 25,
+      "courseId": 1,
+      "groupId": 2,
+      "enrolledOn": "2026-10-25",
+      "status": "Active",
+      "withdrawalReason": null
+    }
+  ]
+}

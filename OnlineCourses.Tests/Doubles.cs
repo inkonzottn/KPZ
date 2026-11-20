@@ -36,3 +36,20 @@ internal sealed class StubNotifier : INotifier
     {
     }
 }
+
+internal sealed class FixedClock : IClock
+{
+    public FixedClock(DateTimeOffset now) => Now = now;
+
+    public DateTimeOffset Now { get; }
+
+    public DateOnly Today => DateOnly.FromDateTime(Now.LocalDateTime);
+}
+
+internal sealed class RecordingAuditLogger : IAuditLogger
+{
+    public List<(AuditLevel Level, string Scenario, string Message)> Entries { get; } = [];
+
+    public void Write(AuditLevel level, string scenario, string message) =>
+        Entries.Add((level, scenario, message));
+}
