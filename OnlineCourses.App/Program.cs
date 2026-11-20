@@ -1,25 +1,18 @@
 using System.Text;
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Infrastructure;
 using OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
 
-var repository = new InMemoryEnrollmentRepository();
-repository.AddMember(new Member(1, "Олена Коваль", "olena@example.com"));
-repository.AddMember(new Member(2, "Іван Петренко", "ivan@example.com"));
-
-repository.AddCourse(new Course(1, "CS-101", "Основи програмування", 1200m));
-repository.AddCourse(new Course(2, "CS-201", "Об'єктноорієнтоване програмування", 1800m, [1]));
-repository.AddCourse(new Course(3, "CS-301", "Алгоритми та структури даних", 2000m, [1]));
-
-repository.AddGroup(new CourseGroup(1, 1, "CS-101-A", 3));
-repository.AddGroup(new CourseGroup(2, 2, "CS-201-A", 2));
-repository.AddGroup(new CourseGroup(3, 3, "CS-301-A", 2));
+var repository = new JsonEnrollmentRepository(
+    Path.Combine("data", "online-courses.json"),
+    Path.Combine("data", "online-courses.seed.json"));
 
 var enrollmentService = new EnrollmentService(repository);
 var pricingPolicy = new CoursePackagePricingPolicy();
-var nextEnrollmentId = 1;
+var nextEnrollmentId = repository.GetAll().Select(x => x.Id).DefaultIfEmpty(0).Max() + 1;
 var running = true;
 
 Console.WriteLine("OnlineCourses — система обліку навчальних груп");
