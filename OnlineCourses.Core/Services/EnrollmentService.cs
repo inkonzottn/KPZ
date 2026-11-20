@@ -78,6 +78,17 @@ public sealed class EnrollmentService
         _logger?.Write(AuditLevel.Information, "UC-03", "Слухача переведено до іншої групи.");
     }
 
+    /// <summary>Reactivates a suspended enrollment when its group has a free seat.</summary>
+    public void Reactivate(int enrollmentId)
+    {
+        _logger?.Write(AuditLevel.Information, "UC-04", "Початок поновлення зарахування.");
+        var enrollment = GetSuspendedEnrollment(enrollmentId);
+        var group = RequireGroup(enrollment.GroupId);
+        enrollment.Reactivate(OccupiedSeats(group.Id), group.Capacity);
+        _repository.Save(enrollment);
+        _logger?.Write(AuditLevel.Information, "UC-04", "Зарахування поновлено.");
+    }
+
     /// <summary>Marks an active enrollment as completed.</summary>
     public void Complete(int enrollmentId)
     {
