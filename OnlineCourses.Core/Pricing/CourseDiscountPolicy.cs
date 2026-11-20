@@ -4,19 +4,19 @@ namespace OnlineCourses.Core.Pricing;
 public sealed class CourseDiscountPolicy
 {
     // Знижка постійному студентові
-/// <summary>Defines the RegularRate member.</summary>
+    /// <summary>Defines the RegularRate member.</summary>
     public const decimal RegularRate = 0.05m;
 
     // Додаткова знижка за велике замовлення
-/// <summary>Defines the BigOrderRate member.</summary>
+    /// <summary>Defines the BigOrderRate member.</summary>
     public const decimal BigOrderRate = 0.10m;
 
     // Межа великого замовлення, грн
-/// <summary>Defines the BigOrderFrom member.</summary>
+    /// <summary>Defines the BigOrderFrom member.</summary>
     public const decimal BigOrderFrom = 1000m;
 
     // Максимальна сума знижки, грн
-/// <summary>Defines the MaxDiscount member.</summary>
+    /// <summary>Defines the MaxDiscount member.</summary>
     public const decimal MaxDiscount = 150m;
 
     /// <summary>Calculates the discount for the supplied amount.</summary>
