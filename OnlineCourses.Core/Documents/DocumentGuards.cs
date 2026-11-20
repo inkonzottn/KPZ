@@ -2,8 +2,10 @@ namespace OnlineCourses.Core.Documents;
 
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Represents the DocumentGuards type.</summary>
 public static class DocumentGuards
 {
+/// <summary>Performs the EnsureRequestValid operation.</summary>
     public static void EnsureRequestValid(TotalRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -17,6 +19,7 @@ public static class DocumentGuards
         request.DeliveryPrice);
     }
 
+/// <summary>Performs the EnsureHeaderValid operation.</summary>
     public static void EnsureHeaderValid(
     int documentId,
     string clientName,
@@ -36,6 +39,7 @@ public static class DocumentGuards
         }
     }
 
+/// <summary>Performs the EnsureLineValid operation.</summary>
     public static void EnsureLineValid(RegistrationItem line)
     {
         ArgumentNullException.ThrowIfNull(line);
@@ -47,6 +51,7 @@ public static class DocumentGuards
         line.UnitPrice, nameof(line.UnitPrice));
     }
 
+/// <summary>Performs the EnsureLinesValid operation.</summary>
     public static void EnsureLinesValid(
     IReadOnlyList<RegistrationItem> lines)
     {
