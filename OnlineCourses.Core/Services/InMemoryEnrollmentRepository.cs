@@ -47,6 +47,10 @@ public sealed class InMemoryEnrollmentRepository : IEnrollmentRepository
 
     public IReadOnlyList<CourseGroup> GetGroups() => _groups.Values.ToList();
 
+    public IReadOnlyList<Member> GetMembersForPersistence() => _members.Values.ToList();
+
+    public IReadOnlyList<Course> GetCoursesForPersistence() => _courses.Values.ToList();
+
     public Enrollment? GetById(int enrollmentId) =>
         _enrollments.TryGetValue(enrollmentId, out var enrollment) ? enrollment : null;
 
