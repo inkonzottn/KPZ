@@ -5,6 +5,12 @@ using OnlineCourses.Core.Domain;
 
 public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
 {
+    private const int SingleCourseCount = 1;
+    private const int TwoCourseCount = 2;
+    private const int CurrencyDecimalPlaces = 2;
+    private const decimal NoDiscountRate = 0m;
+    private const decimal TwoCourseDiscountRate = 0.05m;
+    private const decimal MaximumDiscountRate = 0.10m;
     public CoursePackagePrice Calculate(IEnumerable<Course> courses)
     {
         ArgumentNullException.ThrowIfNull(courses);
@@ -23,12 +29,12 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
         var baseTotal = package.Sum(x => x.Price);
         var rate = package.Length switch
         {
-            1 => 0m,
-            2 => 0.05m,
-            _ => 0.10m
+            SingleCourseCount => NoDiscountRate,
+            TwoCourseCount => TwoCourseDiscountRate,
+            _ => MaximumDiscountRate
         };
 
-        var discount = decimal.Round(baseTotal * rate, 2, MidpointRounding.AwayFromZero);
+        var discount = decimal.Round(baseTotal * rate, CurrencyDecimalPlaces, MidpointRounding.AwayFromZero);
         return new CoursePackagePrice(baseTotal, rate, discount, baseTotal - discount);
     }
 }
