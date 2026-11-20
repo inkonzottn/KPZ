@@ -42,7 +42,7 @@ public sealed class ConsoleApplicationTests
     {
         var repository = CreateRepository();
         var logger = new RecordingAuditLogger();
-        var console = new TestConsole("2", "999", "0");
+        var console = new TestConsole("2", "999", "Заява", "0");
         var application = CreateApplication(repository, console, logger);
 
         application.Run();
