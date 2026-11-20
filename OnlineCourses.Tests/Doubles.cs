@@ -1,3 +1,4 @@
+using System.Text;
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Services;
@@ -83,4 +84,19 @@ internal sealed class FakeEnrollmentRepository : IEnrollmentRepository
 
     public bool HasCompletedCourse(int memberId, int courseId) =>
         _store.HasCompletedCourse(memberId, courseId);
+}
+
+internal sealed class FakeConsole : IConsole
+{
+    private readonly Queue<string?> _input;
+
+    public FakeConsole(IEnumerable<string?> input) => _input = new Queue<string?>(input);
+
+    public StringBuilder Output { get; } = new();
+
+    public string? ReadLine() => _input.Count > 0 ? _input.Dequeue() : null;
+
+    public void Write(string value) => Output.Append(value);
+
+    public void WriteLine(string value) => Output.AppendLine(value);
 }
