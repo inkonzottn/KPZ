@@ -3,6 +3,7 @@ using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Infrastructure;
 using OnlineCourses.Core.Pricing;
+using OnlineCourses.Core.Reporting;
 using OnlineCourses.Core.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
@@ -46,7 +47,7 @@ while (running)
                         nextEnrollmentId++,
                         memberId.Value,
                         groupId.Value,
-                        DateOnly.FromDateTime(DateTime.Today));
+                        clock.Today);
                     Console.WriteLine($"Зарахування №{enrollment.Id} створено.");
                 }
                 catch (InvalidOperationException ex)
