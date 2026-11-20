@@ -22,7 +22,10 @@ public sealed class EnrollmentService
     }
 
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId) =>
-        Enroll(enrollmentId, memberId, groupId,
+        Enroll(
+            enrollmentId,
+            memberId,
+            groupId,
             _clock?.Today ?? DateOnly.FromDateTime(DateTime.Today));
 
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
