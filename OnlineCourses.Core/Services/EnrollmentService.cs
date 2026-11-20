@@ -8,16 +8,28 @@ using OnlineCourses.Core.Reporting;
 public sealed class EnrollmentService
 {
     private readonly IEnrollmentRepository _repository;
+    private readonly IClock? _clock;
+    private readonly IAuditLogger? _logger;
 
-    public EnrollmentService(IEnrollmentRepository repository)
+    public EnrollmentService(
+        IEnrollmentRepository repository,
+        IClock? clock = null,
+        IAuditLogger? logger = null)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _clock = clock;
+        _logger = logger;
     }
+
+    public Enrollment Enroll(int enrollmentId, int memberId, int groupId) =>
+        Enroll(enrollmentId, memberId, groupId,
+            _clock?.Today ?? DateOnly.FromDateTime(DateTime.Today));
 
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
     {
-        var member = _repository.GetMember(memberId)
-            ?? throw new DomainRuleException("MEMBER_NOT_FOUND", $"Слухача з ID {memberId} не знайдено.");
+        _logger?.Write(AuditLevel.Information, "UC-01", "Початок зарахування.");
+        var member = _repository.GetMember(memberId);
+            ?? throw Reject("MEMBER_NOT_FOUND", $"Слухача з ID {memberId} не знайдено.");
         var group = _repository.GetGroup(groupId)
             ?? throw new DomainRuleException("GROUP_NOT_FOUND", $"Групу з ID {groupId} не знайдено.");
         var course = _repository.GetCourse(group.CourseId)
@@ -49,6 +61,7 @@ public sealed class EnrollmentService
 
         var enrollment = new Enrollment(enrollmentId, member.Id, course.Id, group.Id, enrolledOn);
         _repository.Add(enrollment);
+        _logger?.Write(AuditLevel.Information, "UC-01", "Зарахування успішно створено.");
         return enrollment;
     }
 
@@ -57,6 +70,7 @@ public sealed class EnrollmentService
         var enrollment = GetActiveEnrollment(enrollmentId);
         enrollment.Withdraw(reason);
         _repository.Save(enrollment);
+        _logger?.Write(AuditLevel.Information, "UC-02", "Зарахування відраховано.");
     }
 
     public void Transfer(int enrollmentId, int targetGroupId)
@@ -82,6 +96,7 @@ public sealed class EnrollmentService
 
         enrollment.TransferTo(targetGroup.Id);
         _repository.Save(enrollment);
+        _logger?.Write(AuditLevel.Information, "UC-03", "Слухача переведено до іншої групи.");
     }
 
     public void Complete(int enrollmentId)
@@ -89,6 +104,7 @@ public sealed class EnrollmentService
         var enrollment = GetActiveEnrollment(enrollmentId);
         enrollment.Complete();
         _repository.Save(enrollment);
+        _logger?.Write(AuditLevel.Information, "UC-07", "Навчання позначено завершеним.");
     }
 
     public IReadOnlyList<Enrollment> Search(EnrollmentSearchCriteria criteria)
@@ -174,6 +190,12 @@ public sealed class EnrollmentService
             .OrderBy(x => x.CourseCode, StringComparer.Ordinal)
             .ThenBy(x => x.GroupName, StringComparer.Ordinal)
             .ToArray();
+    }
+
+    private DomainRuleException Reject(string rule, string message)
+    {
+        _logger?.Write(AuditLevel.Warning, rule, message);
+        return new DomainRuleException(rule, message);
     }
 
     private int OccupiedSeats(int groupId) =>
