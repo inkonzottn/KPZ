@@ -119,7 +119,7 @@ public sealed class ConsoleMenu
 
     private void PrintOccupancy()
     {
-        _console.WriteLine("");
+        _console.WriteLine(string.Empty);
         _console.WriteLine("Курс | Група | Зайнято | Місткість | Вільно | Наповнюваність");
         foreach (var item in _service.GetOccupancyReport())
         {
