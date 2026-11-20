@@ -2,6 +2,7 @@ namespace OnlineCourses.Core.Documents;
 
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Represents the TotalRequest type.</summary>
 public sealed record TotalRequest(
 int DocumentId,
 ClientInfo Client,
