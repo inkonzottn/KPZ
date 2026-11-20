@@ -53,3 +53,33 @@ internal sealed class RecordingAuditLogger : IAuditLogger
     public void Write(AuditLevel level, string scenario, string message) =>
         Entries.Add((level, scenario, message));
 }
+
+internal sealed class FakeEnrollmentRepository : IEnrollmentRepository
+{
+    private readonly InMemoryEnrollmentRepository _store = new();
+
+    public void AddMember(Member member) => _store.AddMember(member);
+
+    public void AddCourse(Course course) => _store.AddCourse(course);
+
+    public void AddGroup(CourseGroup group) => _store.AddGroup(group);
+
+    public Member? GetMember(int memberId) => _store.GetMember(memberId);
+
+    public Course? GetCourse(int courseId) => _store.GetCourse(courseId);
+
+    public CourseGroup? GetGroup(int groupId) => _store.GetGroup(groupId);
+
+    public IReadOnlyList<Enrollment> GetAll() => _store.GetAll();
+
+    public IReadOnlyList<CourseGroup> GetGroups() => _store.GetGroups();
+
+    public Enrollment? GetById(int enrollmentId) => _store.GetById(enrollmentId);
+
+    public void Add(Enrollment enrollment) => _store.Add(enrollment);
+
+    public void Save(Enrollment enrollment) => _store.Save(enrollment);
+
+    public bool HasCompletedCourse(int memberId, int courseId) =>
+        _store.HasCompletedCourse(memberId, courseId);
+}
