@@ -41,6 +41,22 @@ public sealed class Enrollment
         Status = EnrollmentStatus.Withdrawn;
     }
 
+    public void Suspend()
+    {
+        EnsureActive();
+        Status = EnrollmentStatus.Suspended;
+    }
+
+    public void Reactivate()
+    {
+        if (Status != EnrollmentStatus.Suspended)
+        {
+            throw new DomainRuleException("ENROLLMENT_NOT_SUSPENDED", "Повторно активувати можна лише призупинене зарахування.");
+        }
+
+        Status = EnrollmentStatus.Active;
+    }
+
     public void Complete()
     {
         EnsureActive();
