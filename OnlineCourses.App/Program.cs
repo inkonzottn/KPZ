@@ -1,69 +1,210 @@
 using System.Text;
-using Microsoft.Extensions.Logging;
-using OnlineCourses.App;
-using OnlineCourses.Core;
-using OnlineCourses.Core.Abstractions;
-using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
-using OnlineCourses.Core.Legacy;
 using OnlineCourses.Core.Pricing;
-using OnlineCourses.Core.Reporting;
 using OnlineCourses.Core.Services;
 
 Console.OutputEncoding = Encoding.UTF8;
-Console.WriteLine($"OnlineCourses v{VersionInfo.Current()}");
 
-using var factory = LoggerFactory.Create(builder =>
+var repository = new InMemoryEnrollmentRepository();
+repository.AddMember(new Member(1, "Олена Коваль", "olena@example.com"));
+repository.AddMember(new Member(2, "Іван Петренко", "ivan@example.com"));
+
+repository.AddCourse(new Course(1, "CS-101", "Основи програмування", 1200m));
+repository.AddCourse(new Course(2, "CS-201", "Об'єктноорієнтоване програмування", 1800m, [1]));
+repository.AddCourse(new Course(3, "CS-301", "Алгоритми та структури даних", 2000m, [1]));
+
+repository.AddGroup(new CourseGroup(1, 1, "CS-101-A", 3));
+repository.AddGroup(new CourseGroup(2, 2, "CS-201-A", 2));
+repository.AddGroup(new CourseGroup(3, 3, "CS-301-A", 2));
+
+var enrollmentService = new EnrollmentService(repository);
+var pricingPolicy = new CoursePackagePricingPolicy();
+var nextEnrollmentId = 1;
+var running = true;
+
+Console.WriteLine("OnlineCourses — система обліку навчальних груп");
+
+while (running)
 {
-    builder.AddSimpleConsole(options =>
+    Console.WriteLine();
+    Console.WriteLine("1 — Зарахувати слухача");
+    Console.WriteLine("2 — Відрахувати слухача");
+    Console.WriteLine("3 — Перевести до іншої групи");
+    Console.WriteLine("4 — Звіт про наповнюваність груп");
+    Console.WriteLine("5 — Розрахувати пакетну вартість");
+    Console.WriteLine("6 — Пошук зарахувань");
+    Console.WriteLine("7 — Позначити курс завершеним");
+    Console.WriteLine("0 — Вихід");
+    Console.Write("Оберіть дію: ");
+
+    switch (Console.ReadLine())
     {
-        options.TimestampFormat = "HH:mm:ss ";
-        options.IncludeScopes = true;
-    });
-    builder.SetMinimumLevel(LogLevel.Debug);
-});
+        case "1":
+            var memberId = ReadInt("ID слухача: ");
+            var groupId = ReadInt("ID групи: ");
+            if (memberId.HasValue && groupId.HasValue)
+            {
+                try
+                {
+                    var enrollment = enrollmentService.Enroll(
+                        nextEnrollmentId++,
+                        memberId.Value,
+                        groupId.Value,
+                        DateOnly.FromDateTime(DateTime.Today));
+                    Console.WriteLine($"Зарахування №{enrollment.Id} створено.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine($"Операцію відхилено: {ex.Message}");
+                }
+            }
 
-var logger = factory.CreateLogger<RegistrationService>();
+            break;
 
-var repository = new InMemoryRegistrationRepository();
-IPricingPolicy pricing = new DiscountPricingPolicy(0.05m);
-var notifier = new SmtpMailer();
+        case "2":
+            var withdrawId = ReadInt("ID зарахування: ");
+            Console.Write("Причина відрахування: ");
+            var reason = Console.ReadLine() ?? string.Empty;
+            if (withdrawId.HasValue)
+            {
+                try
+                {
+                    enrollmentService.Withdraw(withdrawId.Value, reason);
+                    Console.WriteLine("Слухача відраховано.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine($"Операцію відхилено: {ex.Message}");
+                }
+            }
 
-var service = new RegistrationService(repository, pricing, notifier, logger);
+            break;
 
-int registrationId = 1;
-var registration = new Registration(registrationId, 100, DateOnly.FromDateTime(DateTime.Today));
-repository.Add(registration);
+        case "3":
+            var transferId = ReadInt("ID зарахування: ");
+            var targetGroupId = ReadInt("ID цільової групи: ");
+            if (transferId.HasValue && targetGroupId.HasValue)
+            {
+                try
+                {
+                    enrollmentService.Transfer(transferId.Value, targetGroupId.Value);
+                    Console.WriteLine("Слухача переведено до іншої групи.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine($"Операцію відхилено: {ex.Message}");
+                }
+            }
 
-var order = Order.FindById(new List<Order>(), "order123");
+            break;
 
-while (true)
+        case "4":
+            Console.WriteLine();
+            Console.WriteLine("Курс | Група | Зайнято | Місткість | Вільно | Наповнюваність");
+            foreach (var item in enrollmentService.GetOccupancyReport())
+            {
+                Console.WriteLine(
+                    $"{item.CourseCode} | {item.GroupName} | {item.Occupied} | " +
+                    $"{item.Capacity} | {item.Free} | {item.OccupancyPercent:F2}%");
+            }
+
+            break;
+
+        case "5":
+            Console.Write("Введіть ID курсів через кому: ");
+            var rawIds = Console.ReadLine() ?? string.Empty;
+            var ids = rawIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var courses = new List<Course>();
+            var valid = true;
+            foreach (var rawId in ids)
+            {
+                if (!int.TryParse(rawId, out var id) || repository.GetCourse(id) is not { } course)
+                {
+                    valid = false;
+                    break;
+                }
+
+                courses.Add(course);
+            }
+
+            if (!valid)
+            {
+                Console.WriteLine("Перевірте ID курсів. Усі вказані курси мають існувати.");
+                break;
+            }
+
+            try
+            {
+                var price = pricingPolicy.Calculate(courses);
+                Console.WriteLine($"Базова вартість: {price.BaseTotal:F2} грн");
+                Console.WriteLine($"Знижка: {price.DiscountRate:P0} ({price.Discount:F2} грн)");
+                Console.WriteLine($"До сплати: {price.Payable:F2} грн");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Неможливо виконати розрахунок: {ex.Message}");
+            }
+
+            break;
+
+        case "6":
+            Console.Write("Ім'я або email слухача: ");
+            var memberQuery = Console.ReadLine() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(memberQuery))
+            {
+                Console.WriteLine("Введіть хоча б один критерій пошуку.");
+                break;
+            }
+
+            var found = enrollmentService.Search(
+                new EnrollmentSearchCriteria(MemberQuery: memberQuery));
+            if (found.Count == 0)
+            {
+                Console.WriteLine("За заданим критерієм нічого не знайдено.");
+                break;
+            }
+
+            foreach (var item in found)
+            {
+                var member = repository.GetMember(item.MemberId);
+                var course = repository.GetCourse(item.CourseId);
+                var group = repository.GetGroup(item.GroupId);
+                Console.WriteLine(
+                    $"#{item.Id} | {member?.Name} | {course?.Code} | " +
+                    $"{group?.Name} | {item.Status}");
+            }
+
+            break;
+
+        case "7":
+            var completedId = ReadInt("ID зарахування: ");
+            if (completedId.HasValue)
+            {
+                try
+                {
+                    enrollmentService.Complete(completedId.Value);
+                    Console.WriteLine("Навчання зарахування позначено завершеним.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine($"Операцію відхилено: {ex.Message}");
+                }
+            }
+
+            break;
+
+        case "0":
+            running = false;
+            break;
+
+        default:
+            Console.WriteLine("Невідома команда. Спробуйте ще раз.");
+            break;
+    }
+}
+
+static int? ReadInt(string prompt)
 {
-    Console.Write("SKU: ");
-    string sku = Console.ReadLine() ?? string.Empty;
-    Console.Write("Кількість: ");
-    string qty = Console.ReadLine() ?? string.Empty;
-    Console.Write("Ціна: ");
-    string price = Console.ReadLine() ?? string.Empty;
-
-    var parsed = RegistrationItemParser.Parse(sku, qty, price);
-    if (!parsed.IsSuccess)
-    {
-        Console.WriteLine($"Помилка вводу: {parsed.Error}");
-        continue;
-    }
-
-    try
-    {
-        service.AddLine(registrationId, parsed.Value!);
-        Console.WriteLine("Позицію успішно додано!");
-        break;
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Помилка домену: {ex.Message}");
-    }
-
-    using var auditLog = new FileAuditLog("audit.log");
-    auditLog.Write("AddLine", registrationId);
+    Console.Write(prompt);
+    return int.TryParse(Console.ReadLine(), out var value) ? value : null;
 }
