@@ -3,6 +3,7 @@ namespace OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 
+/// <summary>Represents the CoursePackagePricingPolicy type.</summary>
 public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
 {
     private const int SingleCourseCount = 1;
@@ -12,6 +13,7 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
     private const decimal TwoCourseDiscountRate = 0.05m;
     private const decimal MaximumDiscountRate = 0.10m;
 
+/// <summary>Performs the Calculate operation.</summary>
     public CoursePackagePrice Calculate(IEnumerable<Course> courses)
     {
         ArgumentNullException.ThrowIfNull(courses);
