@@ -493,3 +493,6 @@ coverage/
 appsettings.Local.json
 **/*.secrets.json
 .env
+# Runtime data and audit output
+/data/online-courses.json
+/logs/
