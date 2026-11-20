@@ -13,7 +13,7 @@ public sealed record GroupOccupancy(
     /// <summary>Defines the Free member.</summary>
     public int Free => Capacity - Occupied;
 
-/// <summary>Defines the OccupancyPercent member.</summary>
+    /// <summary>Defines the OccupancyPercent member.</summary>
     public decimal OccupancyPercent =>
         Capacity == 0 ? 0m : decimal.Round((decimal)Occupied / Capacity * PercentScale, 2);
 }
