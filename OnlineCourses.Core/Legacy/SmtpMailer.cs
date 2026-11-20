@@ -12,8 +12,8 @@ public class SmtpMailer : INotifier
     }
 
     /// <summary>Performs the Notify operation.</summary>
-    public void Notify(string recipient, string body)
+    public void Notify(string recipient, string message)
     {
-        Send(recipient, "Notification", body);
+        Send(recipient, "Notification", message);
     }
 }
