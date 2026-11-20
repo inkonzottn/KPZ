@@ -34,8 +34,9 @@ public sealed class EnrollmentServiceTests
 
         var service = new EnrollmentService(repository);
 
-        Assert.Throws<InvalidOperationException>(() =>
+        var exception = Assert.Throws<DomainRuleException>(() =>
             service.Enroll(2, 10, 20, new DateOnly(2026, 2, 1)));
+        Assert.Equal("PREREQUISITES_NOT_MET", exception.Rule);
         Assert.Empty(repository.GetAll());
     }
 
@@ -48,8 +49,9 @@ public sealed class EnrollmentServiceTests
 
         var service = new EnrollmentService(repository);
 
-        Assert.Throws<InvalidOperationException>(() =>
+        var exception = Assert.Throws<DomainRuleException>(() =>
             service.Enroll(2, 11, 13, new DateOnly(2026, 2, 1)));
+        Assert.Equal("GROUP_CAPACITY_REACHED", exception.Rule);
     }
 
     [Fact]
@@ -76,7 +78,8 @@ public sealed class EnrollmentServiceTests
         repository.Add(new Enrollment(2, 11, 1, 12, new DateOnly(2026, 1, 1)));
         var service = new EnrollmentService(repository);
 
-        Assert.Throws<InvalidOperationException>(() => service.Transfer(1, 12));
+        var exception = Assert.Throws<DomainRuleException>(() => service.Transfer(1, 12));
+        Assert.Equal("TARGET_GROUP_FULL", exception.Rule);
         Assert.Equal(11, repository.GetById(1)!.GroupId);
     }
 
