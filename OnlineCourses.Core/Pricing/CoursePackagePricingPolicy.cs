@@ -11,6 +11,7 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
     private const decimal NoDiscountRate = 0m;
     private const decimal TwoCourseDiscountRate = 0.05m;
     private const decimal MaximumDiscountRate = 0.10m;
+
     public CoursePackagePrice Calculate(IEnumerable<Course> courses)
     {
         ArgumentNullException.ThrowIfNull(courses);
