@@ -22,7 +22,10 @@ public sealed class EnrollmentService
     }
 
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId) =>
-        Enroll(enrollmentId, memberId, groupId,
+        Enroll(
+            enrollmentId,
+            memberId,
+            groupId,
             _clock?.Today ?? DateOnly.FromDateTime(DateTime.Today));
 
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
@@ -205,11 +208,15 @@ public sealed class EnrollmentService
     private Enrollment GetActiveEnrollment(int enrollmentId)
     {
         var enrollment = _repository.GetById(enrollmentId)
-            ?? throw new DomainRuleException("ENROLLMENT_NOT_FOUND", $"Зарахування з ID {enrollmentId} не знайдено.");
+            ?? throw Reject(
+                "ENROLLMENT_NOT_FOUND",
+                $"Зарахування з ID {enrollmentId} не знайдено.");
 
         if (enrollment.Status != EnrollmentStatus.Active)
         {
-            throw new DomainRuleException("ENROLLMENT_NOT_ACTIVE", "Операція доступна лише для активного зарахування.");
+            throw Reject(
+                "ENROLLMENT_NOT_ACTIVE",
+                "Операція доступна лише для активного зарахування.");
         }
 
         return enrollment;

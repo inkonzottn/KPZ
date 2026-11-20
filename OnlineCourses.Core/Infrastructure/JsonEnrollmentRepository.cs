@@ -20,6 +20,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     private readonly InMemoryEnrollmentRepository _memory = new();
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="JsonEnrollmentRepository"/> class.
     /// Завантажує наявне сховище або копіює початковий набір даних.
     /// </summary>
     /// <param name="path">Шлях до робочого JSON-файлу.</param>
@@ -46,6 +47,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     }
 
     /// <summary>Додає слухача та зберігає зміни.</summary>
+    /// <param name="member">Слухач, якого потрібно додати.</param>
     public void AddMember(Member member)
     {
         _memory.AddMember(member);
@@ -53,6 +55,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     }
 
     /// <summary>Додає курс та зберігає зміни.</summary>
+    /// <param name="course">Курс, який потрібно додати.</param>
     public void AddCourse(Course course)
     {
         _memory.AddCourse(course);
@@ -60,6 +63,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     }
 
     /// <summary>Додає групу та зберігає зміни.</summary>
+    /// <param name="group">Група, яку потрібно додати.</param>
     public void AddGroup(CourseGroup group)
     {
         _memory.AddGroup(group);
@@ -115,20 +119,30 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         foreach (var course in snapshot.Courses)
         {
             _memory.AddCourse(new Course(
-                course.Id, course.Code, course.Title, course.Price,
+                course.Id,
+                course.Code,
+                course.Title,
+                course.Price,
                 course.PrerequisiteCourseIds));
         }
 
         foreach (var group in snapshot.Groups)
         {
             _memory.AddGroup(new CourseGroup(
-                group.Id, group.CourseId, group.Name, group.Capacity));
+                group.Id,
+                group.CourseId,
+                group.Name,
+                group.Capacity));
         }
 
         foreach (var item in snapshot.Enrollments)
         {
             var enrollment = new Enrollment(
-                item.Id, item.MemberId, item.CourseId, item.GroupId, item.EnrolledOn);
+                item.Id,
+                item.MemberId,
+                item.CourseId,
+                item.GroupId,
+                item.EnrolledOn);
 
             if (item.Status == nameof(EnrollmentStatus.Withdrawn))
             {
