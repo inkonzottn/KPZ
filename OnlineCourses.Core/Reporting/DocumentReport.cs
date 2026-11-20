@@ -7,8 +7,10 @@ using System.Text;
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Represents the DocumentReport type.</summary>
 public static class DocumentReport
 {
+/// <summary>Performs the TextOf operation.</summary>
     public static string TextOf(
     TotalRequest request, TotalResult result)
     {
