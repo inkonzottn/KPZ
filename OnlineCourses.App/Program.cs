@@ -285,6 +285,7 @@ internal static class Program
             Console.WriteLine("Поле не може бути порожнім.");
         }
     }
+
     private sealed class ApplicationContext
     {
         public required IEnrollmentRepository Repository { get; init; }
@@ -299,5 +300,4 @@ internal static class Program
 
         public int NextEnrollmentId { get; set; }
     }
-
 }
