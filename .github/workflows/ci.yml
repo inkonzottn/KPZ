@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ main, 'feature/**', 'work/**' ]
+    branches: [ main, 'feature/**', 'work/**', 'ci-demo' ]
   pull_request:
     branches: [ main ]
 jobs:
@@ -13,15 +13,13 @@ jobs:
       - name: Установити .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.x
+          dotnet-version: 8.0.x
       - name: Відновити залежності
         run: dotnet restore OnlineCourses.slnx
       - name: Перевірка форматування
         run: dotnet format OnlineCourses.slnx --verify-no-changes --no-restore
       - name: Складання Release з аналізаторами
-        run: dotnet build OnlineCourses.slnx -c Release --no-restore
+        run: dotnet build OnlineCourses.slnx -c Release --no-restore -warnaserror
       - name: Тести Legacy
         run: dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release --no-build
       - name: Тести й покриття
