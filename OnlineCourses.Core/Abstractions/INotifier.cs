@@ -1,7 +1,8 @@
 namespace OnlineCourses.Core.Abstractions;
 
-/// <summary>Defines the contract for INotifier.</summary>
+/// <summary>Defines a notification delivery contract.</summary>
 public interface INotifier
 {
-    void Notify(string recipient, string body);
+    /// <summary>Sends a notification to a recipient.</summary>
+    void Notify(string recipient, string message);
 }
