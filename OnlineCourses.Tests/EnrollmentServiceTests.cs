@@ -1,6 +1,7 @@
 namespace OnlineCourses.Tests;
 
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Services;
 
@@ -118,6 +119,34 @@ public sealed class EnrollmentServiceTests
 
         Assert.Throws<ArgumentException>(() =>
             service.Search(new EnrollmentSearchCriteria()));
+    }
+
+    [Fact]
+    public void Enroll_UsesInjectedClockDate()
+    {
+        var repository = CreateRepository();
+        var clock = new FixedClock(
+            new DateTimeOffset(2026, 11, 20, 9, 30, 0, TimeSpan.FromHours(2)));
+        var service = new EnrollmentService(repository, clock);
+
+        var enrollment = service.Enroll(1, 10, 11);
+
+        Assert.Equal(new DateOnly(2026, 11, 20), enrollment.EnrolledOn);
+    }
+
+    [Fact]
+    public void Enroll_LogsWarning_WhenGroupIsFull()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        repository.Add(new Enrollment(2, 11, 1, 11, new DateOnly(2026, 1, 1)));
+        repository.Add(new Enrollment(3, 12, 1, 11, new DateOnly(2026, 1, 1)));
+        var logger = new RecordingAuditLogger();
+        var service = new EnrollmentService(repository, logger: logger);
+
+        Assert.Throws<DomainRuleException>(() => service.Enroll(4, 13, 11));
+
+        Assert.Contains(logger.Entries, x => x.Level == AuditLevel.Warning);
     }
 
     private static InMemoryEnrollmentRepository CreateRepository()
