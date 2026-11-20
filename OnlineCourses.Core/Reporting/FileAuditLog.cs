@@ -28,7 +28,7 @@ public sealed class FileAuditLog : IAuditLogger, IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(scenario);
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
         _writer.WriteLine(
-            $"{_clock.Today:yyyy-MM-dd};{DateTimeOffset.Now:HH:mm:ss zzz};{level};{scenario};{message}");
+            $"{_clock.Now:yyyy-MM-dd};{_clock.Now:HH:mm:ss zzz};{level};{scenario};{message}");
         _writer.Flush();
     }
 
