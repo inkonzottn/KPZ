@@ -20,7 +20,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     private readonly InMemoryEnrollmentRepository _memory = new();
 
     /// <summary>
-    /// Завантажує наявне сховище або копіює початковий набір даних.
+    /// Initializes a new instance of the <see cref="JsonEnrollmentRepository"/> class.
     /// </summary>
     /// <param name="path">Шлях до робочого JSON-файлу.</param>
     /// <param name="seedPath">Шлях до початкового набору даних.</param>
@@ -45,21 +45,24 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         Load(File.ReadAllText(_path));
     }
 
-    /// <summary>Додає слухача та зберігає зміни.</summary>
+    /// <summary>Adds a learner and persists the change.</summary>
+    /// <param name="member">Learner to add.</param>
     public void AddMember(Member member)
     {
         _memory.AddMember(member);
         Persist();
     }
 
-    /// <summary>Додає курс та зберігає зміни.</summary>
+    /// <summary>Adds a course and persists the change.</summary>
+    /// <param name="course">Course to add.</param>
     public void AddCourse(Course course)
     {
         _memory.AddCourse(course);
         Persist();
     }
 
-    /// <summary>Додає групу та зберігає зміни.</summary>
+    /// <summary>Adds a group and persists the change.</summary>
+    /// <param name="group">Group to add.</param>
     public void AddGroup(CourseGroup group)
     {
         _memory.AddGroup(group);
@@ -114,9 +117,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
 
         foreach (var course in snapshot.Courses)
         {
-            _memory.AddCourse(new Course(
-                course.Id, course.Code, course.Title, course.Price,
-                course.PrerequisiteCourseIds));
+            _memory.AddCourse(new Course(course.Id, course.Code, course.Title, course.Price, course.PrerequisiteCourseIds));
         }
 
         foreach (var group in snapshot.Groups)
