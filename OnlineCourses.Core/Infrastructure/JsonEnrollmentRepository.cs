@@ -135,6 +135,10 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
             {
                 enrollment.Withdraw(item.WithdrawalReason ?? "Причину не вказано у файлі.");
             }
+            else if (item.Status == nameof(EnrollmentStatus.Suspended))
+            {
+                enrollment.Suspend();
+            }
             else if (item.Status == nameof(EnrollmentStatus.Completed))
             {
                 enrollment.Complete();
