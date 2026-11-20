@@ -60,6 +60,11 @@ public sealed class ConsoleApplication
 
     private bool HandleCommand(string? command)
     {
+        if (command is null || command == "0")
+        {
+            return false;
+        }
+
         switch (command)
         {
             case "1": Enroll(); break;
@@ -69,7 +74,6 @@ public sealed class ConsoleApplication
             case "5": CalculatePackagePrice(); break;
             case "6": SearchEnrollments(); break;
             case "7": CompleteEnrollment(); break;
-            case "0": return false;
             default: _console.WriteLine("Невідома команда. Спробуйте ще раз."); break;
         }
 
