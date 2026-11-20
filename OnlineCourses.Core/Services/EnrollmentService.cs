@@ -2,6 +2,7 @@ namespace OnlineCourses.Core.Services;
 
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Reporting;
 
 public sealed class EnrollmentService
@@ -16,18 +17,18 @@ public sealed class EnrollmentService
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
     {
         var member = _repository.GetMember(memberId)
-            ?? throw new InvalidOperationException($"Слухача з ID {memberId} не знайдено.");
+            ?? throw new DomainRuleException("MEMBER_NOT_FOUND", $"Слухача з ID {memberId} не знайдено.");
         var group = _repository.GetGroup(groupId)
-            ?? throw new InvalidOperationException($"Групу з ID {groupId} не знайдено.");
+            ?? throw new DomainRuleException("GROUP_NOT_FOUND", $"Групу з ID {groupId} не знайдено.");
         var course = _repository.GetCourse(group.CourseId)
-            ?? throw new InvalidOperationException("Курс для групи не знайдено.");
+            ?? throw new DomainRuleException("COURSE_NOT_FOUND", "Курс для групи не знайдено.");
 
         if (_repository.GetAll().Any(x =>
             x.MemberId == member.Id &&
             x.CourseId == course.Id &&
             x.Status == EnrollmentStatus.Active))
         {
-            throw new InvalidOperationException("Слухач уже має активне зарахування на цей курс.");
+            throw new DomainRuleException("DUPLICATE_ENROLLMENT", "Слухач уже має активне зарахування на цей курс.");
         }
 
         var missingPrerequisites = course.PrerequisiteCourseIds
@@ -36,13 +37,14 @@ public sealed class EnrollmentService
 
         if (missingPrerequisites.Length > 0)
         {
-            throw new InvalidOperationException(
+            throw new DomainRuleException(
+                "PREREQUISITES_NOT_MET",
                 $"Не виконано передумови курсу: {string.Join(", ", missingPrerequisites)}.");
         }
 
         if (OccupiedSeats(group.Id) >= group.Capacity)
         {
-            throw new InvalidOperationException("У групі немає вільних місць.");
+            throw new DomainRuleException("GROUP_CAPACITY_REACHED", "У групі немає вільних місць.");
         }
 
         var enrollment = new Enrollment(enrollmentId, member.Id, course.Id, group.Id, enrolledOn);
@@ -61,21 +63,21 @@ public sealed class EnrollmentService
     {
         var enrollment = GetActiveEnrollment(enrollmentId);
         var targetGroup = _repository.GetGroup(targetGroupId)
-            ?? throw new InvalidOperationException($"Групу з ID {targetGroupId} не знайдено.");
+            ?? throw new DomainRuleException("GROUP_NOT_FOUND", $"Групу з ID {targetGroupId} не знайдено.");
 
         if (targetGroup.CourseId != enrollment.CourseId)
         {
-            throw new InvalidOperationException("Переведення можливе лише до групи того самого курсу.");
+            throw new DomainRuleException("TRANSFER_DIFFERENT_COURSE", "Переведення можливе лише до групи того самого курсу.");
         }
 
         if (targetGroup.Id == enrollment.GroupId)
         {
-            throw new InvalidOperationException("Слухач уже навчається в цій групі.");
+            throw new DomainRuleException("TRANSFER_SAME_GROUP", "Слухач уже навчається в цій групі.");
         }
 
         if (OccupiedSeats(targetGroup.Id) >= targetGroup.Capacity)
         {
-            throw new InvalidOperationException("У цільовій групі немає вільних місць.");
+            throw new DomainRuleException("TARGET_GROUP_FULL", "У цільовій групі немає вільних місць.");
         }
 
         enrollment.TransferTo(targetGroup.Id);
@@ -181,11 +183,11 @@ public sealed class EnrollmentService
     private Enrollment GetActiveEnrollment(int enrollmentId)
     {
         var enrollment = _repository.GetById(enrollmentId)
-            ?? throw new InvalidOperationException($"Зарахування з ID {enrollmentId} не знайдено.");
+            ?? throw new DomainRuleException("ENROLLMENT_NOT_FOUND", $"Зарахування з ID {enrollmentId} не знайдено.");
 
         if (enrollment.Status != EnrollmentStatus.Active)
         {
-            throw new InvalidOperationException("Операція доступна лише для активного зарахування.");
+            throw new DomainRuleException("ENROLLMENT_NOT_ACTIVE", "Операція доступна лише для активного зарахування.");
         }
 
         return enrollment;
