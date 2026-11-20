@@ -1,5 +1,6 @@
 using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Services;
 
 namespace OnlineCourses.Tests;
 
