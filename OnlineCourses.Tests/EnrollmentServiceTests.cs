@@ -245,4 +245,53 @@ public sealed class CoursePackagePricingPolicyTests
 
         Assert.Throws<ArgumentException>(() => policy.Calculate([course, course]));
     }
+    [Fact]
+    public void Calculate_ZeroPricePackage_ReturnsZeroDiscountAndPayable()
+    {
+        var policy = new CoursePackagePricingPolicy();
+
+        var result = policy.Calculate([
+            new Course(1, "C-1", "Free course", 0m),
+            new Course(2, "C-2", "Another free course", 0m)
+        ]);
+
+        Assert.Equal(0m, result.BaseTotal);
+        Assert.Equal(0m, result.Discount);
+        Assert.Equal(0m, result.Payable);
+    }
+
+    [Fact]
+    public void Calculate_RoundsMidpointAwayFromZero()
+    {
+        var policy = new CoursePackagePricingPolicy();
+        var courses = new[]
+        {
+            new Course(1, "C-1", "Course 1", 10.05m),
+            new Course(2, "C-2", "Course 2", 10.05m)
+        };
+
+        var result = policy.Calculate(courses);
+
+        Assert.Equal(1.01m, result.Discount);
+    }
+
+    [Fact]
+    public void Course_NegativePrice_ThrowsOutOfRange()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            new Course(1, "C-1", "Course 1", -0.01m));
+    }
+
+    [Fact]
+    public void Calculate_MaximumSingleCoursePrice_DoesNotApplyDiscount()
+    {
+        var policy = new CoursePackagePricingPolicy();
+        var course = new Course(1, "C-1", "Course 1", decimal.MaxValue);
+
+        var result = policy.Calculate([course]);
+
+        Assert.Equal(decimal.MaxValue, result.Payable);
+        Assert.Equal(0m, result.Discount);
+    }
+
 }
