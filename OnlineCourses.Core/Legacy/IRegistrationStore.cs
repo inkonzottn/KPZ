@@ -1,5 +1,6 @@
 namespace OnlineCourses.Legacy;
 
+/// <summary>Defines the contract for IRegistrationStore.</summary>
 public interface IRegistrationStore
 {
     void Add(LegacyRegistration order);
