@@ -5,12 +5,14 @@ using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Reporting;
 
+/// <summary>Represents the EnrollmentService type.</summary>
 public sealed class EnrollmentService
 {
     private readonly IEnrollmentRepository _repository;
     private readonly IClock? _clock;
     private readonly IAuditLogger? _logger;
 
+/// <summary>Initializes a new instance of the <see cref="EnrollmentService"/> class.</summary>
     public EnrollmentService(
         IEnrollmentRepository repository,
         IClock? clock = null,
@@ -21,6 +23,7 @@ public sealed class EnrollmentService
         _logger = logger;
     }
 
+/// <summary>Performs the Enroll operation.</summary>
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId) =>
         Enroll(
             enrollmentId,
@@ -28,6 +31,7 @@ public sealed class EnrollmentService
             groupId,
             _clock?.Today ?? DateOnly.FromDateTime(DateTime.Today));
 
+/// <summary>Performs the Enroll operation.</summary>
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
     {
         _logger?.Write(AuditLevel.Information, "UC-01", "Початок зарахування.");
@@ -68,6 +72,7 @@ public sealed class EnrollmentService
         return enrollment;
     }
 
+/// <summary>Performs the Withdraw operation.</summary>
     public void Withdraw(int enrollmentId, string reason)
     {
         var enrollment = GetActiveEnrollment(enrollmentId);
@@ -76,6 +81,7 @@ public sealed class EnrollmentService
         _logger?.Write(AuditLevel.Information, "UC-02", "Зарахування відраховано.");
     }
 
+/// <summary>Performs the Transfer operation.</summary>
     public void Transfer(int enrollmentId, int targetGroupId)
     {
         var enrollment = GetActiveEnrollment(enrollmentId);
@@ -102,6 +108,7 @@ public sealed class EnrollmentService
         _logger?.Write(AuditLevel.Information, "UC-03", "Слухача переведено до іншої групи.");
     }
 
+/// <summary>Performs the Complete operation.</summary>
     public void Complete(int enrollmentId)
     {
         var enrollment = GetActiveEnrollment(enrollmentId);
@@ -110,6 +117,7 @@ public sealed class EnrollmentService
         _logger?.Write(AuditLevel.Information, "UC-07", "Навчання позначено завершеним.");
     }
 
+/// <summary>Performs the Search operation.</summary>
     public IReadOnlyList<Enrollment> Search(EnrollmentSearchCriteria criteria)
     {
         ArgumentNullException.ThrowIfNull(criteria);
@@ -164,6 +172,7 @@ public sealed class EnrollmentService
             .ToArray();
     }
 
+/// <summary>Performs the GetOccupancyReport operation.</summary>
     public IReadOnlyList<GroupOccupancy> GetOccupancyReport(int? courseId = null)
     {
         var groups = _repository.GetAll()
