@@ -160,16 +160,20 @@ while (running)
             break;
 
         case "6":
-            Console.Write("Ім'я або email слухача: ");
-            var memberQuery = Console.ReadLine() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(memberQuery))
+            Console.Write("Ім'я/email слухача (необов'язково): ");
+            var memberQuery = Console.ReadLine();
+            Console.Write("Код курсу (необов'язково): ");
+            var courseCode = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(memberQuery) &&
+                string.IsNullOrWhiteSpace(courseCode))
             {
                 Console.WriteLine("Введіть хоча б один критерій пошуку.");
                 break;
             }
 
-            var found = enrollmentService.Search(
-                new EnrollmentSearchCriteria(MemberQuery: memberQuery));
+            var found = enrollmentService.Search(new EnrollmentSearchCriteria(
+                MemberQuery: memberQuery,
+                CourseCode: courseCode));
             if (found.Count == 0)
             {
                 Console.WriteLine("За заданим критерієм нічого не знайдено.");
@@ -222,6 +226,20 @@ while (running)
 
 static int? ReadInt(string prompt)
 {
-    Console.Write(prompt);
-    return int.TryParse(Console.ReadLine(), out var value) ? value : null;
+    while (true)
+    {
+        Console.Write(prompt);
+        var input = Console.ReadLine();
+        if (input is null)
+        {
+            return null;
+        }
+
+        if (int.TryParse(input, out var value))
+        {
+            return value;
+        }
+
+        Console.WriteLine("Некоректне значення. Введіть ціле число.");
+    }
 }
