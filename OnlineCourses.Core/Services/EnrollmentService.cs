@@ -199,7 +199,7 @@ public sealed class EnrollmentService
         }
     }
 
-    private static void EnsureSearchCriteria(EnrollmentSearchCriteria criteria)
+    private void EnsureSearchCriteria(EnrollmentSearchCriteria criteria)
     {
         if (string.IsNullOrWhiteSpace(criteria.MemberQuery) &&
             string.IsNullOrWhiteSpace(criteria.CourseCode) &&
