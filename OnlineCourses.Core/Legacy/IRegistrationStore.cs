@@ -1,5 +1,7 @@
 namespace OnlineCourses.Core.Legacy;
 
+using OnlineCourses.Core.Domain;
+
 /// <summary>Defines the legacy registration storage and output contract.</summary>
 public interface IRegistrationStore
 {
