@@ -151,6 +151,43 @@ public sealed class EnrollmentServiceTests
         Assert.Contains(logger.Entries, x => x.Level == AuditLevel.Warning);
     }
 
+
+    [Fact]
+    public void Withdraw_LogsWarning_WhenEnrollmentDoesNotExist()
+    {
+        var logger = new RecordingAuditLogger();
+        var service = new EnrollmentService(CreateRepository(), logger: logger);
+
+        Assert.Throws<DomainRuleException>(() => service.Withdraw(999, "Заява"));
+
+        Assert.Contains(logger.Entries, entry =>
+            entry.Level == AuditLevel.Warning &&
+            entry.Scenario == "ENROLLMENT_NOT_FOUND");
+    }
+
+    [Fact]
+    public void Withdraw_LogsWarning_WhenEnrollmentIsNotActive()
+    {
+        var repository = CreateRepository();
+        var enrollment = new Enrollment(
+            1,
+            10,
+            1,
+            11,
+            new DateOnly(2026, 1, 1));
+        enrollment.Withdraw("Заява");
+        repository.Add(enrollment);
+
+        var logger = new RecordingAuditLogger();
+        var service = new EnrollmentService(repository, logger: logger);
+
+        Assert.Throws<DomainRuleException>(() => service.Withdraw(1, "Повторна заява"));
+
+        Assert.Contains(logger.Entries, entry =>
+            entry.Level == AuditLevel.Warning &&
+            entry.Scenario == "ENROLLMENT_NOT_ACTIVE");
+    }
+
     private static InMemoryEnrollmentRepository CreateRepository()
     {
         var repository = new InMemoryEnrollmentRepository();
