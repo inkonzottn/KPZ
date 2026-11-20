@@ -8,7 +8,7 @@ public sealed class Registration
 {
     private readonly List<RegistrationItem> _lines = new();
 
-/// <summary>Initializes a new instance of the <see cref="Registration"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Registration"/> class.</summary>
     public Registration(int id, int memberId, DateOnly createdAt)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -20,25 +20,25 @@ public sealed class Registration
         Status = DocumentStatus.New;
     }
 
-/// <summary>Gets the Id value.</summary>
+    /// <summary>Gets the Id value.</summary>
     public int Id { get; }
 
-/// <summary>Gets the MemberId value.</summary>
+    /// <summary>Gets the MemberId value.</summary>
     public int MemberId { get; }
 
-/// <summary>Gets the Total value.</summary>
+    /// <summary>Gets the Total value.</summary>
     public decimal Total { get; set; }
 
-/// <summary>Gets the CreatedAt value.</summary>
+    /// <summary>Gets the CreatedAt value.</summary>
     public DateOnly CreatedAt { get; }
 
-/// <summary>Gets the Status value.</summary>
+    /// <summary>Gets the Status value.</summary>
     public DocumentStatus Status { get; private set; }
 
-/// <summary>Defines the Lines member.</summary>
+    /// <summary>Defines the Lines member.</summary>
     public IReadOnlyList<RegistrationItem> Lines => _lines;
 
-/// <summary>Performs the AddLine operation.</summary>
+    /// <summary>Performs the AddLine operation.</summary>
     public void AddLine(RegistrationItem line)
     {
         ArgumentNullException.ThrowIfNull(line);
@@ -51,7 +51,7 @@ public sealed class Registration
         _lines.Add(line);
     }
 
-/// <summary>Performs the Confirm operation.</summary>
+    /// <summary>Performs the Confirm operation.</summary>
     public void Confirm()
     {
         if (Status != DocumentStatus.New)
@@ -67,7 +67,7 @@ public sealed class Registration
         Status = DocumentStatus.Confirmed;
     }
 
-/// <summary>Performs the Pay operation.</summary>
+    /// <summary>Performs the Pay operation.</summary>
     public void Pay()
     {
         if (Status != DocumentStatus.Confirmed)
@@ -78,7 +78,7 @@ public sealed class Registration
         Status = DocumentStatus.Paid;
     }
 
-/// <summary>Performs the Activate operation.</summary>
+    /// <summary>Performs the Activate operation.</summary>
     public void Activate()
     {
         if (Status != DocumentStatus.Paid)
@@ -89,7 +89,7 @@ public sealed class Registration
         Status = DocumentStatus.Active;
     }
 
-/// <summary>Performs the Refund operation.</summary>
+    /// <summary>Performs the Refund operation.</summary>
     public void Refund()
     {
         if (Status != DocumentStatus.Active)
@@ -100,7 +100,7 @@ public sealed class Registration
         Status = DocumentStatus.Refunded;
     }
 
-/// <summary>Performs the Cancel operation.</summary>
+    /// <summary>Performs the Cancel operation.</summary>
     public void Cancel()
     {
         if (Status != DocumentStatus.New && Status != DocumentStatus.Confirmed)
