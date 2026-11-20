@@ -1,19 +1,26 @@
-namespace OnlineCourses.Legacy;
+namespace OnlineCourses.Core.Legacy;
 
-/// <summary>Defines the contract for IRegistrationStore.</summary>
+/// <summary>Defines the legacy registration storage and output contract.</summary>
 public interface IRegistrationStore
 {
-    void Add(LegacyRegistration order);
+    /// <summary>Adds a legacy registration.</summary>
+    void Add(LegacyRegistration registration);
 
-    LegacyRegistration GetById(int id);
+    /// <summary>Gets a legacy registration by identifier.</summary>
+    LegacyRegistration? GetById(int id);
 
+    /// <summary>Saves a registration to a file.</summary>
     void SaveToFile(LegacyRegistration order, string path);
 
+    /// <summary>Sends an email message.</summary>
     void SendEmail(string recipient, string body);
 
+    /// <summary>Exports registrations as CSV text.</summary>
     string ExportCsv();
 
-    void Backup(string folder);
+    /// <summary>Creates a backup at the specified path.</summary>
+    void Backup(string path);
 
-    void PrintInvoice(LegacyRegistration order);
+    /// <summary>Prints a registration invoice.</summary>
+    void PrintInvoice(LegacyRegistration registration);
 }
