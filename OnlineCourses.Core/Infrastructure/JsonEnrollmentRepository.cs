@@ -191,62 +191,85 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
 
     private sealed class Snapshot
     {
+/// <summary>Gets the Members value.</summary>
         public List<MemberData> Members { get; set; } = [];
 
+/// <summary>Gets the Courses value.</summary>
         public List<CourseData> Courses { get; set; } = [];
 
+/// <summary>Gets the Groups value.</summary>
         public List<GroupData> Groups { get; set; } = [];
 
+/// <summary>Gets the Enrollments value.</summary>
         public List<EnrollmentData> Enrollments { get; set; } = [];
     }
 
     private sealed class MemberData
     {
+/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
+/// <summary>Gets the Name value.</summary>
         public string Name { get; set; } = string.Empty;
 
+/// <summary>Gets the Email value.</summary>
         public string Email { get; set; } = string.Empty;
     }
 
     private sealed class CourseData
     {
+/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
+/// <summary>Gets the Code value.</summary>
         public string Code { get; set; } = string.Empty;
 
+/// <summary>Gets the Title value.</summary>
         public string Title { get; set; } = string.Empty;
 
+/// <summary>Gets the Price value.</summary>
         public decimal Price { get; set; }
 
+/// <summary>Gets the PrerequisiteCourseIds value.</summary>
         public List<int> PrerequisiteCourseIds { get; set; } = [];
     }
 
     private sealed class GroupData
     {
+/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
+/// <summary>Gets the CourseId value.</summary>
         public int CourseId { get; set; }
 
+/// <summary>Gets the Name value.</summary>
         public string Name { get; set; } = string.Empty;
 
+/// <summary>Gets the Capacity value.</summary>
         public int Capacity { get; set; }
     }
 
     private sealed class EnrollmentData
     {
+/// <summary>Gets the Id value.</summary>
         public int Id { get; set; }
 
+/// <summary>Gets the MemberId value.</summary>
         public int MemberId { get; set; }
 
+/// <summary>Gets the CourseId value.</summary>
         public int CourseId { get; set; }
 
+/// <summary>Gets the GroupId value.</summary>
         public int GroupId { get; set; }
 
+/// <summary>Gets the EnrolledOn value.</summary>
         public DateOnly EnrolledOn { get; set; }
 
+/// <summary>Gets the Status value.</summary>
         public string Status { get; set; } = nameof(EnrollmentStatus.Active);
 
+/// <summary>Gets the WithdrawalReason value.</summary>
         public string? WithdrawalReason { get; set; }
     }
 }
