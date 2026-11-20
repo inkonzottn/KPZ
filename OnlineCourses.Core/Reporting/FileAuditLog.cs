@@ -1,24 +1,38 @@
 namespace OnlineCourses.Core.Reporting;
 
-using System;
-using System.IO;
+using OnlineCourses.Core.Abstractions;
 
-public sealed class FileAuditLog : IDisposable
+/// <summary>Додає записи аудиту до текстового файлу.</summary>
+public sealed class FileAuditLog : IAuditLogger, IDisposable
 {
     private readonly StreamWriter _writer;
+    private readonly IClock _clock;
     private bool _disposed;
 
-    public FileAuditLog(string path)
+    /// <summary>Відкриває файл журналу для додавання записів.</summary>
+    /// <param name="path">Шлях до файлу журналу.</param>
+    /// <param name="clock">Джерело часу; у тестах може бути фіксованим.</param>
+    public FileAuditLog(string path, IClock clock)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(clock);
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
         _writer = new StreamWriter(path, append: true);
+        _clock = clock;
     }
 
-    public void Write(string operation, int documentId)
+    /// <inheritdoc />
+    public void Write(AuditLevel level, string scenario, string message)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        _writer.WriteLine($"{DateTimeOffset.Now:O};{operation};{documentId}");
+        ArgumentException.ThrowIfNullOrWhiteSpace(scenario);
+        ArgumentException.ThrowIfNullOrWhiteSpace(message);
+        _writer.WriteLine(
+            $"{_clock.Today:yyyy-MM-dd};{DateTimeOffset.Now:HH:mm:ss zzz};{level};{scenario};{message}");
+        _writer.Flush();
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         if (_disposed)
@@ -26,7 +40,6 @@ public sealed class FileAuditLog : IDisposable
             return;
         }
 
-        _writer.Flush();
         _writer.Dispose();
         _disposed = true;
     }
