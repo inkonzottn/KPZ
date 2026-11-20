@@ -21,6 +21,16 @@ public sealed class DomainAndRepositoryBoundaryTests
         Assert.Equal("prerequisiteCourseIds", exception.ParamName);
     }
 
+
+    [Fact]
+    public void Course_RejectsNonPositivePrerequisiteId()
+    {
+        var exception = Assert.Throws<ArgumentException>(
+            () => new Course(2, "CS-02", "Алгоритми", 200m, [0]));
+
+        Assert.Equal("prerequisiteCourseIds", exception.ParamName);
+    }
+
     [Fact]
     public void Repository_RejectsGroupForUnknownCourse()
     {
