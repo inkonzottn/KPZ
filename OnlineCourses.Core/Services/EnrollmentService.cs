@@ -28,10 +28,10 @@ public sealed class EnrollmentService
     public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
     {
         _logger?.Write(AuditLevel.Information, "UC-01", "Початок зарахування.");
-        var member = _repository.GetMember(memberId);
+        var member = _repository.GetMember(memberId)
             ?? throw Reject("MEMBER_NOT_FOUND", $"Слухача з ID {memberId} не знайдено.");
         var group = _repository.GetGroup(groupId)
-            ?? throw new DomainRuleException("GROUP_NOT_FOUND", $"Групу з ID {groupId} не знайдено.");
+            ?? throw Reject("GROUP_NOT_FOUND", $"Групу з ID {groupId} не знайдено.");
         var course = _repository.GetCourse(group.CourseId)
             ?? throw new DomainRuleException("COURSE_NOT_FOUND", "Курс для групи не знайдено.");
 
