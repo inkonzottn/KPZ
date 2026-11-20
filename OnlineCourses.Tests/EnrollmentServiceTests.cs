@@ -169,7 +169,7 @@ public sealed class EnrollmentServiceTests
         var enrollment = new Enrollment(1, 1, 1, 1, new DateOnly(2026, 1, 1));
         enrollment.Withdraw("Заява");
 
-        Assert.Throws<DomainRuleException>(() => enrollment.Reactivate());
+        Assert.Throws<DomainRuleException>(() => enrollment.Reactivate(0, 1));
     }
 
     [Fact]
