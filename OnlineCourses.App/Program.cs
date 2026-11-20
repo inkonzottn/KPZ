@@ -1,4 +1,5 @@
 using System.Text;
+using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Infrastructure;
 using OnlineCourses.Core.Pricing;
@@ -10,7 +11,9 @@ var repository = new JsonEnrollmentRepository(
     Path.Combine("data", "online-courses.json"),
     Path.Combine("data", "online-courses.seed.json"));
 
-var enrollmentService = new EnrollmentService(repository);
+var clock = new SystemClock();
+using var auditLog = new FileAuditLog(Path.Combine("logs", "application.log"), clock);
+var enrollmentService = new EnrollmentService(repository, clock, auditLog);
 var pricingPolicy = new CoursePackagePricingPolicy();
 var nextEnrollmentId = repository.GetAll().Select(x => x.Id).DefaultIfEmpty(0).Max() + 1;
 var running = true;
@@ -50,6 +53,11 @@ while (running)
                 {
                     Console.WriteLine($"Операцію відхилено: {ex.Message}");
                 }
+                catch (Exception)
+                {
+                    auditLog.Write(AuditLevel.Error, "APP", "Неочікувана помилка операції.");
+                    Console.WriteLine("Виникла внутрішня помилка. Подробиці записано до журналу.");
+                }
             }
 
             break;
@@ -69,6 +77,11 @@ while (running)
                 {
                     Console.WriteLine($"Операцію відхилено: {ex.Message}");
                 }
+                catch (Exception)
+                {
+                    auditLog.Write(AuditLevel.Error, "APP", "Неочікувана помилка операції.");
+                    Console.WriteLine("Виникла внутрішня помилка. Подробиці записано до журналу.");
+                }
             }
 
             break;
@@ -86,6 +99,11 @@ while (running)
                 catch (InvalidOperationException ex)
                 {
                     Console.WriteLine($"Операцію відхилено: {ex.Message}");
+                }
+                catch (Exception)
+                {
+                    auditLog.Write(AuditLevel.Error, "APP", "Неочікувана помилка операції.");
+                    Console.WriteLine("Виникла внутрішня помилка. Подробиці записано до журналу.");
                 }
             }
 
@@ -181,6 +199,11 @@ while (running)
                 catch (InvalidOperationException ex)
                 {
                     Console.WriteLine($"Операцію відхилено: {ex.Message}");
+                }
+                catch (Exception)
+                {
+                    auditLog.Write(AuditLevel.Error, "APP", "Неочікувана помилка операції.");
+                    Console.WriteLine("Виникла внутрішня помилка. Подробиці записано до журналу.");
                 }
             }
 
