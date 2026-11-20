@@ -3,8 +3,10 @@ using OnlineCourses.Core.Domain;
 
 namespace OnlineCourses.Core;
 
+/// <summary>Parses a legacy registration line.</summary>
 public static class RegistrationLineParser
 {
+    /// <summary>Attempts to parse a line into a registration item.</summary>
     public static bool TryParse(string? raw, out RegistrationItem? line)
     {
         line = null;
