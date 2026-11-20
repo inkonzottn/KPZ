@@ -1,8 +1,11 @@
 namespace OnlineCourses.Core.Abstractions;
 
-/// <summary>Надає поточну календарну дату для прикладних сценаріїв.</summary>
+/// <summary>Надає поточний час для прикладних сценаріїв і журналювання.</summary>
 public interface IClock
 {
-    /// <summary>Повертає сьогоднішню дату.</summary>
+    /// <summary>Повертає поточний момент часу з часовим поясом.</summary>
+    DateTimeOffset Now { get; }
+
+    /// <summary>Повертає календарну дату поточного моменту.</summary>
     DateOnly Today { get; }
 }
