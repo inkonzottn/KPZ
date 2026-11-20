@@ -9,7 +9,10 @@ public sealed class FileAuditLog : IAuditLogger, IDisposable
     private readonly IClock _clock;
     private bool _disposed;
 
-    /// <summary>Відкриває файл журналу для додавання записів.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileAuditLog"/> class.
+    /// Відкриває файл журналу для додавання записів.
+    /// </summary>
     /// <param name="path">Шлях до файлу журналу.</param>
     /// <param name="clock">Джерело часу; у тестах може бути фіксованим.</param>
     public FileAuditLog(string path, IClock clock)
