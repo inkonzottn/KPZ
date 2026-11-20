@@ -1,5 +1,6 @@
 namespace OnlineCourses.Tests;
 
+using OnlineCourses.Core.Abstractions;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Pricing;
@@ -141,6 +142,7 @@ public sealed class EnrollmentServiceTests
         repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
         repository.Add(new Enrollment(2, 11, 1, 11, new DateOnly(2026, 1, 1)));
         repository.Add(new Enrollment(3, 12, 1, 11, new DateOnly(2026, 1, 1)));
+        repository.AddMember(new Member(13, "Марія", "maria@example.com"));
         var logger = new RecordingAuditLogger();
         var service = new EnrollmentService(repository, logger: logger);
 
