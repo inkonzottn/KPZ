@@ -111,6 +111,46 @@ public sealed class EnrollmentServiceBranchCoverageTests
         Assert.Empty(service.GetOccupancyReport(2));
     }
 
+
+    [Fact]
+    public void Withdraw_WritesInformationLogOnSuccess()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 11, 1)));
+        var logger = new RecordingAuditLogger();
+        var service = new EnrollmentService(repository, logger: logger);
+
+        service.Withdraw(1, "Заява слухача");
+
+        Assert.Contains(logger.Entries, entry =>
+            entry.Level == AuditLevel.Information && entry.Scenario == "UC-02");
+    }
+
+    [Fact]
+    public void Transfer_RejectsUnknownTargetGroup()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 11, 1)));
+        var service = new EnrollmentService(repository);
+
+        var exception = Assert.Throws<DomainRuleException>(() => service.Transfer(1, 999));
+
+        Assert.Equal("GROUP_NOT_FOUND", exception.Rule);
+        Assert.Equal(11, repository.GetById(1)!.GroupId);
+    }
+
+    [Fact]
+    public void Search_SkipsEnrollmentWhoseCourseIsMissing()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 999, 11, new DateOnly(2026, 11, 1)));
+        var service = new EnrollmentService(repository);
+
+        var result = service.Search(new EnrollmentSearchCriteria(CourseCode: "CS-01"));
+
+        Assert.Empty(result);
+    }
+
     private static InMemoryEnrollmentRepository CreateRepository()
     {
         var repository = new InMemoryEnrollmentRepository();
