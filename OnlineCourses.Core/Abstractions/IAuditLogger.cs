@@ -3,8 +3,11 @@ namespace OnlineCourses.Core.Abstractions;
 /// <summary>Рівні аудиторського журналу.</summary>
 public enum AuditLevel
 {
+    /// <summary>Represents the Information value.</summary>
     Information,
+    /// <summary>Represents the Warning value.</summary>
     Warning,
+    /// <summary>Represents the Error value.</summary>
     Error
 }
 
