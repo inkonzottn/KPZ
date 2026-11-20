@@ -128,7 +128,10 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         foreach (var course in courses)
         {
             _memory.AddCourse(new Course(
-                course.Id, course.Code, course.Title, course.Price,
+                course.Id,
+                course.Code,
+                course.Title,
+                course.Price,
                 course.PrerequisiteCourseIds));
         }
     }
@@ -153,7 +156,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         }
     }
 
-    private static void RestoreStatus(Enrollment enrollment, EnrollmentData item)
+    private void RestoreStatus(Enrollment enrollment, EnrollmentData item)
     {
         switch (item.Status)
         {
@@ -183,14 +186,14 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         Enrollments = _memory.GetAll().Select(CreateEnrollmentData).ToList()
     };
 
-    private static MemberData CreateMemberData(Member member) => new()
+    private MemberData CreateMemberData(Member member) => new()
     {
         Id = member.Id,
         Name = member.Name,
         Email = member.Email
     };
 
-    private static CourseData CreateCourseData(Course course) => new()
+    private CourseData CreateCourseData(Course course) => new()
     {
         Id = course.Id,
         Code = course.Code,
@@ -199,7 +202,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         PrerequisiteCourseIds = course.PrerequisiteCourseIds.ToList()
     };
 
-    private static GroupData CreateGroupData(CourseGroup group) => new()
+    private GroupData CreateGroupData(CourseGroup group) => new()
     {
         Id = group.Id,
         CourseId = group.CourseId,
@@ -207,7 +210,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         Capacity = group.Capacity
     };
 
-    private static EnrollmentData CreateEnrollmentData(Enrollment enrollment) => new()
+    private EnrollmentData CreateEnrollmentData(Enrollment enrollment) => new()
     {
         Id = enrollment.Id,
         MemberId = enrollment.MemberId,
