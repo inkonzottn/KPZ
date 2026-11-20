@@ -267,6 +267,18 @@ public sealed class EnrollmentService
         _repository.GetAll().Count(x =>
             x.GroupId == groupId && x.Status == EnrollmentStatus.Active);
 
+    private Enrollment GetSuspendedEnrollment(int enrollmentId)
+    {
+        var enrollment = _repository.GetById(enrollmentId)
+            ?? throw Reject("ENROLLMENT_NOT_FOUND", $"Зарахування з ID {enrollmentId} не знайдено.");
+        if (enrollment.Status != EnrollmentStatus.Suspended)
+        {
+            throw Reject("ENROLLMENT_NOT_SUSPENDED", "Поновити можна лише призупинене зарахування.");
+        }
+
+        return enrollment;
+    }
+
     private Enrollment GetActiveEnrollment(int enrollmentId)
     {
         var enrollment = _repository.GetById(enrollmentId)
