@@ -123,6 +123,23 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public void Enroll_UsesFakeRepositoryAndFixedClock()
+    {
+        var repository = new FakeEnrollmentRepository();
+        repository.AddMember(new Member(1, "Test", "test@example.com"));
+        repository.AddCourse(new Course(1, "CS-1", "Basics", 100m));
+        repository.AddGroup(new CourseGroup(1, 1, "Group A", 2));
+        var clock = new FixedClock(
+            new DateTimeOffset(2026, 11, 20, 9, 30, 0, TimeSpan.FromHours(2)));
+        var service = new EnrollmentService(repository, clock);
+
+        var result = service.Enroll(1, 1, 1);
+
+        Assert.Equal(new DateOnly(2026, 11, 20), result.EnrolledOn);
+        Assert.Equal(EnrollmentStatus.Active, result.Status);
+    }
+
+    [Fact]
     public void Enroll_UsesInjectedClockDate()
     {
         var repository = CreateRepository();
