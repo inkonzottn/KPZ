@@ -3,8 +3,10 @@ namespace OnlineCourses.Legacy;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Represents the RegistrationManager type.</summary>
 public class RegistrationManager
 {
+/// <summary>Performs the BuildCsvReport operation.</summary>
     public static string BuildCsvReport(List<LegacyRegistration> orders)
     {
         var text = "id;total;status" + Environment.NewLine;
@@ -17,6 +19,7 @@ public class RegistrationManager
         return text;
     }
 
+/// <summary>Performs the Archive operation.</summary>
     public static void Archive(LegacyRegistration registration)
     {
         var coreRegistration = new Registration(registration.Id, 1, DateOnly.FromDateTime(DateTime.Today));
@@ -25,6 +28,7 @@ public class RegistrationManager
         FileRegistrationStore.SaveToFile(registration, "archive.json");
     }
 
+/// <summary>Performs the Place operation.</summary>
     public static decimal Place(LegacyRegistration registration, string customerType)
     {
         decimal total = 0m;
