@@ -1,0 +1,193 @@
+namespace OnlineCourses.Core.Services;
+
+using OnlineCourses.Core.Abstractions;
+using OnlineCourses.Core.Domain;
+using OnlineCourses.Core.Reporting;
+
+public sealed class EnrollmentService
+{
+    private readonly IEnrollmentRepository _repository;
+
+    public EnrollmentService(IEnrollmentRepository repository)
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+    }
+
+    public Enrollment Enroll(int enrollmentId, int memberId, int groupId, DateOnly enrolledOn)
+    {
+        var member = _repository.GetMember(memberId)
+            ?? throw new InvalidOperationException($"Слухача з ID {memberId} не знайдено.");
+        var group = _repository.GetGroup(groupId)
+            ?? throw new InvalidOperationException($"Групу з ID {groupId} не знайдено.");
+        var course = _repository.GetCourse(group.CourseId)
+            ?? throw new InvalidOperationException("Курс для групи не знайдено.");
+
+        if (_repository.GetAll().Any(x =>
+            x.MemberId == member.Id &&
+            x.CourseId == course.Id &&
+            x.Status == EnrollmentStatus.Active))
+        {
+            throw new InvalidOperationException("Слухач уже має активне зарахування на цей курс.");
+        }
+
+        var missingPrerequisites = course.PrerequisiteCourseIds
+            .Where(id => !_repository.HasCompletedCourse(member.Id, id))
+            .ToArray();
+
+        if (missingPrerequisites.Length > 0)
+        {
+            throw new InvalidOperationException(
+                $"Не виконано передумови курсу: {string.Join(", ", missingPrerequisites)}.");
+        }
+
+        if (OccupiedSeats(group.Id) >= group.Capacity)
+        {
+            throw new InvalidOperationException("У групі немає вільних місць.");
+        }
+
+        var enrollment = new Enrollment(enrollmentId, member.Id, course.Id, group.Id, enrolledOn);
+        _repository.Add(enrollment);
+        return enrollment;
+    }
+
+    public void Withdraw(int enrollmentId, string reason)
+    {
+        var enrollment = GetActiveEnrollment(enrollmentId);
+        enrollment.Withdraw(reason);
+        _repository.Save(enrollment);
+    }
+
+    public void Transfer(int enrollmentId, int targetGroupId)
+    {
+        var enrollment = GetActiveEnrollment(enrollmentId);
+        var targetGroup = _repository.GetGroup(targetGroupId)
+            ?? throw new InvalidOperationException($"Групу з ID {targetGroupId} не знайдено.");
+
+        if (targetGroup.CourseId != enrollment.CourseId)
+        {
+            throw new InvalidOperationException("Переведення можливе лише до групи того самого курсу.");
+        }
+
+        if (targetGroup.Id == enrollment.GroupId)
+        {
+            throw new InvalidOperationException("Слухач уже навчається в цій групі.");
+        }
+
+        if (OccupiedSeats(targetGroup.Id) >= targetGroup.Capacity)
+        {
+            throw new InvalidOperationException("У цільовій групі немає вільних місць.");
+        }
+
+        enrollment.TransferTo(targetGroup.Id);
+        _repository.Save(enrollment);
+    }
+
+    public void Complete(int enrollmentId)
+    {
+        var enrollment = GetActiveEnrollment(enrollmentId);
+        enrollment.Complete();
+        _repository.Save(enrollment);
+    }
+
+    public IReadOnlyList<Enrollment> Search(EnrollmentSearchCriteria criteria)
+    {
+        ArgumentNullException.ThrowIfNull(criteria);
+
+        if (string.IsNullOrWhiteSpace(criteria.MemberQuery) &&
+            string.IsNullOrWhiteSpace(criteria.CourseCode) &&
+            !criteria.GroupId.HasValue &&
+            !criteria.Status.HasValue)
+        {
+            throw new ArgumentException("Потрібно вказати хоча б один критерій пошуку.", nameof(criteria));
+        }
+
+        var query = _repository.GetAll().AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(criteria.MemberQuery))
+        {
+            var memberQuery = criteria.MemberQuery.Trim();
+            query = query.Where(enrollment =>
+            {
+                var member = _repository.GetMember(enrollment.MemberId);
+                return member is not null &&
+                    (member.Name.Contains(memberQuery, StringComparison.OrdinalIgnoreCase) ||
+                     member.Email.Contains(memberQuery, StringComparison.OrdinalIgnoreCase));
+            });
+        }
+
+        if (!string.IsNullOrWhiteSpace(criteria.CourseCode))
+        {
+            var courseCode = criteria.CourseCode.Trim();
+            query = query.Where(enrollment =>
+            {
+                var course = _repository.GetCourse(enrollment.CourseId);
+                return course is not null &&
+                    course.Code.Contains(courseCode, StringComparison.OrdinalIgnoreCase);
+            });
+        }
+
+        if (criteria.GroupId.HasValue)
+        {
+            query = query.Where(x => x.GroupId == criteria.GroupId.Value);
+        }
+
+        if (criteria.Status.HasValue)
+        {
+            query = query.Where(x => x.Status == criteria.Status.Value);
+        }
+
+        return query
+            .OrderBy(x => x.MemberId)
+            .ThenBy(x => x.CourseId)
+            .ThenBy(x => x.Id)
+            .ToArray();
+    }
+
+    public IReadOnlyList<GroupOccupancy> GetOccupancyReport(int? courseId = null)
+    {
+        var groups = _repository.GetAll()
+            .Where(x => x.Status == EnrollmentStatus.Active)
+            .GroupBy(x => x.GroupId)
+            .ToDictionary(x => x.Key, x => x.Count());
+
+        var result = new List<GroupOccupancy>();
+        foreach (var group in _repository.GetGroups())
+        {
+            if (courseId.HasValue && group.CourseId != courseId.Value)
+            {
+                continue;
+            }
+
+            var course = _repository.GetCourse(group.CourseId)
+                ?? throw new InvalidOperationException("Курс для групи не знайдено.");
+            var occupied = groups.GetValueOrDefault(group.Id);
+            result.Add(new GroupOccupancy(
+                course.Code,
+                group.Name,
+                occupied,
+                group.Capacity));
+        }
+
+        return result
+            .OrderBy(x => x.CourseCode, StringComparer.Ordinal)
+            .ThenBy(x => x.GroupName, StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    private int OccupiedSeats(int groupId) =>
+        _repository.GetAll().Count(x =>
+            x.GroupId == groupId && x.Status == EnrollmentStatus.Active);
+
+    private Enrollment GetActiveEnrollment(int enrollmentId)
+    {
+        var enrollment = _repository.GetById(enrollmentId)
+            ?? throw new InvalidOperationException($"Зарахування з ID {enrollmentId} не знайдено.");
+
+        if (enrollment.Status != EnrollmentStatus.Active)
+        {
+            throw new InvalidOperationException("Операція доступна лише для активного зарахування.");
+        }
+
+        return enrollment;
+    }
+}

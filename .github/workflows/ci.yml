@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ main, 'feature/**' ]
+    branches: [ main, 'feature/**', 'work/**' ]
   pull_request:
     branches: [ main ]
 jobs:
@@ -30,8 +30,8 @@ jobs:
           -c Release --no-build
           /p:CollectCoverage=true
           /p:CoverletOutputFormat=cobertura
-          /p:Threshold=60 /p:ThresholdType=line
-          "/p:Include=[OnlineCourses.Core]OnlineCourses.Core.Pricing.CourseDiscountPolicy%2c[OnlineCourses.Core]OnlineCourses.Core.Services.RegistrationService%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Registration%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.RegistrationItem"
+          /p:Threshold=70 /p:ThresholdType=line
+          "/p:Include=[OnlineCourses.Core]OnlineCourses.Core.Pricing.CourseDiscountPolicy%2c[OnlineCourses.Core]OnlineCourses.Core.Services.RegistrationService%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Registration%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.RegistrationItem%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Course%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.CourseGroup%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Enrollment%2c[OnlineCourses.Core]OnlineCourses.Core.Services.EnrollmentService%2c[OnlineCourses.Core]OnlineCourses.Core.Services.InMemoryEnrollmentRepository%2c[OnlineCourses.Core]OnlineCourses.Core.Pricing.CoursePackagePricingPolicy"
       - name: Зберегти звіт про покриття
         if: always()
         uses: actions/upload-artifact@v4
