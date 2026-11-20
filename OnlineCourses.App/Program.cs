@@ -229,7 +229,7 @@ internal static class Program
             operation();
             return true;
         }
-        catch (InvalidOperationException ex)
+        catch (DomainRuleException ex)
         {
             Console.WriteLine($"Операцію відхилено: {ex.Message}");
         }
@@ -240,7 +240,7 @@ internal static class Program
         catch (Exception)
         {
             logger.Write(AuditLevel.Error, scenario, "Неочікувана помилка операції.");
-            Console.WriteLine("Виникла внутрішня помилка. Подробиці записано до журналу.");
+            throw;
         }
 
         return false;
