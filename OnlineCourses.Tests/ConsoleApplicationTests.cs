@@ -28,7 +28,7 @@ public sealed class ConsoleApplicationTests
     public void Run_ReportsInvalidIntegerInput()
     {
         var repository = CreateRepository();
-        var console = new TestConsole("1", "not-a-number", "0");
+        var console = new TestConsole("1", "not-a-number", "11", "0");
         var application = CreateApplication(repository, console);
 
         application.Run();
