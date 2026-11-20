@@ -246,21 +246,6 @@ internal static class Program
         return false;
     }
 
-    private sealed class ApplicationContext
-    {
-        public required IEnrollmentRepository Repository { get; init; }
-
-        public required EnrollmentService Service { get; init; }
-
-        public required CoursePackagePricingPolicy Pricing { get; init; }
-
-        public required IAuditLogger Logger { get; init; }
-
-        public required IClock Clock { get; init; }
-
-        public int NextEnrollmentId { get; set; }
-    }
-
     private static int? ReadInt(string prompt)
     {
         while (true)
@@ -300,4 +285,19 @@ internal static class Program
             Console.WriteLine("Поле не може бути порожнім.");
         }
     }
+    private sealed class ApplicationContext
+    {
+        public required IEnrollmentRepository Repository { get; init; }
+
+        public required EnrollmentService Service { get; init; }
+
+        public required CoursePackagePricingPolicy Pricing { get; init; }
+
+        public required IAuditLogger Logger { get; init; }
+
+        public required IClock Clock { get; init; }
+
+        public int NextEnrollmentId { get; set; }
+    }
+
 }
