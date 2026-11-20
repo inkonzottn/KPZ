@@ -9,16 +9,16 @@ public sealed class InMemoryRegistrationRepository : IRegistrationRepository
     private readonly Dictionary<int, Registration> _storage = new();
 
     /// <summary>Performs the Add operation.</summary>
-    public void Add(Registration document)
+    public void Add(Registration registration)
     {
-        ArgumentNullException.ThrowIfNull(document);
+        ArgumentNullException.ThrowIfNull(registration);
 
-        if (_storage.ContainsKey(document.Id))
+        if (_storage.ContainsKey(registration.Id))
         {
-            throw new InvalidOperationException($"Реєстрація з ID {document.Id} вже існує.");
+            throw new InvalidOperationException($"Реєстрація з ID {registration.Id} вже існує.");
         }
 
-        _storage[document.Id] = document;
+        _storage[registration.Id] = registration;
     }
 
     /// <summary>Performs the GetById operation.</summary>
