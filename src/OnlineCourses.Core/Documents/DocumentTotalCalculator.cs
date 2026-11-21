@@ -6,6 +6,7 @@ using OnlineCourses.Core.Legacy;
 public static class DocumentTotalCalculator
 {
     private const int MoneyDecimalPlaces = 2;
+
     /// <summary>Перевіряє запит і повертає підсумкову суму та наступний стан документа.</summary>
     /// <param name="request">Дані документа, клієнта, позицій і знижок.</param>
     /// <returns>Розрахована сума та стан документа після розрахунку.</returns>
