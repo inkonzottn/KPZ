@@ -9,7 +9,7 @@ public sealed class DiscountPricingPolicy : IPricingPolicy
 {
     private readonly decimal _rate;
 
-    /// <summary>Initializes the policy with a validated discount rate.</summary>
+    /// <summary>Initializes a new instance of the <see cref="DiscountPricingPolicy"/> class.</summary>
     /// <param name="rate">Discount fraction from zero through one half.</param>
     public DiscountPricingPolicy(decimal rate)
     {
