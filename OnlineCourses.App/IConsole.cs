@@ -3,7 +3,6 @@ namespace OnlineCourses.App;
 /// <summary>Визначає контракт консольного введення та виведення.</summary>
 public interface IConsole
 {
-
     /// <summary>Reads the next line of input or returns null at end of input.</summary>
     /// <returns>The entered line, or null when input ends.</returns>
     string? ReadLine();
