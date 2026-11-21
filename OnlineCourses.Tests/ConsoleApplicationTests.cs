@@ -64,6 +64,21 @@ public sealed class ConsoleApplicationTests
         Assert.Contains("#1 | Олена | CS-01 | Вечірня | Active", console.Output);
     }
 
+
+    [Fact]
+    public void Run_RepromptsInvalidOptionalSearchFilter()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 11, 20)));
+        var console = new TestConsole("6", "", "", "wrong", "11", "Active", "0");
+        var application = CreateApplication(repository, console);
+
+        application.Run();
+
+        Assert.Contains("ID групи має бути додатним цілим числом", console.Output);
+        Assert.Contains("#1 | Олена | CS-01 | Вечірня | Active", console.Output);
+    }
+
     [Fact]
     public void Run_ShowsDomainRejectionWithoutLoggingItAsUnexpectedError()
     {
