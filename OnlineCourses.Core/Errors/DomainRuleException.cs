@@ -3,7 +3,7 @@ namespace OnlineCourses.Core.Errors;
 /// <summary>Представляє відмову операції через порушення правила предметної області.</summary>
 public sealed class DomainRuleException : InvalidOperationException
 {
-    /// <summary>Створює виняток із кодом правила та зрозумілим повідомленням.</summary>
+    /// <summary>Initializes a new instance of the <see cref="DomainRuleException"/> class.</summary>
     /// <param name="rule">Стабільний код порушеного правила.</param>
     /// <param name="message">Опис причини відмови.</param>
     public DomainRuleException(string rule, string message)
@@ -12,7 +12,7 @@ public sealed class DomainRuleException : InvalidOperationException
         Rule = rule;
     }
 
-    /// <summary>Створює виняток із кодом правила, повідомленням і внутрішньою помилкою.</summary>
+    /// <summary>Initializes a new instance of the <see cref="DomainRuleException"/> class with an inner exception.</summary>
     /// <param name="rule">Стабільний код порушеного правила.</param>
     /// <param name="message">Опис причини відмови.</param>
     /// <param name="inner">Початкова помилка, що спричинила відмову.</param>
