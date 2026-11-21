@@ -45,8 +45,11 @@ public sealed class Enrollment
     /// <summary>Gets the current enrollment status.</summary>
     public EnrollmentStatus Status { get; private set; }
 
-    /// <summary>Gets the withdrawal reason, or null if the learner remains enrolled.</summary>
+    /// <summary>Gets the withdrawal reason, or null if not withdrawn.</summary>
     public string? WithdrawalReason { get; private set; }
+
+    /// <summary>Gets the administrative cancellation reason, if cancelled.</summary>
+    public string? CancellationReason { get; private set; }
 
     /// <summary>Відраховує слухача та зберігає причину операції.</summary>
     /// <param name="reason">Непорожнє пояснення причини відрахування.</param>
@@ -58,6 +61,18 @@ public sealed class Enrollment
         EnsureActive();
         WithdrawalReason = reason.Trim();
         Status = EnrollmentStatus.Withdrawn;
+    }
+
+    /// <summary>Анулює помилково оформлене активне зарахування.</summary>
+    /// <param name="reason">Адміністративна причина анулювання.</param>
+    /// <exception cref="ArgumentException">Причину не вказано.</exception>
+    /// <exception cref="DomainRuleException">Зарахування вже не є активним.</exception>
+    public void Cancel(string reason)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+        EnsureActive();
+        CancellationReason = reason.Trim();
+        Status = EnrollmentStatus.Cancelled;
     }
 
     /// <summary>Позначає активне зарахування як завершене.</summary>

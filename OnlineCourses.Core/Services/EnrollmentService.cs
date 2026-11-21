@@ -74,6 +74,18 @@ public sealed class EnrollmentService
         _logger?.Write(AuditLevel.Information, "UC-02", "Зарахування відраховано.");
     }
 
+    /// <summary>Анулює помилково оформлене активне зарахування.</summary>
+    /// <param name="enrollmentId">Ідентифікатор активного зарахування.</param>
+    /// <param name="reason">Адміністративна причина анулювання.</param>
+    /// <exception cref="DomainRuleException">Зарахування відсутнє або вже неактивне.</exception>
+    public void Cancel(int enrollmentId, string reason)
+    {
+        var enrollment = GetActiveEnrollment(enrollmentId);
+        enrollment.Cancel(reason);
+        _repository.Save(enrollment);
+        _logger?.Write(AuditLevel.Information, "UC-02", "Зарахування анульовано адміністратором.");
+    }
+
     /// <summary>Переводить слухача до іншої групи того самого курсу.</summary>
     /// <param name="enrollmentId">Ідентифікатор активного зарахування.</param>
     /// <param name="targetGroupId">Ідентифікатор цільової групи.</param>

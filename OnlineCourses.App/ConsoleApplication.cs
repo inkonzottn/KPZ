@@ -6,6 +6,7 @@ using OnlineCourses.Core.Errors;
 using OnlineCourses.Core.Pricing;
 using OnlineCourses.Core.Services;
 
+/// <summary>Керує консольними сценаріями системи OnlineCourses.</summary>
 public sealed class ConsoleApplication
 {
     private readonly IEnrollmentRepository _repository;
@@ -15,6 +16,12 @@ public sealed class ConsoleApplication
     private readonly IConsole _console;
     private int _nextEnrollmentId;
 
+    /// <summary>Створює консольний застосунок із переданими залежностями.</summary>
+    /// <param name="repository">Сховище навчальних даних.</param>
+    /// <param name="enrollmentService">Сервіс сценаріїв зарахування.</param>
+    /// <param name="pricingPolicy">Політика пакетної ціни.</param>
+    /// <param name="auditLogger">Журнал аудиту.</param>
+    /// <param name="console">Абстракція консольного вводу й виводу.</param>
     public ConsoleApplication(
         IEnrollmentRepository repository,
         EnrollmentService enrollmentService,
@@ -30,6 +37,7 @@ public sealed class ConsoleApplication
         _nextEnrollmentId = repository.GetAll().Select(item => item.Id).DefaultIfEmpty(0).Max() + 1;
     }
 
+    /// <summary>Запускає цикл обробки команд до завершення вводу або виходу.</summary>
     public void Run()
     {
         _console.WriteLine("OnlineCourses — система обліку навчальних груп");
@@ -54,6 +62,7 @@ public sealed class ConsoleApplication
         _console.WriteLine("5 — Розрахувати пакетну вартість");
         _console.WriteLine("6 — Пошук зарахувань");
         _console.WriteLine("7 — Позначити курс завершеним");
+        _console.WriteLine("8 — Анулювати помилкове зарахування");
         _console.WriteLine("0 — Вихід");
         _console.Write("Оберіть дію: ");
     }
@@ -74,6 +83,7 @@ public sealed class ConsoleApplication
             case "5": CalculatePackagePrice(); break;
             case "6": SearchEnrollments(); break;
             case "7": CompleteEnrollment(); break;
+            case "8": CancelEnrollment(); break;
             default: _console.WriteLine("Невідома команда. Спробуйте ще раз."); break;
         }
 
@@ -113,6 +123,19 @@ public sealed class ConsoleApplication
         {
             _enrollmentService.Withdraw(enrollmentId.Value, reason);
             _console.WriteLine("Слухача відраховано.");
+        });
+    }
+
+    private void CancelEnrollment()
+    {
+        var enrollmentId = ReadInt("ID зарахування: ");
+        if (!enrollmentId.HasValue) return;
+        _console.Write("Причина анулювання: ");
+        var reason = _console.ReadLine() ?? string.Empty;
+        Execute("UC-02", () =>
+        {
+            _enrollmentService.Cancel(enrollmentId.Value, reason);
+            _console.WriteLine("Помилкове зарахування анульовано.");
         });
     }
 
@@ -237,7 +260,7 @@ public sealed class ConsoleApplication
     {
         while (true)
         {
-            _console.Write("Стан Active/Withdrawn/Completed (необов'язково): ");
+            _console.Write("Стан Active/Withdrawn/Completed/Cancelled (необов'язково): ");
             var input = _console.ReadLine();
             if (input is null || string.IsNullOrWhiteSpace(input))
             {
@@ -249,7 +272,7 @@ public sealed class ConsoleApplication
                 return status;
             }
 
-            _console.WriteLine("Введіть Active, Withdrawn, Completed або залиште поле порожнім.");
+            _console.WriteLine("Введіть Active, Withdrawn, Completed, Cancelled або залиште поле порожнім.");
         }
     }
 

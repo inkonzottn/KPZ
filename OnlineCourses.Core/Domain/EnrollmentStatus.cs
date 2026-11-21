@@ -10,5 +10,8 @@ public enum EnrollmentStatus
     Withdrawn,
 
     /// <summary>Слухач завершив навчання за курсом.</summary>
-    Completed
+    Completed,
+
+    /// <summary>Адміністратор анулював помилково оформлене зарахування.</summary>
+    Cancelled
 }
