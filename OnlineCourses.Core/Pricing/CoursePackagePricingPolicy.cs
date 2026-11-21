@@ -6,6 +6,10 @@ using OnlineCourses.Core.Domain;
 /// <summary>Застосовує пакетну знижку залежно від кількості вибраних курсів.</summary>
 public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
 {
+    private const int TwoCoursePackageSize = 2;
+    private const decimal TwoCourseDiscountRate = 0.05m;
+    private const decimal ThreeOrMoreCoursesDiscountRate = 0.10m;
+
     /// <summary>Розраховує суму пакета із знижкою 5 % за два курси та 10 % за три й більше.</summary>
     /// <param name="courses">Непорожня послідовність різних курсів із невід'ємними цінами.</param>
     /// <returns>Базова сума, ставка, сума знижки та сума до сплати.</returns>
@@ -30,8 +34,8 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
         var rate = package.Length switch
         {
             1 => 0m,
-            2 => 0.05m,
-            _ => 0.10m
+            TwoCoursePackageSize => TwoCourseDiscountRate,
+            _ => ThreeOrMoreCoursesDiscountRate
         };
 
         var discount = decimal.Round(baseTotal * rate, 2, MidpointRounding.AwayFromZero);
