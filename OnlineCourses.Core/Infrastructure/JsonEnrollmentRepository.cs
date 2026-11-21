@@ -106,17 +106,30 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     public bool HasCompletedCourse(int memberId, int courseId) =>
         _memory.HasCompletedCourse(memberId, courseId);
 
+    private static Snapshot DeserializeSnapshot(string json) =>
+        JsonSerializer.Deserialize<Snapshot>(json, JsonOptions)
+        ?? throw new InvalidDataException("JSON-файл не містить коректного набору даних.");
+
     private void Load(string json)
     {
-        var snapshot = JsonSerializer.Deserialize<Snapshot>(json, JsonOptions)
-            ?? throw new InvalidDataException("JSON-файл не містить коректного набору даних.");
+        var snapshot = DeserializeSnapshot(json);
+        LoadMembers(snapshot.Members);
+        LoadCourses(snapshot.Courses);
+        LoadGroups(snapshot.Groups);
+        LoadEnrollments(snapshot.Enrollments);
+    }
 
-        foreach (var member in snapshot.Members)
+    private void LoadMembers(IEnumerable<MemberData> members)
+    {
+        foreach (var member in members)
         {
             _memory.AddMember(new Member(member.Id, member.Name, member.Email));
         }
+    }
 
-        foreach (var course in snapshot.Courses)
+    private void LoadCourses(IEnumerable<CourseData> courses)
+    {
+        foreach (var course in courses)
         {
             _memory.AddCourse(new Course(
                 course.Id,
@@ -125,8 +138,11 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
                 course.Price,
                 course.PrerequisiteCourseIds));
         }
+    }
 
-        foreach (var group in snapshot.Groups)
+    private void LoadGroups(IEnumerable<GroupData> groups)
+    {
+        foreach (var group in groups)
         {
             _memory.AddGroup(new CourseGroup(
                 group.Id,
@@ -134,31 +150,39 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
                 group.Name,
                 group.Capacity));
         }
+    }
 
-        foreach (var item in snapshot.Enrollments)
+    private void LoadEnrollments(IEnumerable<EnrollmentData> enrollments)
+    {
+        foreach (var item in enrollments)
         {
-            var enrollment = new Enrollment(
-                item.Id,
-                item.MemberId,
-                item.CourseId,
-                item.GroupId,
-                item.EnrolledOn);
-
-            if (item.Status == nameof(EnrollmentStatus.Withdrawn))
-            {
-                enrollment.Withdraw(item.WithdrawalReason ?? "Причину не вказано у файлі.");
-            }
-            else if (item.Status == nameof(EnrollmentStatus.Completed))
-            {
-                enrollment.Complete();
-            }
-            else if (item.Status == nameof(EnrollmentStatus.Cancelled))
-            {
-                enrollment.Cancel(item.CancellationReason ?? "Причину не вказано у файлі.");
-            }
-
-            _memory.Add(enrollment);
+            _memory.Add(RestoreEnrollment(item));
         }
+    }
+
+    private Enrollment RestoreEnrollment(EnrollmentData item)
+    {
+        var enrollment = new Enrollment(
+            item.Id,
+            item.MemberId,
+            item.CourseId,
+            item.GroupId,
+            item.EnrolledOn);
+
+        switch (item.Status)
+        {
+            case nameof(EnrollmentStatus.Withdrawn):
+                enrollment.Withdraw(item.WithdrawalReason ?? "Причину не вказано у файлі.");
+                break;
+            case nameof(EnrollmentStatus.Completed):
+                enrollment.Complete();
+                break;
+            case nameof(EnrollmentStatus.Cancelled):
+                enrollment.Cancel(item.CancellationReason ?? "Причину не вказано у файлі.");
+                break;
+        }
+
+        return enrollment;
     }
 
     private void Persist()
