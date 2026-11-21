@@ -2,7 +2,7 @@ namespace OnlineCourses.App;
 
 public interface IConsole
 {
-    string? ReadLine();
+    string? ReadLine();   
 
     void Write(string value);
 
