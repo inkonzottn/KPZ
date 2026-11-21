@@ -8,7 +8,7 @@
 git clone https://github.com/inkonzottn/KPZ.git
 cd KPZ
 dotnet build OnlineCourses.slnx -c Release
-dotnet run --project OnlineCourses.App
+dotnet run --project src/OnlineCourses.App
 ```
 
 Після запуску відкривається консольне меню OnlineCourses. Воно дає змогу зараховувати слухачів, відраховувати їх, переводити між групами, переглядати наповнюваність, рахувати пакетну вартість, шукати зарахування та позначати навчання завершеним.
