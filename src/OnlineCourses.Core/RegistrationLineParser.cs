@@ -3,8 +3,13 @@ using OnlineCourses.Core.Domain;
 
 namespace OnlineCourses.Core;
 
+/// <summary>Converts delimited text into validated registration line data.</summary>
 public static class RegistrationLineParser
 {
+    /// <summary>Attempts to parse a registration line without throwing for invalid input.</summary>
+    /// <param name="raw">Text containing SKU, quantity, and unit price separated by semicolons.</param>
+    /// <param name="line">Parsed line when conversion succeeds; otherwise null.</param>
+    /// <returns>True when all fields satisfy the input rules.</returns>
     public static bool TryParse(string? raw, out RegistrationItem? line)
     {
         line = null;
