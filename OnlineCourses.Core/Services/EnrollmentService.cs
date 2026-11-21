@@ -55,7 +55,7 @@ public sealed class EnrollmentService
         var course = FindCourse(group.CourseId);
         EnsureNotEnrolled(member.Id, course.Id);
         EnsurePrerequisites(member.Id, course);
-        EnsureCapacity(group);
+        EnsureCapacity(group, "GROUP_CAPACITY_REACHED", "У групі немає вільних місць.");
         var enrollment = new Enrollment(enrollmentId, member.Id, course.Id, group.Id, enrolledOn);
         _repository.Add(enrollment);
         _logger?.Write(AuditLevel.Information, "UC-01", "Зарахування успішно створено.");
@@ -84,7 +84,7 @@ public sealed class EnrollmentService
         var targetGroup = FindGroup(targetGroupId);
         EnsureSameCourse(enrollment, targetGroup);
         EnsureDifferentGroup(enrollment, targetGroup);
-        EnsureCapacity(targetGroup);
+        EnsureCapacity(targetGroup, "TARGET_GROUP_FULL", "У цільовій групі немає вільних місць.");
         enrollment.TransferTo(targetGroup.Id);
         _repository.Save(enrollment);
         _logger?.Write(AuditLevel.Information, "UC-03", "Слухача переведено до іншої групи.");
@@ -174,11 +174,11 @@ public sealed class EnrollmentService
         }
     }
 
-    private void EnsureCapacity(CourseGroup group)
+    private void EnsureCapacity(CourseGroup group, string rule, string message)
     {
         if (OccupiedSeats(group.Id) >= group.Capacity)
         {
-            throw Reject("GROUP_CAPACITY_REACHED", "У групі немає вільних місць.");
+            throw Reject(rule, message);
         }
     }
 
