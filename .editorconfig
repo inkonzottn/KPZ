@@ -93,3 +93,12 @@ dotnet_diagnostic.CS1591.severity = warning
 dotnet_diagnostic.CS1591.severity = warning
 [OnlineCourses.Core/Abstractions/IEnrollmentRepository.cs]
 dotnet_diagnostic.CS1591.severity = warning
+
+[OnlineCourses.Core/Abstractions/IAuditLogger.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Reporting/GroupOccupancy.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Errors/DomainRuleException.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Pricing/CourseDiscountPolicy.cs]
+dotnet_diagnostic.CS1591.severity = warning
