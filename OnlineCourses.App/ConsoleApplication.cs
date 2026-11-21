@@ -183,16 +183,24 @@ public sealed class ConsoleApplication
 
     private void SearchEnrollments()
     {
-        _console.Write("Ім'я або email слухача: ");
-        var memberQuery = _console.ReadLine() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(memberQuery))
+        _console.Write("Ім'я або email (необов'язково): ");
+        var memberQuery = _console.ReadLine();
+        _console.Write("Код курсу (необов'язково): ");
+        var courseCode = _console.ReadLine();
+        var groupId = ReadOptionalInt("ID групи (необов'язково): ");
+        var status = ReadOptionalStatus();
+
+        if (string.IsNullOrWhiteSpace(memberQuery) &&
+            string.IsNullOrWhiteSpace(courseCode) &&
+            !groupId.HasValue &&
+            !status.HasValue)
         {
             _console.WriteLine("Введіть хоча б один критерій пошуку.");
             return;
         }
 
-        var found = _enrollmentService.Search(
-            new EnrollmentSearchCriteria(MemberQuery: memberQuery));
+        var criteria = new EnrollmentSearchCriteria(memberQuery, courseCode, groupId, status);
+        var found = _enrollmentService.Search(criteria);
         if (found.Count == 0)
         {
             _console.WriteLine("За заданим критерієм нічого не знайдено.");
@@ -203,6 +211,42 @@ public sealed class ConsoleApplication
         {
             PrintEnrollment(item);
         }
+    }
+
+    private int? ReadOptionalInt(string prompt)
+    {
+        _console.Write(prompt);
+        var input = _console.ReadLine();
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return null;
+        }
+
+        if (int.TryParse(input, out var value) && value > 0)
+        {
+            return value;
+        }
+
+        _console.WriteLine("ID групи має бути додатним цілим числом.");
+        return null;
+    }
+
+    private EnrollmentStatus? ReadOptionalStatus()
+    {
+        _console.Write("Стан Active/Withdrawn/Completed (необов'язково): ");
+        var input = _console.ReadLine();
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return null;
+        }
+
+        if (Enum.TryParse<EnrollmentStatus>(input, true, out var status))
+        {
+            return status;
+        }
+
+        _console.WriteLine("Невідомий стан зарахування.");
+        return null;
     }
 
     private void PrintEnrollment(Enrollment enrollment)
