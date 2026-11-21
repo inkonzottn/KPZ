@@ -51,10 +51,10 @@ dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release
 Для локальної перевірки, еквівалентної основним quality gates CI:
 
 ```bash
-dotnet format OnlineCourses.slnx --verify-no-changes && dotnet build OnlineCourses.slnx -c Release -warnaserror && dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=70 /p:ThresholdType=line
+dotnet restore OnlineCourses.slnx && dotnet format OnlineCourses.slnx --verify-no-changes --no-restore && dotnet build OnlineCourses.slnx -c Release --no-restore -warnaserror && dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release --no-build && dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=70 "/p:ThresholdType=line%2cbranch" "/p:Include=[OnlineCourses.Core]OnlineCourses.Core.Pricing.CourseDiscountPolicy%2c[OnlineCourses.Core]OnlineCourses.Core.Services.RegistrationService%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Registration%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.RegistrationItem%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Course%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.CourseGroup%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Enrollment%2c[OnlineCourses.Core]OnlineCourses.Core.Services.EnrollmentService%2c[OnlineCourses.Core]OnlineCourses.Core.Services.InMemoryEnrollmentRepository%2c[OnlineCourses.Core]OnlineCourses.Core.Pricing.CoursePackagePricingPolicy"
 ```
 
-Поточний поріг CI — 70 % рядкового покриття. Фактичні line та branch coverage потрібно брати з артефакту конкретного успішного запуску, а не з попереднього звіту.
+Останній успішний прогін на коміті `965dd18` показав 96,2 % line coverage і 100 % branch coverage для вибраних класів логіки Core (110 основних тестів і 17 Legacy-тестів). CI вимагає не менше 70 % для обох показників. Межа вимірювання задана через Include у `.github/workflows/ci.yml`; консоль, форматування й файлове сховище не входять до цього набору. Після наступних змін числа потрібно звіряти з артефактом нового успішного прогону.
 
 ## 6. Технології
 

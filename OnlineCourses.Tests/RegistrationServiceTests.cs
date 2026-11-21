@@ -17,6 +17,57 @@ public class RegistrationServiceTests
             new StubNotifier(),
             NullLogger<RegistrationService>.Instance);
 
+
+    [Fact]
+    public void Constructor_RejectsNullRepository()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new RegistrationService(
+                null!,
+                new StubPricingPolicy(1m),
+                new StubNotifier(),
+                NullLogger<RegistrationService>.Instance));
+    }
+
+    [Fact]
+    public void Constructor_RejectsNullPricingPolicy()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new RegistrationService(
+                new FakeRegistrationRepository(),
+                null!,
+                new StubNotifier(),
+                NullLogger<RegistrationService>.Instance));
+    }
+
+    [Fact]
+    public void Constructor_RejectsNullNotifier()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new RegistrationService(
+                new FakeRegistrationRepository(),
+                new StubPricingPolicy(1m),
+                null!,
+                NullLogger<RegistrationService>.Instance));
+    }
+
+    [Fact]
+    public void Constructor_RejectsNullLogger()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new RegistrationService(
+                new FakeRegistrationRepository(),
+                new StubPricingPolicy(1m),
+                new StubNotifier(),
+                null!));
+    }
+
+    [Fact]
+    public void RegistrationItem_RejectsBlankSku()
+    {
+        Assert.Throws<ArgumentException>(() => new RegistrationItem(" ", 1, 1m));
+    }
+
     [Fact]
     public void TotalOf_TwoLines_SumsPricesFromPolicy()
     {
