@@ -27,7 +27,7 @@ dotnet run --project OnlineCourses.App
 - `OnlineCourses.Tests` — модульні тести логіки.
 - `tests/Legacy.Tests` — тести попередніх лабораторних робіт.
 - `data/` — умовні демонстраційні дані.
-- `docs/` — специфікація, архітектура, посібник і інженерні рішення.
+- `docs/` — специфікація, архітектура, посібник, аналіз покриття й інженерні рішення.
 
 ## 4. Можливості
 
@@ -54,7 +54,7 @@ dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release
 dotnet restore OnlineCourses.slnx && dotnet format OnlineCourses.slnx --verify-no-changes --no-restore && dotnet build OnlineCourses.slnx -c Release --no-restore -warnaserror && dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release --no-build && dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=70 "/p:ThresholdType=line%2cbranch" "/p:Include=[OnlineCourses.Core]OnlineCourses.Core.Pricing.CourseDiscountPolicy%2c[OnlineCourses.Core]OnlineCourses.Core.Services.RegistrationService%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Registration%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.RegistrationItem%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Course%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.CourseGroup%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Enrollment%2c[OnlineCourses.Core]OnlineCourses.Core.Services.EnrollmentService%2c[OnlineCourses.Core]OnlineCourses.Core.Services.InMemoryEnrollmentRepository%2c[OnlineCourses.Core]OnlineCourses.Core.Pricing.CoursePackagePricingPolicy"
 ```
 
-Останній успішний прогін на коміті `965dd18` показав 96,2 % line coverage і 100 % branch coverage для вибраних класів логіки Core (110 основних тестів і 17 Legacy-тестів). CI вимагає не менше 70 % для обох показників. Межа вимірювання задана через Include у `.github/workflows/ci.yml`; консоль, форматування й файлове сховище не входять до цього набору. Після наступних змін числа потрібно звіряти з артефактом нового успішного прогону.
+Останній успішний прогін після XML-документації та рефакторингу сервісу — коміт `7d80d5d` показав 96,25 % line coverage, 100 % branch coverage і 93,61 % method coverage для вибраних класів логіки Core (110 основних тестів і 17 Legacy-тестів). CI вимагає не менше 70 % для обох показників. Межа вимірювання задана через Include у `.github/workflows/ci.yml`; консоль, форматування й файлове сховище не входять до цього набору. Після наступних змін числа потрібно звіряти з артефактом нового успішного прогону.
 
 ## 6. Технології
 

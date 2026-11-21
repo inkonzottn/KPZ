@@ -40,7 +40,7 @@ dotnet_diagnostic.SA1200.severity = none
 dotnet_diagnostic.CA1050.severity = none
 # приватні поля іменуємо з _, як прийнято в .NET
 dotnet_diagnostic.SA1309.severity = none
-# XML-документацію вимагатимемо з ЛР No 4, поки що ні
+# XML-документація для історичних типів Legacy залишається окремим боргом; цільовий API перевіряється нижче.
 dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.SA1600.severity = none 
@@ -70,3 +70,35 @@ dotnet_diagnostic.SA1201.severity = warning
 dotnet_diagnostic.SA1503.severity = warning 
 dotnet_diagnostic.SA1516.severity = warning 
 dotnet_diagnostic.IDE0055.severity = warning 
+# Публічний API домену, прикладного шару та пакетного ціноутворення.
+[OnlineCourses.Core/Domain/Course.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Domain/CourseGroup.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Domain/Enrollment.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Domain/EnrollmentStatus.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Domain/Member.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Services/EnrollmentService.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Services/EnrollmentSearchCriteria.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Pricing/CoursePackagePrice.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Pricing/CoursePackagePricingPolicy.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Abstractions/ICoursePackagePricingPolicy.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Abstractions/IEnrollmentRepository.cs]
+dotnet_diagnostic.CS1591.severity = warning
+
+[OnlineCourses.Core/Abstractions/IAuditLogger.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Reporting/GroupOccupancy.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Errors/DomainRuleException.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Pricing/CourseDiscountPolicy.cs]
+dotnet_diagnostic.CS1591.severity = warning
