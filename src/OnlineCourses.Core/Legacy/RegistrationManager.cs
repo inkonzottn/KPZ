@@ -3,8 +3,12 @@ namespace OnlineCourses.Legacy;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Coordinates report generation and operations for legacy registrations.</summary>
 public class RegistrationManager
 {
+    /// <summary>Builds a CSV report from legacy registration records.</summary>
+    /// <param name="orders">Records to include in the report.</param>
+    /// <returns>Delimited text containing the registration data.</returns>
     public static string BuildCsvReport(List<LegacyRegistration> orders)
     {
         var text = "id;total;status" + Environment.NewLine;
@@ -17,6 +21,8 @@ public class RegistrationManager
         return text;
     }
 
+    /// <summary>Stores a registration in the legacy archive.</summary>
+    /// <param name="registration">Record to archive.</param>
     public static void Archive(LegacyRegistration registration)
     {
         var coreRegistration = new Registration(registration.Id, 1, DateOnly.FromDateTime(DateTime.Today));
@@ -25,6 +31,10 @@ public class RegistrationManager
         FileRegistrationStore.SaveToFile(registration, "archive.json");
     }
 
+    /// <summary>Calculates the legacy registration total for a customer category.</summary>
+    /// <param name="registration">Registration to price.</param>
+    /// <param name="customerType">Customer category controlling the discount.</param>
+    /// <returns>The calculated amount.</returns>
     public static decimal Place(LegacyRegistration registration, string customerType)
     {
         decimal total = 0m;
