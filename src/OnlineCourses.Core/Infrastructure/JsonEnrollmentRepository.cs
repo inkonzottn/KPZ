@@ -187,45 +187,55 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
 
     private void Persist()
     {
-        var snapshot = new Snapshot
-        {
-            Members = _memory.GetMembersForPersistence().Select(x =>
-                new MemberData { Id = x.Id, Name = x.Name, Email = x.Email }).ToList(),
-            Courses = _memory.GetCoursesForPersistence().Select(x =>
-                new CourseData
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Title = x.Title,
-                    Price = x.Price,
-                    PrerequisiteCourseIds = x.PrerequisiteCourseIds.ToList()
-                }).ToList(),
-            Groups = _memory.GetGroups().Select(x =>
-                new GroupData
-                {
-                    Id = x.Id,
-                    CourseId = x.CourseId,
-                    Name = x.Name,
-                    Capacity = x.Capacity
-                }).ToList(),
-            Enrollments = _memory.GetAll().Select(x =>
-                new EnrollmentData
-                {
-                    Id = x.Id,
-                    MemberId = x.MemberId,
-                    CourseId = x.CourseId,
-                    GroupId = x.GroupId,
-                    EnrolledOn = x.EnrolledOn,
-                    Status = x.Status.ToString(),
-                    WithdrawalReason = x.WithdrawalReason,
-                    CancellationReason = x.CancellationReason
-                }).ToList()
-        };
-
+        var snapshot = CreateSnapshot();
         var temporaryPath = _path + ".tmp";
         File.WriteAllText(temporaryPath, JsonSerializer.Serialize(snapshot, JsonOptions));
         File.Move(temporaryPath, _path, overwrite: true);
     }
+
+    private Snapshot CreateSnapshot() => new()
+    {
+        Members = CreateMemberData(),
+        Courses = CreateCourseData(),
+        Groups = CreateGroupData(),
+        Enrollments = CreateEnrollmentData()
+    };
+
+    private List<MemberData> CreateMemberData() =>
+        _memory.GetMembersForPersistence().Select(x =>
+            new MemberData { Id = x.Id, Name = x.Name, Email = x.Email }).ToList();
+
+    private List<CourseData> CreateCourseData() =>
+        _memory.GetCoursesForPersistence().Select(x => new CourseData
+        {
+            Id = x.Id,
+            Code = x.Code,
+            Title = x.Title,
+            Price = x.Price,
+            PrerequisiteCourseIds = x.PrerequisiteCourseIds.ToList()
+        }).ToList();
+
+    private List<GroupData> CreateGroupData() =>
+        _memory.GetGroups().Select(x => new GroupData
+        {
+            Id = x.Id,
+            CourseId = x.CourseId,
+            Name = x.Name,
+            Capacity = x.Capacity
+        }).ToList();
+
+    private List<EnrollmentData> CreateEnrollmentData() =>
+        _memory.GetAll().Select(x => new EnrollmentData
+        {
+            Id = x.Id,
+            MemberId = x.MemberId,
+            CourseId = x.CourseId,
+            GroupId = x.GroupId,
+            EnrolledOn = x.EnrolledOn,
+            Status = x.Status.ToString(),
+            WithdrawalReason = x.WithdrawalReason,
+            CancellationReason = x.CancellationReason
+        }).ToList();
 
     private sealed class Snapshot
     {
