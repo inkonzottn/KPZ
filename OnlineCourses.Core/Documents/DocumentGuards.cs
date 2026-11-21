@@ -53,7 +53,7 @@ public static class DocumentGuards
     /// <exception cref="ArgumentNullException">Позицію не передано.</exception>
     /// <exception cref="ArgumentException">Артикул порожній.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Кількість недодатна або ціна від'ємна.</exception>
-    public static void EnsureLineValidRegistrationItem line)
+    public static void EnsureLineValid(RegistrationItem line)
     {
         ArgumentNullException.ThrowIfNull(line);
         ArgumentException
@@ -68,8 +68,7 @@ public static class DocumentGuards
     /// <param name="lines">Список позицій документа.</param>
     /// <exception cref="ArgumentNullException">Список не передано.</exception>
     /// <exception cref="ArgumentException">Список порожній або містить некоректну позицію.</exception>
-    public static void EnsureLinesValid
-    IReadOnlyList<RegistrationItem> lines)
+    public static void EnsureLinesValid(IReadOnlyList<RegistrationItem> lines)
     {
         ArgumentNullException.ThrowIfNull(lines);
         if (lines.Count == 0)
@@ -84,4 +83,5 @@ public static class DocumentGuards
             EnsureLineValid(line);
         }
     }
+
 }
