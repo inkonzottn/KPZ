@@ -106,6 +106,10 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
     public bool HasCompletedCourse(int memberId, int courseId) =>
         _memory.HasCompletedCourse(memberId, courseId);
 
+    private static Snapshot DeserializeSnapshot(string json) =>
+        JsonSerializer.Deserialize<Snapshot>(json, JsonOptions)
+        ?? throw new InvalidDataException("JSON-файл не містить коректного набору даних.");
+
     private void Load(string json)
     {
         var snapshot = DeserializeSnapshot(json);
@@ -114,10 +118,6 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         LoadGroups(snapshot.Groups);
         LoadEnrollments(snapshot.Enrollments);
     }
-
-    private static Snapshot DeserializeSnapshot(string json) =>
-        JsonSerializer.Deserialize<Snapshot>(json, JsonOptions)
-        ?? throw new InvalidDataException("JSON-файл не містить коректного набору даних.");
 
     private void LoadMembers(IEnumerable<MemberData> members)
     {
@@ -160,7 +160,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         }
     }
 
-    private static Enrollment RestoreEnrollment(EnrollmentData item)
+    private Enrollment RestoreEnrollment(EnrollmentData item)
     {
         var enrollment = new Enrollment(
             item.Id,
