@@ -2,11 +2,15 @@ using System.Text;
 
 namespace OnlineCourses.Core;
 
-// Формує текст простого звіту з готових рядків.
+/// <summary>Represents a text report assembled from a title and prepared rows.</summary>
 public sealed class TextReport
 {
+    /// <summary>Gets or sets the heading displayed at the beginning of the report.</summary>
     public string Title { get; init; } = "Звіт";
 
+    /// <summary>Builds the report text from the supplied rows.</summary>
+    /// <param name="rows">Lines to append beneath the title.</param>
+    /// <returns>Complete multi-line report text.</returns>
     public string Build(IReadOnlyList<string> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
