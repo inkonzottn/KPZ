@@ -11,10 +11,13 @@ public sealed record GroupOccupancy(
     int Occupied,
     int Capacity)
 {
+    private const decimal PercentageScale = 100m;
+    private const int PercentageDecimalPlaces = 2;
+
     /// <summary>Gets the number of available seats in the group.</summary>
     public int Free => Capacity - Occupied;
 
     /// <summary>Gets the percentage of occupied seats, rounded to two decimal places.</summary>
     public decimal OccupancyPercent =>
-        Capacity == 0 ? 0m : decimal.Round((decimal)Occupied / Capacity * 100m, 2);
+        Capacity == 0 ? 0m : decimal.Round((decimal)Occupied / Capacity * PercentageScale, PercentageDecimalPlaces);
 }
