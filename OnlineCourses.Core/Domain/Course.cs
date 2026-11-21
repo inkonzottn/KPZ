@@ -5,7 +5,7 @@ public sealed class Course
 {
     private readonly HashSet<int> _prerequisiteCourseIds;
 
-    /// <summary>Створює курс без попередніх вимог.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Course"/> class without prerequisites.</summary>
     /// <param name="id">Додатний унікальний ідентифікатор курсу.</param>
     /// <param name="code">Непорожній код курсу.</param>
     /// <param name="title">Непорожня назва курсу.</param>
@@ -15,7 +15,7 @@ public sealed class Course
     {
     }
 
-    /// <summary>Створює курс із визначеними передумовами.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Course"/> class with prerequisites.</summary>
     /// <param name="id">Додатний унікальний ідентифікатор курсу.</param>
     /// <param name="definition">Опис курсу, включно з передумовами.</param>
     /// <exception cref="ArgumentException">Опис курсу або передумови некоректні.</exception>
