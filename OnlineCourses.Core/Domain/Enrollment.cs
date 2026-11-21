@@ -5,7 +5,7 @@ using OnlineCourses.Core.Errors;
 /// <summary>Відображає зарахування слухача на курс і керує його життєвим циклом.</summary>
 public sealed class Enrollment
 {
-    /// <summary>Створює активне зарахування слухача до групи курсу.</summary>
+    /// <summary>Initializes a new active instance of the <see cref="Enrollment"/> class.</summary>
     /// <param name="id">Додатний ідентифікатор зарахування.</param>
     /// <param name="memberId">Додатний ідентифікатор слухача.</param>
     /// <param name="courseId">Додатний ідентифікатор курсу.</param>
@@ -27,25 +27,25 @@ public sealed class Enrollment
         Status = EnrollmentStatus.Active;
     }
 
-    /// <summary>Повертає ідентифікатор зарахування.</summary>
+    /// <summary>Gets the enrollment identifier.</summary>
     public int Id { get; }
 
-    /// <summary>Повертає ідентифікатор слухача.</summary>
+    /// <summary>Gets the learner identifier.</summary>
     public int MemberId { get; }
 
-    /// <summary>Повертає ідентифікатор курсу.</summary>
+    /// <summary>Gets the course identifier.</summary>
     public int CourseId { get; }
 
-    /// <summary>Повертає або змінює ідентифікатор поточної групи.</summary>
+    /// <summary>Gets the identifier of the learner's current group.</summary>
     public int GroupId { get; private set; }
 
-    /// <summary>Повертає дату оформлення зарахування.</summary>
+    /// <summary>Gets the date when the learner enrolled.</summary>
     public DateOnly EnrolledOn { get; }
 
-    /// <summary>Повертає поточний стан зарахування.</summary>
+    /// <summary>Gets the current enrollment status.</summary>
     public EnrollmentStatus Status { get; private set; }
 
-    /// <summary>Повертає причину відрахування або null, якщо слухач не відрахований.</summary>
+    /// <summary>Gets the withdrawal reason, or null if the learner remains enrolled.</summary>
     public string? WithdrawalReason { get; private set; }
 
     /// <summary>Відраховує слухача та зберігає причину операції.</summary>
