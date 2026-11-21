@@ -1,5 +1,6 @@
 namespace OnlineCourses.Legacy;
 
+/// <summary>Defines persistence operations for legacy registration records.</summary>
 public interface IRegistrationStore
 {
     void Add(LegacyRegistration order);
