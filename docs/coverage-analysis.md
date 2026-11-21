@@ -3,8 +3,8 @@
 ## Підсумок вимірювання на main
 
 Актуальний артефакт `coverage` отримано з успішного
-[CI run 44912937746](https://github.com/inkonzottn/KPZ/actions/runs/44912937746)
-для коміту `305e3f7`. У вибраному наборі класів Core Coverlet зафіксував
+[CI run 44913359928](https://github.com/inkonzottn/KPZ/actions/runs/44913359928)
+для коміту `7bde4d1`. У вибраному наборі класів Core Coverlet зафіксував
 **95,86 % рядків**, **100 % гілок** та **92,85 % методів**.
 Пройшли **121 основний і 17 Legacy-тестів**. Форматування, Release-збірка
 з `-warnaserror`, обидва набори тестів і перевірка порогів завершилися
@@ -17,7 +17,7 @@
   Навмисно порушено форматування; конвеєр зупинився на перевірці
   `dotnet format --verify-no-changes`. Гілка залишається незлитою.
 - Зелений прогін `main`:
-  [run 44912937746](https://github.com/inkonzottn/KPZ/actions/runs/44912937746).
+  [run 44913359928](https://github.com/inkonzottn/KPZ/actions/runs/44913359928).
   Усі кроки завершилися успішно; звіт Cobertura завантажено як артефакт
   `coverage`.
 
