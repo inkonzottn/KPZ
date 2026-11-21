@@ -92,6 +92,31 @@ public sealed class ConsoleApplicationTests
     }
 
     [Fact]
+    public void Run_RejectsSearchWithoutAnyCriteria()
+    {
+        var console = new TestConsole("6", "", "", "", "", "0");
+        var application = CreateApplication(CreateRepository(), console);
+
+        application.Run();
+
+        Assert.Contains("Введіть хоча б один критерій пошуку.", console.Output);
+    }
+
+    [Fact]
+    public void Run_RepromptsInvalidSearchStatus()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 11, 20)));
+        var console = new TestConsole("6", "", "", "", "Unknown", "Active", "0");
+        var application = CreateApplication(repository, console);
+
+        application.Run();
+
+        Assert.Contains("Введіть Active, Withdrawn, Completed, Cancelled", console.Output);
+        Assert.Contains("#1 | Олена | CS-01 | Вечірня | Active", console.Output);
+    }
+
+    [Fact]
     public void Run_ShowsDomainRejectionWithoutLoggingItAsUnexpectedError()
     {
         var repository = CreateRepository();
