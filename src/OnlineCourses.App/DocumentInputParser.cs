@@ -6,6 +6,10 @@ using OnlineCourses.Core.Legacy;
 /// <summary>Зчитує демонстраційні дані документа з консолі та формує запит.</summary>
 public static class DocumentInputParser
 {
+    private const int SampleCoffeeQuantity = 12;
+    private const decimal SampleCoffeeUnitPrice = 100m;
+    private const decimal SampleTeaUnitPrice = SampleTeaUnitPrice;
+    private const decimal DefaultDeliveryPrice = 60m;
     /// <summary>Формує запит на розрахунок із введених користувачем даних.</summary>
     /// <returns>Запит із даними документа, клієнта та позицій.</returns>
     public static TotalRequest BuildRequestFromInput()
@@ -27,12 +31,12 @@ public static class DocumentInputParser
             Client: new ClientInfo(name, email, isRegular),
             Lines: new List<RegistrationItem>
             {
-                new() { Sku = "A1", Quantity = 12, UnitPrice = 100m },
+                new() { Sku = "A1", Quantity = SampleCoffeeQuantity, UnitPrice = SampleCoffeeUnitPrice },
                 new() { Sku = "B2", Quantity = 1, UnitPrice = 250m }
             },
             CreatedAt: DateOnly.FromDateTime(DateTime.Today),
             CouponCode: null,
             Status: DocumentStatus.New,
-            DeliveryPrice: 60m);
+            DeliveryPrice: DefaultDeliveryPrice);
     }
 }
