@@ -210,6 +210,18 @@ public sealed class ConsoleApplication
 
     private void SearchEnrollments()
     {
+        var criteria = ReadSearchCriteria();
+        if (criteria is null)
+        {
+            return;
+        }
+
+        var found = _enrollmentService.Search(criteria);
+        DisplaySearchResults(found);
+    }
+
+    private EnrollmentSearchCriteria? ReadSearchCriteria()
+    {
         _console.Write("Ім'я або email (необов'язково): ");
         var memberQuery = _console.ReadLine();
         _console.Write("Код курсу (необов'язково): ");
@@ -217,26 +229,29 @@ public sealed class ConsoleApplication
         var groupId = ReadOptionalInt("ID групи (необов'язково): ");
         var status = ReadOptionalStatus();
 
-        if (string.IsNullOrWhiteSpace(memberQuery) &&
-            string.IsNullOrWhiteSpace(courseCode) &&
-            !groupId.HasValue &&
-            !status.HasValue)
+        if (!string.IsNullOrWhiteSpace(memberQuery) ||
+            !string.IsNullOrWhiteSpace(courseCode) ||
+            groupId.HasValue ||
+            status.HasValue)
         {
-            _console.WriteLine("Введіть хоча б один критерій пошуку.");
-            return;
+            return new EnrollmentSearchCriteria(memberQuery, courseCode, groupId, status);
         }
 
-        var criteria = new EnrollmentSearchCriteria(memberQuery, courseCode, groupId, status);
-        var found = _enrollmentService.Search(criteria);
-        if (found.Count == 0)
+        _console.WriteLine("Введіть хоча б один критерій пошуку.");
+        return null;
+    }
+
+    private void DisplaySearchResults(IReadOnlyList<Enrollment> enrollments)
+    {
+        if (enrollments.Count == 0)
         {
             _console.WriteLine("За заданим критерієм нічого не знайдено.");
             return;
         }
 
-        foreach (var item in found)
+        foreach (var enrollment in enrollments)
         {
-            PrintEnrollment(item);
+            PrintEnrollment(enrollment);
         }
     }
 
