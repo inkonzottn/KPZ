@@ -5,7 +5,7 @@ using OnlineCourses.Core.Errors;
 /// <summary>Відображає зарахування слухача на курс і керує його життєвим циклом.</summary>
 public sealed class Enrollment
 {
-    /// <summary>Initializes a new active instance of the <see cref="Enrollment"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Enrollment"/> class.</summary>
     /// <param name="id">Додатний ідентифікатор зарахування.</param>
     /// <param name="memberId">Додатний ідентифікатор слухача.</param>
     /// <param name="courseId">Додатний ідентифікатор курсу.</param>
