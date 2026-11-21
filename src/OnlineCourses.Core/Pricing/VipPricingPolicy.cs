@@ -8,6 +8,7 @@ public sealed class VipPricingPolicy : IPricingPolicy
 {
     private const decimal VipMultiplier = 0.90m;
     private const int MoneyDecimalPlaces = 2;
+
     /// <summary>Calculates the VIP amount for one registration line.</summary>
     /// <param name="item">Registration line to price.</param>
     /// <returns>The rounded amount payable.</returns>
