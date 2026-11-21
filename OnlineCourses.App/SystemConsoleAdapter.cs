@@ -3,7 +3,6 @@ namespace OnlineCourses.App;
 /// <summary>Реалізує консольний інтерфейс засобами стандартної консолі .NET.</summary>
 public sealed class SystemConsoleAdapter : IConsole
 {
-
     /// <inheritdoc />
     public string? ReadLine() => Console.ReadLine();
 
