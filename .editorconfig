@@ -102,3 +102,19 @@ dotnet_diagnostic.CS1591.severity = warning
 dotnet_diagnostic.CS1591.severity = warning
 [OnlineCourses.Core/Pricing/CourseDiscountPolicy.cs]
 dotnet_diagnostic.CS1591.severity = warning
+
+# Публічний API історичного модуля реєстрацій: документація перевіряється CI.
+[OnlineCourses.Core/Abstractions/IRegistrationRepository.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Abstractions/IPricingPolicy.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Abstractions/INotifier.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/DocumentStatus.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Domain/Registration.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Domain/RegistrationItem.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Services/RegistrationService.cs]
+dotnet_diagnostic.CS1591.severity = warning

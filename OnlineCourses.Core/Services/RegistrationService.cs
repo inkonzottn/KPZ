@@ -6,6 +6,7 @@ using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Domain;
 using OnlineCourses.Core.Errors;
 
+/// <summary>Координує створення, зміну, розрахунок і експорт документів реєстрації.</summary>
 public sealed class RegistrationService
 {
     private readonly IRegistrationRepository _repository;
@@ -13,6 +14,12 @@ public sealed class RegistrationService
     private readonly INotifier _notifier;
     private readonly ILogger<RegistrationService> _logger;
 
+    /// <summary>Initializes a new instance of the <see cref="RegistrationService"/> class.</summary>
+    /// <param name="repository">Сховище документів.</param>
+    /// <param name="pricing">Політика розрахунку вартості позицій.</param>
+    /// <param name="notifier">Канал надсилання повідомлень.</param>
+    /// <param name="logger">Журнал подій сервісу.</param>
+    /// <exception cref="ArgumentNullException">Одна із залежностей не передана.</exception>
     public RegistrationService(
         IRegistrationRepository repository,
         IPricingPolicy pricing,
@@ -30,6 +37,10 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРН 4: try/catch замість звичайної умови
+
+    /// <summary>Підраховує рядки, що містять додатні цілі кількості.</summary>
+    /// <param name="rows">Масив текстових значень для перевірки.</param>
+    /// <returns>Кількість коректних додатних значень.</returns>
     public static int CountValidQuantities(string[] rows)
     {
         var valid = 0;
@@ -44,12 +55,19 @@ public sealed class RegistrationService
         return valid;
     }
 
+    /// <summary>Додає документ до сховища.</summary>
+    /// <param name="registration">Документ для збереження.</param>
+    /// <exception cref="ArgumentNullException">Документ не передано.</exception>
     public void Place(Registration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
         _repository.Add(registration);
     }
 
+    /// <summary>Обчислює сумарну вартість усіх позицій документа.</summary>
+    /// <param name="registration">Документ, для якого обчислюється сума.</param>
+    /// <returns>Загальна вартість у гривнях.</returns>
+    /// <exception cref="ArgumentNullException">Документ не передано.</exception>
     public decimal TotalOf(Registration registration)
     {
         ArgumentNullException.ThrowIfNull(registration);
@@ -62,6 +80,11 @@ public sealed class RegistrationService
         return total;
     }
 
+    /// <summary>Додає позицію до нового документа та зберігає зміни.</summary>
+    /// <param name="registrationId">Ідентифікатор документа.</param>
+    /// <param name="line">Позиція, яку потрібно додати.</param>
+    /// <exception cref="ArgumentNullException">Позицію не передано.</exception>
+    /// <exception cref="DomainRuleException">Документ не знайдено або його стан не дозволяє редагування.</exception>
     public void AddLine(int registrationId, RegistrationItem line)
     {
         ArgumentNullException.ThrowIfNull(line);
@@ -89,12 +112,22 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРН 1: порожній catch, дефект зникає
+
+    /// <summary>Завантажує документ за ідентифікатором.</summary>
+    /// <param name="registrationId">Ідентифікатор документа.</param>
+    /// <returns>Документ або null, якщо його не знайдено.</returns>
     public Registration? Load(int registrationId)
     {
         return _repository.GetById(registrationId);
     }
 
     // АНТИПАТЕРНИ 2 і 3: широке перехоплення, throw ex
+
+    /// <summary>Скасовує документ, якщо його поточний стан дозволяє скасування.</summary>
+    /// <param name="registrationId">Ідентифікатор документа.</param>
+    /// <param name="reason">Причина скасування, яку надає викликач.</param>
+    /// <exception cref="DomainRuleException">Документ не знайдено.</exception>
+    /// <exception cref="IOException">Сховище не змогло зберегти зміни.</exception>
     public void Cancel(int registrationId, string reason)
     {
         try
@@ -111,6 +144,13 @@ public sealed class RegistrationService
     }
 
     // СТАЛО: using звільняє потік навіть при винятку
+
+    /// <summary>Експортує текстовий звіт із номером документа та його сумою.</summary>
+    /// <param name="path">Шлях до файлу звіту.</param>
+    /// <param name="registration">Документ, який потрібно включити до звіту.</param>
+    /// <exception cref="ArgumentNullException">Документ не передано.</exception>
+    /// <exception cref="IOException">Не вдалося записати файл.</exception>
+    /// <exception cref="UnauthorizedAccessException">Немає дозволу на запис за вказаним шляхом.</exception>
     public void ExportReport(string path, Registration registration)
     {
         using var writer = new StreamWriter(path);
