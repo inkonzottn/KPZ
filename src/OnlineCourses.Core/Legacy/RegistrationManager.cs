@@ -12,6 +12,7 @@ public class RegistrationManager
     private const decimal LargeOrderThreshold = 1000m;
     private const decimal LargeOrderReduction = 50m;
     private const int PaidStatus = 1;
+
     /// <summary>Builds a CSV report from legacy registration records.</summary>
     /// <param name="orders">Records to include in the report.</param>
     /// <returns>Delimited text containing the registration data.</returns>
