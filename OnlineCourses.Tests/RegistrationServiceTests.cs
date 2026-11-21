@@ -83,6 +83,15 @@ public class RegistrationServiceTests
     }
 
     [Fact]
+    public void AddLine_NullLine_ThrowsArgumentNullExceptionBeforeLogging()
+    {
+        var repository = new FakeRegistrationRepository();
+        var service = CreateService(repository, 1m);
+
+        Assert.Throws<ArgumentNullException>(() => service.AddLine(1, null!));
+    }
+
+    [Fact]
     public void AddLine_NewRegistration_StoresLineAndSavesOnce()
     {
         var repository = new FakeRegistrationRepository();
