@@ -3,7 +3,6 @@ namespace OnlineCourses.Core.Documents;
 /// <summary>Містить числові межі та ставки цінової політики навчального документа.</summary>
 public static class PricingRules
 {
-
     /// <summary>Мінімальна кількість одиниць для кількісної знижки.</summary>
     public const int BulkQuantity = 10;
 
