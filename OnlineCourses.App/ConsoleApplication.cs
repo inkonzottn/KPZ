@@ -232,14 +232,22 @@ public sealed class ConsoleApplication
 
     private int? ReadInt(string prompt)
     {
-        _console.Write(prompt);
-        if (int.TryParse(_console.ReadLine(), out var value))
+        while (true)
         {
-            return value;
-        }
+            _console.Write(prompt);
+            var input = _console.ReadLine();
+            if (input is null)
+            {
+                return null;
+            }
 
-        _console.WriteLine("Потрібно ввести ціле число.");
-        return null;
+            if (int.TryParse(input, out var value))
+            {
+                return value;
+            }
+
+            _console.WriteLine("Потрібно ввести ціле число.");
+        }
     }
 
     private void Execute(string scenario, Action operation)
