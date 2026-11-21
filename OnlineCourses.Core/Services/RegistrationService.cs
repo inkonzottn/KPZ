@@ -64,10 +64,10 @@ public sealed class RegistrationService
 
     public void AddLine(int registrationId, RegistrationItem line)
     {
+        ArgumentNullException.ThrowIfNull(line);
+
         using var scope = _logger.BeginScope("Registration:{RegistrationId}", registrationId);
         _logger.LogDebug("Початок додавання позиції з SKU {Sku}", line.Sku);
-
-        ArgumentNullException.ThrowIfNull(line);
 
         var registration = _repository.GetById(registrationId)
             ?? throw new DomainRuleException("registration.exists", $"Реєстрацію з ID {registrationId} не знайдено.");
