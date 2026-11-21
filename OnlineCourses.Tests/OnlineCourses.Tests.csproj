@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OnlineCourses.Core\OnlineCourses.Core.csproj" />
+    <ProjectReference Include="..\OnlineCourses.App\OnlineCourses.App.csproj" />
   </ItemGroup>
 
 </Project>
