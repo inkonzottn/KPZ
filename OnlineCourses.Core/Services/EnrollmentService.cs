@@ -12,7 +12,7 @@ public sealed class EnrollmentService
     private readonly IClock? _clock;
     private readonly IAuditLogger? _logger;
 
-    /// <summary>Створює сервіс із репозиторієм та необов'язковими залежностями часу й аудиту.</summary>
+    /// <summary>Initializes a new instance of the <see cref="EnrollmentService"/> class.</summary>
     /// <param name="repository">Сховище даних навчальних курсів і зарахувань.</param>
     /// <param name="clock">Джерело поточної дати; за відсутності використовується системна дата.</param>
     /// <param name="logger">Журнал подій; може бути відсутнім.</param>
@@ -242,10 +242,10 @@ public sealed class EnrollmentService
         });
     }
 
-    private static IEnumerable<Enrollment> FilterByGroup(IEnumerable<Enrollment> query, int? groupId) =>
+    private IEnumerable<Enrollment> FilterByGroup(IEnumerable<Enrollment> query, int? groupId) =>
         groupId.HasValue ? query.Where(x => x.GroupId == groupId.Value) : query;
 
-    private static IEnumerable<Enrollment> FilterByStatus(IEnumerable<Enrollment> query, EnrollmentStatus? status) =>
+    private IEnumerable<Enrollment> FilterByStatus(IEnumerable<Enrollment> query, EnrollmentStatus? status) =>
         status.HasValue ? query.Where(x => x.Status == status.Value) : query;
 
     private GroupOccupancy CreateOccupancy(
