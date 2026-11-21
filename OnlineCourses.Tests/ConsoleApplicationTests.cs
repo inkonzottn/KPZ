@@ -40,12 +40,13 @@ public sealed class ConsoleApplicationTests
     public void Run_ReportsInvalidIntegerInput()
     {
         var repository = CreateRepository();
-        var console = new TestConsole("1", "not-a-number", "11", "0");
+        var console = new TestConsole("1", "not-a-number", "10", "11", "0");
         var application = CreateApplication(repository, console);
 
         application.Run();
 
-        Assert.Empty(repository.GetAll());
+        var enrollment = Assert.Single(repository.GetAll());
+        Assert.Equal(10, enrollment.MemberId);
         Assert.Contains("Потрібно ввести ціле число.", console.Output);
     }
 
