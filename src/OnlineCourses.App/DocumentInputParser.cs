@@ -10,6 +10,7 @@ public static class DocumentInputParser
     private const decimal SampleCoffeeUnitPrice = 100m;
     private const decimal SampleTeaUnitPrice = SampleTeaUnitPrice;
     private const decimal DefaultDeliveryPrice = 60m;
+
     /// <summary>Формує запит на розрахунок із введених користувачем даних.</summary>
     /// <returns>Запит із даними документа, клієнта та позицій.</returns>
     public static TotalRequest BuildRequestFromInput()
