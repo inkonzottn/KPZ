@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OnlineCourses.Core\OnlineCourses.Core.csproj" />
+    <ProjectReference Include="..\..\src\OnlineCourses.Core\OnlineCourses.Core.csproj" />
     <ProjectReference Include="..\..\src\Legacy\OnlineCourses.Legacy.csproj" />
   </ItemGroup>
 
