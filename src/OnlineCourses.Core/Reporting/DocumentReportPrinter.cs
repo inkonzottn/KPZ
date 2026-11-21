@@ -5,7 +5,7 @@ public sealed class DocumentReportPrinter
 {
     private readonly TextWriter _output;
 
-    /// <summary>Initializes the printer with its output destination.</summary>
+    /// <summary>Initializes a new instance of the <see cref="DocumentReportPrinter"/> class.</summary>
     /// <param name="output">Destination receiving the report text.</param>
     public DocumentReportPrinter(TextWriter output)
     {
