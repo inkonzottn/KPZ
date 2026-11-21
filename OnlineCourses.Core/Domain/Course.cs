@@ -54,7 +54,7 @@ public sealed class Course
     /// <summary>Gets the identifiers of courses that must be completed first.</summary>
     public IReadOnlySet<int> PrerequisiteCourseIds => _prerequisiteCourseIds;
 
-    private static void ValidatePrerequisites(int courseId, IReadOnlySet<int> prerequisiteIds)
+    private static void ValidatePrerequisites(int courseId, HashSet<int> prerequisiteIds)
     {
         if (prerequisiteIds.Contains(courseId))
         {
