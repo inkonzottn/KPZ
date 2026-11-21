@@ -10,6 +10,7 @@ public static class RegistrationLineParser
     private const int MaximumSkuLength = 20;
     private const int MinimumQuantity = 1;
     private const int MaximumQuantity = 1000;
+
     /// <summary>Attempts to parse a registration line without throwing for invalid input.</summary>
     /// <param name="raw">Text containing SKU, quantity, and unit price separated by semicolons.</param>
     /// <param name="line">Parsed line when conversion succeeds; otherwise null.</param>
