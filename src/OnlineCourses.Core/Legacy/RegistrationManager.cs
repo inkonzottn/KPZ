@@ -6,6 +6,12 @@ using OnlineCourses.Core.Legacy;
 /// <summary>Coordinates report generation and operations for legacy registrations.</summary>
 public class RegistrationManager
 {
+    private const decimal RegularMultiplier = 0.95m;
+    private const decimal VipMultiplier = 0.90m;
+    private const decimal StaffMultiplier = 0.70m;
+    private const decimal LargeOrderThreshold = 1000m;
+    private const decimal LargeOrderReduction = 50m;
+    private const int PaidStatus = 1;
     /// <summary>Builds a CSV report from legacy registration records.</summary>
     /// <param name="orders">Records to include in the report.</param>
     /// <returns>Delimited text containing the registration data.</returns>
@@ -45,24 +51,24 @@ public class RegistrationManager
 
         if (customerType == "regular")
         {
-            total = total * 0.95m;
+            total = total * RegularMultiplier;
         }
         else if (customerType == "vip")
         {
-            total = total * 0.90m;
+            total = total * VipMultiplier;
         }
         else if (customerType == "staff")
         {
-            total = total * 0.70m;
+            total = total * StaffMultiplier;
         }
 
-        if (total > 1000m)
+        if (total > LargeOrderThreshold)
         {
-            total = total - 50m;
+            total = total - LargeOrderReduction;
         }
 
         registration.Total = total;
-        registration.Status = 1;
+        registration.Status = PaidStatus;
         FileRegistrationStore.SaveToFile(registration, "orders.json");
         SmtpMailer.Send(registration.Email, "Order " + registration.Id, string.Empty + total);
         return total;
