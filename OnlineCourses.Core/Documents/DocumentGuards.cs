@@ -15,12 +15,11 @@ public static class DocumentGuards
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(request.Client);
         EnsureHeaderValid(
-        request.DocumentId,
-        request.Client.Name,
-        request.Client.Email);
+            request.DocumentId,
+            request.Client.Name,
+            request.Client.Email);
         EnsureLinesValid(request.Lines);
-        ArgumentOutOfRangeException.ThrowIfNegative(
-        request.DeliveryPrice);
+        ArgumentOutOfRangeException.ThrowIfNegative(request.DeliveryPrice);
     }
 
     /// <summary>Перевіряє ідентифікатор документа та контактні дані клієнта.</summary>
@@ -30,21 +29,18 @@ public static class DocumentGuards
     /// <exception cref="ArgumentOutOfRangeException">Ідентифікатор недодатний.</exception>
     /// <exception cref="ArgumentException">Ім'я або адреса порожні чи адреса не містить @.</exception>
     public static void EnsureHeaderValid(
-    int documentId,
-    string clientName,
-    string clientEmail)
+        int documentId,
+        string clientName,
+        string clientEmail)
     {
-        ArgumentOutOfRangeException
-            .ThrowIfNegativeOrZero(documentId);
-        ArgumentException
-            .ThrowIfNullOrWhiteSpace(clientName);
-        ArgumentException
-            .ThrowIfNullOrWhiteSpace(clientEmail);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(documentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(clientName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(clientEmail);
         if (!clientEmail.Contains('@'))
         {
             throw new ArgumentException(
-            "Пошта має містити символ @.",
-            nameof(clientEmail));
+                "Пошта має містити символ @.",
+                nameof(clientEmail));
         }
     }
 
@@ -56,12 +52,13 @@ public static class DocumentGuards
     public static void EnsureLineValid(RegistrationItem line)
     {
         ArgumentNullException.ThrowIfNull(line);
-        ArgumentException
-        .ThrowIfNullOrWhiteSpace(line.Sku);
+        ArgumentException.ThrowIfNullOrWhiteSpace(line.Sku);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(
-        line.Quantity, nameof(line.Quantity));
+            line.Quantity,
+            nameof(line.Quantity));
         ArgumentOutOfRangeException.ThrowIfNegative(
-        line.UnitPrice, nameof(line.UnitPrice));
+            line.UnitPrice,
+            nameof(line.UnitPrice));
     }
 
     /// <summary>Перевіряє, що список позицій непорожній і кожна позиція коректна.</summary>
@@ -74,8 +71,8 @@ public static class DocumentGuards
         if (lines.Count == 0)
         {
             throw new ArgumentException(
-            "Документ не містить жодної позиції.",
-            nameof(lines));
+                "Документ не містить жодної позиції.",
+                nameof(lines));
         }
 
         foreach (RegistrationItem line in lines)
@@ -83,5 +80,4 @@ public static class DocumentGuards
             EnsureLineValid(line);
         }
     }
-
 }
