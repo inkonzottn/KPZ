@@ -24,7 +24,7 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
         var rate = package.Length switch
         {
             1 => 0m,
-            2 => 0.06m,
+            2 => 0.05m,
             _ => 0.10m
         };
 
