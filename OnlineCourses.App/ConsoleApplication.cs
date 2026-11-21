@@ -215,38 +215,42 @@ public sealed class ConsoleApplication
 
     private int? ReadOptionalInt(string prompt)
     {
-        _console.Write(prompt);
-        var input = _console.ReadLine();
-        if (string.IsNullOrWhiteSpace(input))
+        while (true)
         {
-            return null;
-        }
+            _console.Write(prompt);
+            var input = _console.ReadLine();
+            if (input is null || string.IsNullOrWhiteSpace(input))
+            {
+                return null;
+            }
 
-        if (int.TryParse(input, out var value) && value > 0)
-        {
-            return value;
-        }
+            if (int.TryParse(input, out var value) && value > 0)
+            {
+                return value;
+            }
 
-        _console.WriteLine("ID групи має бути додатним цілим числом.");
-        return null;
+            _console.WriteLine("ID групи має бути додатним цілим числом або порожнім.");
+        }
     }
 
     private EnrollmentStatus? ReadOptionalStatus()
     {
-        _console.Write("Стан Active/Withdrawn/Completed (необов'язково): ");
-        var input = _console.ReadLine();
-        if (string.IsNullOrWhiteSpace(input))
+        while (true)
         {
-            return null;
-        }
+            _console.Write("Стан Active/Withdrawn/Completed (необов'язково): ");
+            var input = _console.ReadLine();
+            if (input is null || string.IsNullOrWhiteSpace(input))
+            {
+                return null;
+            }
 
-        if (Enum.TryParse<EnrollmentStatus>(input, true, out var status))
-        {
-            return status;
-        }
+            if (Enum.TryParse<EnrollmentStatus>(input, true, out var status))
+            {
+                return status;
+            }
 
-        _console.WriteLine("Невідомий стан зарахування.");
-        return null;
+            _console.WriteLine("Введіть Active, Withdrawn, Completed або залиште поле порожнім.");
+        }
     }
 
     private void PrintEnrollment(Enrollment enrollment)
