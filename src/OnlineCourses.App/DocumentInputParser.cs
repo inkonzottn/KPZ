@@ -8,7 +8,7 @@ public static class DocumentInputParser
 {
     private const int SampleCoffeeQuantity = 12;
     private const decimal SampleCoffeeUnitPrice = 100m;
-    private const decimal SampleTeaUnitPrice = SampleTeaUnitPrice;
+    private const decimal SampleTeaUnitPrice = 250m;
     private const decimal DefaultDeliveryPrice = 60m;
 
     /// <summary>Формує запит на розрахунок із введених користувачем даних.</summary>
@@ -33,7 +33,7 @@ public static class DocumentInputParser
             Lines: new List<RegistrationItem>
             {
                 new() { Sku = "A1", Quantity = SampleCoffeeQuantity, UnitPrice = SampleCoffeeUnitPrice },
-                new() { Sku = "B2", Quantity = 1, UnitPrice = 250m }
+                new() { Sku = "B2", Quantity = 1, UnitPrice = SampleTeaUnitPrice }
             },
             CreatedAt: DateOnly.FromDateTime(DateTime.Today),
             CouponCode: null,
