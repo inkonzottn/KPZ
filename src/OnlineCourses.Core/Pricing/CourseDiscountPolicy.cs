@@ -15,6 +15,8 @@ public sealed class CourseDiscountPolicy
     /// <summary>Gets the maximum discount amount, in UAH.</summary>
     public const decimal MaxDiscount = 150m;
 
+    private const int MoneyDecimalPlaces = 2;
+
     /// <summary>Обчислює знижку та обмежує її максимально допустимою сумою.</summary>
     /// <param name="amount">Невід'ємна сума замовлення у гривнях.</param>
     /// <param name="isRegular">Чи має слухач статус постійного клієнта.</param>
@@ -26,7 +28,7 @@ public sealed class CourseDiscountPolicy
     {
         EnsureAmountIsValid(amount);
         decimal raw = amount * RateFor(amount, isRegular);
-        return Math.Min(decimal.Round(raw, 2), MaxDiscount);
+        return Math.Min(decimal.Round(raw, MoneyDecimalPlaces), MaxDiscount);
     }
 
     private static void EnsureAmountIsValid(decimal amount)
