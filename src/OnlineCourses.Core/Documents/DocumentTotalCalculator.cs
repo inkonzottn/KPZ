@@ -5,6 +5,7 @@ using OnlineCourses.Core.Legacy;
 /// <summary>Обчислює підсумок документа з урахуванням знижок і доставки.</summary>
 public static class DocumentTotalCalculator
 {
+    private const int MoneyDecimalPlaces = 2;
     /// <summary>Перевіряє запит і повертає підсумкову суму та наступний стан документа.</summary>
     /// <param name="request">Дані документа, клієнта, позицій і знижок.</param>
     /// <returns>Розрахована сума та стан документа після розрахунку.</returns>
@@ -21,7 +22,7 @@ public static class DocumentTotalCalculator
 
         total = request.Status == DocumentStatus.Cancelled
             ? 0m
-            : Math.Round(Math.Max(total, 0m), 2);
+            : Math.Round(Math.Max(total, 0m), MoneyDecimalPlaces);
 
         return new TotalResult(
             total,
