@@ -147,3 +147,7 @@ dotnet_diagnostic.CS1591.severity = warning
 dotnet_diagnostic.CS1591.severity = warning
 [src/OnlineCourses.App/**/*.cs]
 dotnet_diagnostic.CS1591.severity = warning
+
+# Цикломатична складність методу: граничне значення за методичкою — 8.
+dotnet_diagnostic.CA1502.severity = warning
+dotnet_code_quality.CA1502.threshold = 8
