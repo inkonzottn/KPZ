@@ -3,7 +3,7 @@ namespace OnlineCourses.Core.Domain;
 /// <summary>Містить основні дані слухача та ознаку постійного клієнта.</summary>
 public sealed record Member
 {
-    /// <summary>Initializes a new instance of the <see cref="Member"/> record.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Member"/> class.</summary>
     /// <param name="id">Додатний ідентифікатор слухача.</param>
     /// <param name="name">Ім'я слухача.</param>
     /// <param name="email">Адреса електронної пошти слухача.</param>
