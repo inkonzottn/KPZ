@@ -133,6 +133,7 @@ public sealed class ConsoleApplication
         {
             return;
         }
+
         _console.Write("Причина анулювання: ");
         var reason = _console.ReadLine() ?? string.Empty;
         Execute("UC-02", () =>
