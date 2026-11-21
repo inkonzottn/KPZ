@@ -83,6 +83,19 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public void Cancel_UpdatesEnrollment_WhenAuditLoggerIsNotConfigured()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var service = new EnrollmentService(repository);
+
+        service.Cancel(1, "Помилкове оформлення");
+
+        Assert.Equal(EnrollmentStatus.Cancelled, repository.GetById(1)!.Status);
+        Assert.Equal(0, service.GetOccupancyReport().Single().Occupied);
+    }
+
+    [Fact]
     public void Transfer_RejectsFullTargetGroup_WithoutChangingOriginalGroup()
     {
         var repository = CreateRepository();
