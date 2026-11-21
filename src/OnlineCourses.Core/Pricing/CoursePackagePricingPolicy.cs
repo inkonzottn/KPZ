@@ -9,6 +9,7 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
     private const int TwoCoursePackageSize = 2;
     private const decimal TwoCourseDiscountRate = 0.05m;
     private const decimal ThreeOrMoreCoursesDiscountRate = 0.10m;
+    private const int MoneyDecimalPlaces = 2;
 
     /// <summary>Розраховує суму пакета із знижкою 5 % за два курси та 10 % за три й більше.</summary>
     /// <param name="courses">Непорожня послідовність різних курсів із невід'ємними цінами.</param>
@@ -38,7 +39,7 @@ public sealed class CoursePackagePricingPolicy : ICoursePackagePricingPolicy
             _ => ThreeOrMoreCoursesDiscountRate
         };
 
-        var discount = decimal.Round(baseTotal * rate, 2, MidpointRounding.AwayFromZero);
+        var discount = decimal.Round(baseTotal * rate, MoneyDecimalPlaces, MidpointRounding.AwayFromZero);
         return new CoursePackagePrice(baseTotal, rate, discount, baseTotal - discount);
     }
 }
