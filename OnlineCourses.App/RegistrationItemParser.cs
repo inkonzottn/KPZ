@@ -11,7 +11,10 @@ public static class RegistrationItemParser
     /// <param name="qtyStr">Текстове подання кількості.</param>
     /// <param name="priceStr">Текстове подання ціни.</param>
     /// <returns>Успішний результат із позицією або повідомлення про помилку.</returns>
-    public static Result<RegistrationItem> Parse(string courseTitle, string qtyStr, string priceStr)
+    public static Result<RegistrationItem> Parse(
+        string courseTitle,
+        string qtyStr,
+        string priceStr)
     {
         if (string.IsNullOrWhiteSpace(courseTitle))
         {
