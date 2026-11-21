@@ -5,7 +5,7 @@ public sealed class Course
 {
     private readonly HashSet<int> _prerequisiteCourseIds;
 
-    /// <summary>Створює курс і перевіряє його ідентифікатори, назву, ціну та передумови.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Course"/> class.</summary>
     /// <param name="id">Додатний унікальний ідентифікатор курсу.</param>
     /// <param name="code">Непорожній код курсу.</param>
     /// <param name="title">Непорожня назва курсу.</param>
@@ -39,18 +39,18 @@ public sealed class Course
         }
     }
 
-    /// <summary>Повертає унікальний ідентифікатор курсу.</summary>
+    /// <summary>Gets the unique course identifier.</summary>
     public int Id { get; }
 
-    /// <summary>Повертає короткий код курсу.</summary>
+    /// <summary>Gets the short course code.</summary>
     public string Code { get; }
 
-    /// <summary>Повертає назву курсу.</summary>
+    /// <summary>Gets the course title.</summary>
     public string Title { get; }
 
-    /// <summary>Повертає вартість курсу в гривнях.</summary>
+    /// <summary>Gets the course price in UAH.</summary>
     public decimal Price { get; }
 
-    /// <summary>Повертає множину ідентифікаторів обов'язкових попередніх курсів.</summary>
+    /// <summary>Gets the identifiers of courses that must be completed first.</summary>
     public IReadOnlySet<int> PrerequisiteCourseIds => _prerequisiteCourseIds;
 }
