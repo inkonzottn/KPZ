@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OnlineCourses.Core\OnlineCourses.Core.csproj" />
-    <ProjectReference Include="..\OnlineCourses.App\OnlineCourses.App.csproj" />
+    <ProjectReference Include="..\..\src\OnlineCourses.Core\OnlineCourses.Core.csproj" />
+    <ProjectReference Include="..\..\src\OnlineCourses.App\OnlineCourses.App.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,14 +17,14 @@
 ```bash
 git clone https://github.com/inkonzottn/KPZ.git
 cd KPZ && dotnet build OnlineCourses.slnx -c Release
-dotnet run --project OnlineCourses.App
+dotnet run --project src/OnlineCourses.App
 ```
 
 ## 3. Структура рішення
 
-- `OnlineCourses.Core` — доменні сутності, контракти, прикладні сервіси, цінові політики та звітність.
-- `OnlineCourses.App` — консольний інтерфейс і композиційний корінь.
-- `OnlineCourses.Tests` — модульні тести логіки.
+- `src/OnlineCourses.Core` — доменні сутності, контракти, прикладні сервіси, цінові політики та звітність.
+- `src/OnlineCourses.App` — консольний інтерфейс і композиційний корінь.
+- `tests/OnlineCourses.Tests.Current` — модульні тести логіки.
 - `tests/Legacy.Tests` — тести попередніх лабораторних робіт.
 - `data/` — умовні демонстраційні дані.
 - `docs/` — специфікація, архітектура, посібник, аналіз покриття й інженерні рішення.
@@ -44,7 +44,7 @@ dotnet run --project OnlineCourses.App
 ## 5. Тести й покриття
 
 ```bash
-dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release
+dotnet test tests/OnlineCourses.Tests.Current/OnlineCourses.Tests.csproj -c Release
 dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release
 ```
 
