@@ -14,7 +14,7 @@ public sealed class RegistrationService
     private readonly INotifier _notifier;
     private readonly ILogger<RegistrationService> _logger;
 
-    /// <summary>Створює сервіс із репозиторієм, ціновою політикою, каналом повідомлень і журналом.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RegistrationService"/> class.</summary>
     /// <param name="repository">Сховище документів.</param>
     /// <param name="pricing">Політика розрахунку вартості позицій.</param>
     /// <param name="notifier">Канал надсилання повідомлень.</param>
@@ -37,6 +37,7 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРН 4: try/catch замість звичайної умови
+
     /// <summary>Підраховує рядки, що містять додатні цілі кількості.</summary>
     /// <param name="rows">Масив текстових значень для перевірки.</param>
     /// <returns>Кількість коректних додатних значень.</returns>
@@ -111,6 +112,7 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРН 1: порожній catch, дефект зникає
+
     /// <summary>Завантажує документ за ідентифікатором.</summary>
     /// <param name="registrationId">Ідентифікатор документа.</param>
     /// <returns>Документ або null, якщо його не знайдено.</returns>
@@ -120,6 +122,7 @@ public sealed class RegistrationService
     }
 
     // АНТИПАТЕРНИ 2 і 3: широке перехоплення, throw ex
+
     /// <summary>Скасовує документ, якщо його поточний стан дозволяє скасування.</summary>
     /// <param name="registrationId">Ідентифікатор документа.</param>
     /// <param name="reason">Причина скасування, яку надає викликач.</param>
@@ -141,6 +144,7 @@ public sealed class RegistrationService
     }
 
     // СТАЛО: using звільняє потік навіть при винятку
+
     /// <summary>Експортує текстовий звіт із номером документа та його сумою.</summary>
     /// <param name="path">Шлях до файлу звіту.</param>
     /// <param name="registration">Документ, який потрібно включити до звіту.</param>
