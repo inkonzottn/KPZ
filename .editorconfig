@@ -141,3 +141,11 @@ dotnet_diagnostic.CS1591.severity = warning
 dotnet_diagnostic.CS1591.severity = warning
 [OnlineCourses.Core/Errors/Result.cs]
 dotnet_diagnostic.CS1591.severity = warning
+
+# Повна перевірка XML-документації всього публічного API виробничих збірок.
+[src/OnlineCourses.Core/**/*.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[src/OnlineCourses.App/**/*.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[src/Legacy/**/*.cs]
+dotnet_diagnostic.CS1591.severity = warning
