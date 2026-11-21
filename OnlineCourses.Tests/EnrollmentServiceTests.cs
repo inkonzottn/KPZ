@@ -70,6 +70,19 @@ public sealed class EnrollmentServiceTests
     }
 
     [Fact]
+    public void Cancel_ReleasesSeatAndLogsInformation()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 1, 1)));
+        var logger = new RecordingAuditLogger();
+        var service = new EnrollmentService(repository, logger: logger);
+        service.Cancel(1, "Помилкове оформлення");
+        Assert.Equal(EnrollmentStatus.Cancelled, repository.GetById(1)!.Status);
+        Assert.Equal(0, service.GetOccupancyReport().Single().Occupied);
+        Assert.Contains(logger.Entries, entry => entry.Level == AuditLevel.Information && entry.Scenario == "UC-02");
+    }
+
+    [Fact]
     public void Transfer_RejectsFullTargetGroup_WithoutChangingOriginalGroup()
     {
         var repository = CreateRepository();

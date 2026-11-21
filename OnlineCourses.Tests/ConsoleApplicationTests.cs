@@ -52,6 +52,18 @@ public sealed class ConsoleApplicationTests
 
 
     [Fact]
+    public void Run_CancelsErroneousEnrollment()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 11, 20)));
+        var console = new TestConsole("8", "1", "Помилкове оформлення", "0");
+        var application = CreateApplication(repository, console);
+        application.Run();
+        Assert.Equal(EnrollmentStatus.Cancelled, repository.GetById(1)!.Status);
+        Assert.Contains("Помилкове зарахування анульовано.", console.Output);
+    }
+
+    [Fact]
     public void Run_SearchesUsingMultipleCriteria()
     {
         var repository = CreateRepository();

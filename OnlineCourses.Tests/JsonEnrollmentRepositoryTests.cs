@@ -70,6 +70,29 @@ public sealed class JsonEnrollmentRepositoryTests
     }
 
     [Fact]
+    public void Save_CancelledEnrollment_PersistsStatusAndReason()
+    {
+        var (directory, seedPath, dataPath) = CreateStorage();
+        try
+        {
+            var repository = new JsonEnrollmentRepository(dataPath, seedPath);
+            var enrollment = new Enrollment(2, 1, 1, 1, new DateOnly(2026, 11, 20));
+            repository.Add(enrollment);
+            enrollment.Cancel("Помилкове оформлення");
+            repository.Save(enrollment);
+            var reopened = new JsonEnrollmentRepository(dataPath, seedPath);
+            var restored = reopened.GetById(2);
+            Assert.NotNull(restored);
+            Assert.Equal(EnrollmentStatus.Cancelled, restored.Status);
+            Assert.Equal("Помилкове оформлення", restored.CancellationReason);
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
     public void Constructor_MissingDataFile_CopiesSeedData()
     {
         var (directory, seedPath, dataPath) = CreateStorage();

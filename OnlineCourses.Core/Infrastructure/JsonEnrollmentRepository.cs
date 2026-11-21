@@ -152,6 +152,10 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
             {
                 enrollment.Complete();
             }
+            else if (item.Status == nameof(EnrollmentStatus.Cancelled))
+            {
+                enrollment.Cancel(item.CancellationReason ?? "Причину не вказано у файлі.");
+            }
 
             _memory.Add(enrollment);
         }
@@ -189,7 +193,8 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
                     GroupId = x.GroupId,
                     EnrolledOn = x.EnrolledOn,
                     Status = x.Status.ToString(),
-                    WithdrawalReason = x.WithdrawalReason
+                    WithdrawalReason = x.WithdrawalReason,
+                    CancellationReason = x.CancellationReason
                 }).ToList()
         };
 
@@ -257,5 +262,7 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         public string Status { get; set; } = nameof(EnrollmentStatus.Active);
 
         public string? WithdrawalReason { get; set; }
+
+        public string? CancellationReason { get; set; }
     }
 }

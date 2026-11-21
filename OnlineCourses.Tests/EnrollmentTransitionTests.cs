@@ -38,6 +38,33 @@ public sealed class EnrollmentTransitionTests
     }
 
     [Fact]
+    public void Cancel_ChangesStatusAndTrimsReason()
+    {
+        var enrollment = CreateEnrollment();
+        enrollment.Cancel("  Помилкове оформлення  ");
+        Assert.Equal(EnrollmentStatus.Cancelled, enrollment.Status);
+        Assert.Equal("Помилкове оформлення", enrollment.CancellationReason);
+    }
+
+    [Fact]
+    public void Cancel_RejectsBlankReason()
+    {
+        var enrollment = CreateEnrollment();
+        Assert.Throws<ArgumentException>(() => enrollment.Cancel("  "));
+        Assert.Equal(EnrollmentStatus.Active, enrollment.Status);
+    }
+
+    [Fact]
+    public void Cancel_RejectsWithdrawnEnrollment()
+    {
+        var enrollment = CreateEnrollment();
+        enrollment.Withdraw("Заява слухача");
+        var exception = Assert.Throws<DomainRuleException>(() => enrollment.Cancel("Помилка"));
+        Assert.Equal("ENROLLMENT_NOT_ACTIVE", exception.Rule);
+        Assert.Equal(EnrollmentStatus.Withdrawn, enrollment.Status);
+    }
+
+    [Fact]
     public void Complete_ChangesStatus()
     {
         var enrollment = CreateEnrollment();
