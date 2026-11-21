@@ -16,7 +16,7 @@ public sealed class ConsoleApplication
     private readonly IConsole _console;
     private int _nextEnrollmentId;
 
-    /// <summary>Створює консольний застосунок із переданими залежностями.</summary>
+    /// <summary>Initializes a new instance of the <see cref="ConsoleApplication"/> class.</summary>
     /// <param name="repository">Сховище навчальних даних.</param>
     /// <param name="enrollmentService">Сервіс сценаріїв зарахування.</param>
     /// <param name="pricingPolicy">Політика пакетної ціни.</param>
@@ -129,7 +129,10 @@ public sealed class ConsoleApplication
     private void CancelEnrollment()
     {
         var enrollmentId = ReadInt("ID зарахування: ");
-        if (!enrollmentId.HasValue) return;
+        if (!enrollmentId.HasValue)
+        {
+            return;
+        }
         _console.Write("Причина анулювання: ");
         var reason = _console.ReadLine() ?? string.Empty;
         Execute("UC-02", () =>
