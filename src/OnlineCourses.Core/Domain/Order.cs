@@ -36,6 +36,8 @@ public class Order
     /// <summary>Найкоротше ім’я покупця.</summary>
     private const int MinCustomerNameLength = 2;
 
+    private const int MoneyDecimalPlaces = 2;
+
     /// <summary>Стан замовлення - Нове.</summary>
     private const int StatusNew = 0;
 
@@ -144,7 +146,7 @@ public class Order
         // нарахування ПДВ після всіх знижок
         total += total * VatRate;
 
-        return Math.Round(total, 2);
+        return Math.Round(total, MoneyDecimalPlaces);
     }
 
     /// <summary>
@@ -157,21 +159,21 @@ public class Order
     /// </returns>
     public bool TryChangeStatus(int newStatus)
     {
-        if (Status == 0 && newStatus == 1)
+        if (Status == StatusNew && newStatus == StatusPayed)
         {
-            Status = 1;
+            Status = StatusPayed;
             return true;
         }
 
-        if (Status == 1 && newStatus == 2)
+        if (Status == StatusPayed && newStatus == StatusShipped)
         {
-            Status = 2;
+            Status = StatusShipped;
             return true;
         }
 
-        if (Status == 0 && newStatus == 3)
+        if (Status == StatusNew && newStatus == StatusCancelled)
         {
-            Status = 3;
+            Status = StatusCancelled;
             return true;
         }
 
@@ -184,8 +186,8 @@ public class Order
     /// <returns>true, якщо замовлення валідне; інакше false.</returns>
     public bool IsValid()
     {
-        if (Id != null && Id != string.Empty && CustomerName != null && CustomerName.Length > 2 &&
-         _lines.Count > 0 && _lines.Count < 100 && Status >= 0 && Status <= 3)
+        if (Id != null && Id != string.Empty && CustomerName != null && CustomerName.Length > MinCustomerNameLength &&
+         _lines.Count > 0 && _lines.Count < MaxLineCount && Status >= StatusNew && Status <= StatusCancelled)
         {
             return true;
         }
