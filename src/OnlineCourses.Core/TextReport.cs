@@ -5,7 +5,7 @@ namespace OnlineCourses.Core;
 /// <summary>Represents a text report assembled from a title and prepared rows.</summary>
 public sealed class TextReport
 {
-    /// <summary>Gets or sets the heading displayed at the beginning of the report.</summary>
+    /// <summary>Gets the heading displayed at the beginning of the report.</summary>
     public string Title { get; init; } = "Звіт";
 
     /// <summary>Builds the report text from the supplied rows.</summary>
