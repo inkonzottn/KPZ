@@ -6,6 +6,10 @@ namespace OnlineCourses.Core;
 /// <summary>Converts delimited text into validated registration line data.</summary>
 public static class RegistrationLineParser
 {
+    private const int ExpectedFieldCount = 3;
+    private const int MaximumSkuLength = 20;
+    private const int MinimumQuantity = 1;
+    private const int MaximumQuantity = 1000;
     /// <summary>Attempts to parse a registration line without throwing for invalid input.</summary>
     /// <param name="raw">Text containing SKU, quantity, and unit price separated by semicolons.</param>
     /// <param name="line">Parsed line when conversion succeeds; otherwise null.</param>
@@ -19,14 +23,14 @@ public static class RegistrationLineParser
         }
 
         var p = raw.Split(';');
-        if (p.Length != 3 || p[0].Trim().Length is 0 or > 20)
+        if (p.Length != ExpectedFieldCount || p[0].Trim().Length is 0 or > MaximumSkuLength)
         {
             return false;
         }
 
         var ci = CultureInfo.InvariantCulture;
         if (!int.TryParse(p[1], NumberStyles.Integer, ci, out var qty)
-            || qty is < 1 or > 1000)
+            || qty is < MinimumQuantity or > MaximumQuantity)
         {
             return false;
         }
