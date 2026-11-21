@@ -120,10 +120,11 @@ public sealed class JsonEnrollmentRepository : IEnrollmentRepository
         {
             _memory.AddCourse(new Course(
                 course.Id,
-                course.Code,
-                course.Title,
-                course.Price,
-                course.PrerequisiteCourseIds));
+                new CourseDefinition(
+                    course.Code,
+                    course.Title,
+                    course.Price,
+                    course.PrerequisiteCourseIds)));
         }
 
         foreach (var group in snapshot.Groups)

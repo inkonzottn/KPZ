@@ -5,38 +5,38 @@ public sealed class Course
 {
     private readonly HashSet<int> _prerequisiteCourseIds;
 
-    /// <summary>Initializes a new instance of the <see cref="Course"/> class.</summary>
+    /// <summary>Створює курс без попередніх вимог.</summary>
     /// <param name="id">Додатний унікальний ідентифікатор курсу.</param>
     /// <param name="code">Непорожній код курсу.</param>
     /// <param name="title">Непорожня назва курсу.</param>
     /// <param name="price">Невід'ємна вартість курсу.</param>
-    /// <param name="prerequisiteCourseIds">Необов'язкові ідентифікатори курсів, які треба завершити раніше.</param>
-    /// <exception cref="ArgumentException">Код, назва або передумови некоректні.</exception>
+    public Course(int id, string code, string title, decimal price)
+        : this(id, new CourseDefinition(code, title, price))
+    {
+    }
+
+    /// <summary>Створює курс із визначеними передумовами.</summary>
+    /// <param name="id">Додатний унікальний ідентифікатор курсу.</param>
+    /// <param name="definition">Опис курсу, включно з передумовами.</param>
+    /// <exception cref="ArgumentException">Опис курсу або передумови некоректні.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Ідентифікатор або ціна поза допустимими межами.</exception>
-    public Course(int id, string code, string title, decimal price, IEnumerable<int>? prerequisiteCourseIds = null)
+    public Course(int id, CourseDefinition definition)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-        ArgumentException.ThrowIfNullOrWhiteSpace(code);
-        ArgumentException.ThrowIfNullOrWhiteSpace(title);
-        ArgumentOutOfRangeException.ThrowIfNegative(price);
+        ArgumentNullException.ThrowIfNull(definition);
+        ArgumentException.ThrowIfNullOrWhiteSpace(definition.Code);
+        ArgumentException.ThrowIfNullOrWhiteSpace(definition.Title);
+        ArgumentOutOfRangeException.ThrowIfNegative(definition.Price);
 
         Id = id;
-        Code = code.Trim();
-        Title = title.Trim();
-        Price = price;
-        _prerequisiteCourseIds = prerequisiteCourseIds is null
+        Code = definition.Code.Trim();
+        Title = definition.Title.Trim();
+        Price = definition.Price;
+        _prerequisiteCourseIds = definition.PrerequisiteCourseIds is null
             ? new HashSet<int>()
-            : new HashSet<int>(prerequisiteCourseIds);
+            : new HashSet<int>(definition.PrerequisiteCourseIds);
 
-        if (_prerequisiteCourseIds.Contains(id))
-        {
-            throw new ArgumentException("Курс не може бути власною передумовою.", nameof(prerequisiteCourseIds));
-        }
-
-        if (_prerequisiteCourseIds.Any(x => x <= 0))
-        {
-            throw new ArgumentException("Ідентифікатори передумов мають бути додатними.", nameof(prerequisiteCourseIds));
-        }
+        ValidatePrerequisites(id, _prerequisiteCourseIds);
     }
 
     /// <summary>Gets the unique course identifier.</summary>
@@ -53,4 +53,17 @@ public sealed class Course
 
     /// <summary>Gets the identifiers of courses that must be completed first.</summary>
     public IReadOnlySet<int> PrerequisiteCourseIds => _prerequisiteCourseIds;
+
+    private static void ValidatePrerequisites(int courseId, IReadOnlySet<int> prerequisiteIds)
+    {
+        if (prerequisiteIds.Contains(courseId))
+        {
+            throw new ArgumentException("Курс не може бути власною передумовою.", nameof(prerequisiteIds));
+        }
+
+        if (prerequisiteIds.Any(id => id <= 0))
+        {
+            throw new ArgumentException("Ідентифікатори передумов мають бути додатними.", nameof(prerequisiteIds));
+        }
+    }
 }

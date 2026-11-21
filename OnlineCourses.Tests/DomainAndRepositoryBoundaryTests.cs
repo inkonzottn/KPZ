@@ -17,7 +17,7 @@ public sealed class DomainAndRepositoryBoundaryTests
     public void Course_RejectsItselfAsPrerequisite()
     {
         var exception = Assert.Throws<ArgumentException>(
-            () => new Course(1, "CS-01", "Основи C#", 100m, [1]));
+            () => new Course(1, new CourseDefinition("CS-01", "Основи C#", 100m, [1])));
 
         Assert.Equal("prerequisiteCourseIds", exception.ParamName);
     }
@@ -27,7 +27,7 @@ public sealed class DomainAndRepositoryBoundaryTests
     public void Course_RejectsNonPositivePrerequisiteId()
     {
         var exception = Assert.Throws<ArgumentException>(
-            () => new Course(2, "CS-02", "Алгоритми", 200m, [0]));
+            () => new Course(2, new CourseDefinition("CS-02", "Алгоритми", 200m, [0])));
 
         Assert.Equal("prerequisiteCourseIds", exception.ParamName);
     }

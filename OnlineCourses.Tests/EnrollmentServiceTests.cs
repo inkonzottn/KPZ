@@ -12,7 +12,7 @@ public sealed class EnrollmentServiceTests
     public void Enroll_AddsActiveEnrollment_WhenGroupHasSpaceAndPrerequisitesAreCompleted()
     {
         var repository = CreateRepository();
-        repository.AddCourse(new Course(2, "CS-02", "Advanced C#", 200m, [1]));
+        repository.AddCourse(new Course(2, new CourseDefinition("CS-02", "Advanced C#", 200m, [1])));
         repository.AddGroup(new CourseGroup(20, 2, "Advanced evening", 2));
         repository.AddGroup(new CourseGroup(10, 1, "C# prerequisite", 3));
         repository.Add(new Enrollment(1, 10, 1, 10, new DateOnly(2026, 1, 1)));
