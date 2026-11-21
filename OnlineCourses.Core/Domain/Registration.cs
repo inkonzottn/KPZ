@@ -8,7 +8,7 @@ public sealed class Registration
 {
     private readonly List<RegistrationItem> _lines = new();
 
-    /// <summary>Створює новий документ реєстрації.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Registration"/> class.</summary>
     /// <param name="id">Додатний ідентифікатор документа.</param>
     /// <param name="memberId">Додатний ідентифікатор слухача.</param>
     /// <param name="createdAt">Календарна дата створення.</param>
