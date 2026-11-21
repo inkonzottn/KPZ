@@ -3,7 +3,7 @@ namespace OnlineCourses.Core.Domain;
 /// <summary>Містить артикул, кількість і ціну одиниці в позиції документа.</summary>
 public sealed record RegistrationItem
 {
-    /// <summary>Створює позицію документа з перевіреними значеннями.</summary>
+    /// <summary>Initializes a new instance of the <see cref="RegistrationItem"/> class.</summary>
     /// <param name="sku">Непорожній артикул товару або послуги.</param>
     /// <param name="quantity">Додатна кількість одиниць.</param>
     /// <param name="unitPrice">Невід'ємна ціна однієї одиниці у гривнях.</param>
