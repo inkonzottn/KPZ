@@ -3,7 +3,7 @@ namespace OnlineCourses.Core.Domain;
 /// <summary>Містить основні дані слухача та ознаку постійного клієнта.</summary>
 public sealed record Member
 {
-    /// <summary>Створює запис слухача з перевіркою ідентифікатора, імені та email.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Member"/> record.</summary>
     /// <param name="id">Додатний ідентифікатор слухача.</param>
     /// <param name="name">Ім'я слухача.</param>
     /// <param name="email">Адреса електронної пошти слухача.</param>
@@ -31,15 +31,15 @@ public sealed record Member
         Email = email;
     }
 
-    /// <summary>Повертає ідентифікатор слухача.</summary>
+    /// <summary>Gets the learner identifier.</summary>
     public int Id { get; }
 
-    /// <summary>Повертає ім'я слухача.</summary>
+    /// <summary>Gets the learner's name.</summary>
     public string Name { get; }
 
-    /// <summary>Повертає адресу електронної пошти слухача.</summary>
+    /// <summary>Gets the learner's email address.</summary>
     public string Email { get; }
 
-    /// <summary>Визначає право слухача на знижку постійного клієнта.</summary>
+    /// <summary>Gets a value indicating whether the learner qualifies for the regular-customer discount.</summary>
     public bool IsRegular { get; init; }
 }
