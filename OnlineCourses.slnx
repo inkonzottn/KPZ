@@ -2,9 +2,8 @@
   <Folder Name="/src/" />
   <Project Path="src/OnlineCourses.Core/OnlineCourses.Core.csproj" />
   <Project Path="src/OnlineCourses.App/OnlineCourses.App.csproj" />
+  <Project Path="src/Legacy/OnlineCourses.Legacy.csproj" />
   <Folder Name="/tests/" />
   <Project Path="tests/OnlineCourses.Tests.Current/OnlineCourses.Tests.csproj" />
-  <Project Path="tests/OnlineCourses.Tests/OnlineCourses.Tests.csproj" />
   <Project Path="tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj" />
-  <Project Path="src/Legacy/OnlineCourses.Legacy.csproj" />
 </Solution>
