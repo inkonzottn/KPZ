@@ -21,9 +21,11 @@ public interface IEnrollmentRepository
     CourseGroup? GetGroup(int groupId);
 
     /// <summary>Повертає всі зарахування, доступні у сховищі.</summary>
+    /// <returns>Список зарахувань; порожній, якщо записів немає.</returns>
     IReadOnlyList<Enrollment> GetAll();
 
     /// <summary>Повертає всі навчальні групи.</summary>
+    /// <returns>Список груп; порожній, якщо груп немає.</returns>
     IReadOnlyList<CourseGroup> GetGroups();
 
     /// <summary>Знаходить зарахування за його ідентифікатором.</summary>
