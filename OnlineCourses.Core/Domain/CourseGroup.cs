@@ -3,7 +3,7 @@ namespace OnlineCourses.Core.Domain;
 /// <summary>Представляє навчальну групу конкретного курсу з обмеженою місткістю.</summary>
 public sealed class CourseGroup
 {
-    /// <summary>Створює групу та перевіряє її курс, назву й місткість.</summary>
+    /// <summary>Initializes a new instance of the <see cref="CourseGroup"/> class.</summary>
     /// <param name="id">Додатний ідентифікатор групи.</param>
     /// <param name="courseId">Додатний ідентифікатор курсу.</param>
     /// <param name="name">Непорожня назва групи.</param>
@@ -23,15 +23,15 @@ public sealed class CourseGroup
         Capacity = capacity;
     }
 
-    /// <summary>Повертає ідентифікатор групи.</summary>
+    /// <summary>Gets the group identifier.</summary>
     public int Id { get; }
 
-    /// <summary>Повертає ідентифікатор курсу, до якого належить група.</summary>
+    /// <summary>Gets the identifier of the course assigned to this group.</summary>
     public int CourseId { get; }
 
-    /// <summary>Повертає назву групи.</summary>
+    /// <summary>Gets the group name.</summary>
     public string Name { get; }
 
-    /// <summary>Повертає максимальну кількість слухачів у групі.</summary>
+    /// <summary>Gets the maximum number of learners in the group.</summary>
     public int Capacity { get; }
 }
