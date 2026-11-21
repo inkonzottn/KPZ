@@ -38,6 +38,7 @@ dotnet run --project OnlineCourses.App
 - UC-05 — пошук зарахувань.
 - UC-06 — звіт наповнюваності всіх груп, включно з порожніми.
 - UC-07 — завершення навчання.
+- UC-08 — адміністративне анулювання помилкового зарахування.
 
 Детальні сценарії та альтернативні гілки: [docs/spec.md](docs/spec.md). Інструкція користувача: [docs/user-guide.md](docs/user-guide.md).
 
@@ -54,7 +55,7 @@ dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release
 dotnet restore OnlineCourses.slnx && dotnet format OnlineCourses.slnx --verify-no-changes --no-restore && dotnet build OnlineCourses.slnx -c Release --no-restore -warnaserror && dotnet test tests/Legacy.Tests/OnlineCourses.Legacy.Tests.csproj -c Release --no-build && dotnet test OnlineCourses.Tests/OnlineCourses.Tests.csproj -c Release --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Threshold=70 "/p:ThresholdType=line%2cbranch" "/p:Include=[OnlineCourses.Core]OnlineCourses.Core.Pricing.CourseDiscountPolicy%2c[OnlineCourses.Core]OnlineCourses.Core.Services.RegistrationService%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Registration%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.RegistrationItem%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Course%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.CourseGroup%2c[OnlineCourses.Core]OnlineCourses.Core.Domain.Enrollment%2c[OnlineCourses.Core]OnlineCourses.Core.Services.EnrollmentService%2c[OnlineCourses.Core]OnlineCourses.Core.Services.InMemoryEnrollmentRepository%2c[OnlineCourses.Core]OnlineCourses.Core.Pricing.CoursePackagePricingPolicy"
 ```
 
-Останній успішний прогін на `main` — [CI run 44911718479](https://github.com/inkonzottn/KPZ/actions/runs/44911718479), коміт `a79f265`. Він підтвердив 121 основний і 17 Legacy-тестів, 95,86 % line coverage, 100 % branch coverage та 92,85 % method coverage для вибраних класів логіки Core. Деталі, межі вимірювання й класифікація контрольних гілок наведені в [аналізі покриття](docs/coverage-analysis.md). CI вимагає не менше 70 % для рядкового й гілкового покриття. Межа вимірювання задана через `Include` у `.github/workflows/ci.yml`; консоль, форматування й файлове сховище не входять до цього набору. Звіт Cobertura збережено як артефакт `coverage` цього прогону.
+Останній успішний прогін на `main` — [CI run 44912937746](https://github.com/inkonzottn/KPZ/actions/runs/44912937746), коміт `305e3f7`. Він підтвердив 121 основний і 17 Legacy-тестів, 95,86 % line coverage, 100 % branch coverage та 92,85 % method coverage для вибраних класів логіки Core. Деталі, межі вимірювання й класифікація контрольних гілок наведені в [аналізі покриття](docs/coverage-analysis.md). CI вимагає не менше 70 % для рядкового й гілкового покриття. Межа вимірювання задана через `Include` у `.github/workflows/ci.yml`; консоль, форматування й файлове сховище не входять до цього набору. Звіт Cobertura збережено як артефакт `coverage` цього прогону.
 
 ## 6. Технології
 
