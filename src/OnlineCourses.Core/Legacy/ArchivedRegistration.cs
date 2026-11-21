@@ -8,7 +8,7 @@ public sealed class ArchivedRegistration
 {
     private readonly Registration _registration;
 
-    /// <summary>Creates an archive view for the supplied registration.</summary>
+    /// <summary>Initializes a new instance of the <see cref="ArchivedRegistration"/> class.</summary>
     /// <param name="registration">Registration retained in the archive.</param>
     /// <param name="archivedAt">Date on which the record was archived.</param>
     public ArchivedRegistration(Registration registration, DateOnly archivedAt)
