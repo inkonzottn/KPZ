@@ -147,5 +147,3 @@ dotnet_diagnostic.CS1591.severity = warning
 dotnet_diagnostic.CS1591.severity = warning
 [src/OnlineCourses.App/**/*.cs]
 dotnet_diagnostic.CS1591.severity = warning
-[src/Legacy/**/*.cs]
-dotnet_diagnostic.CS1591.severity = warning
