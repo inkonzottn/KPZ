@@ -50,6 +50,20 @@ public sealed class ConsoleApplicationTests
         Assert.Contains("Потрібно ввести ціле число.", console.Output);
     }
 
+
+    [Fact]
+    public void Run_SearchesUsingMultipleCriteria()
+    {
+        var repository = CreateRepository();
+        repository.Add(new Enrollment(1, 10, 1, 11, new DateOnly(2026, 11, 20)));
+        var console = new TestConsole("6", "olena", "CS-01", "11", "Active", "0");
+        var application = CreateApplication(repository, console);
+
+        application.Run();
+
+        Assert.Contains("#1 | Олена | CS-01 | Вечірня | Active", console.Output);
+    }
+
     [Fact]
     public void Run_ShowsDomainRejectionWithoutLoggingItAsUnexpectedError()
     {
