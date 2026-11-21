@@ -2,8 +2,13 @@ namespace OnlineCourses.Core.Documents;
 
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Обчислює підсумок документа з урахуванням знижок і доставки.</summary>
 public static class DocumentTotalCalculator
 {
+    /// <summary>Перевіряє запит і повертає підсумкову суму та наступний стан документа.</summary>
+    /// <param name="request">Дані документа, клієнта, позицій і знижок.</param>
+    /// <returns>Розрахована сума та стан документа після розрахунку.</returns>
+    /// <exception cref="ArgumentException">Дані запиту некоректні.</exception>
     public static TotalResult Calculate(TotalRequest request)
     {
         DocumentGuards.EnsureRequestValid(request);
@@ -23,6 +28,10 @@ public static class DocumentTotalCalculator
             NextStatusOf(request.Status, total));
     }
 
+    /// <summary>Підсумовує вартість позицій із кількісною знижкою.</summary>
+    /// <param name="lines">Непорожній список позицій документа.</param>
+    /// <returns>Сума позицій до знижок рівня документа.</returns>
+    /// <exception cref="ArgumentException">Список позицій некоректний.</exception>
     public static decimal SubtotalOf(
     IReadOnlyList<RegistrationItem> lines)
     {
@@ -42,6 +51,11 @@ public static class DocumentTotalCalculator
         return subtotal;
     }
 
+    /// <summary>Обчислює знижку постійного клієнта.</summary>
+    /// <param name="amount">База для розрахунку знижки.</param>
+    /// <param name="isRegularClient">Чи має клієнт статус постійного.</param>
+    /// <returns>Сума знижки.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Сума від'ємна.</exception>
     public static decimal ClientDiscountOf(
     decimal amount, bool isRegularClient)
     {
@@ -51,6 +65,10 @@ public static class DocumentTotalCalculator
         : 0m;
     }
 
+    /// <summary>Обчислює знижку залежно від суми замовлення.</summary>
+    /// <param name="amount">Сума до застосування об'ємної знижки.</param>
+    /// <returns>Сума об'ємної знижки.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Сума від'ємна.</exception>
     public static decimal VolumeDiscountOf(decimal amount)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(amount);
@@ -67,6 +85,11 @@ public static class DocumentTotalCalculator
         return 0m;
     }
 
+    /// <summary>Обчислює знижку за відомим промокодом.</summary>
+    /// <param name="amount">Сума до застосування промокоду.</param>
+    /// <param name="couponCode">Код купона або null.</param>
+    /// <returns>Сума купонної знижки.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Сума від'ємна.</exception>
     public static decimal CouponDiscountOf(
     decimal amount, string? couponCode)
     {
@@ -82,6 +105,11 @@ public static class DocumentTotalCalculator
         };
     }
 
+    /// <summary>Обчислює знижку, що діє для документа, створеного в неділю.</summary>
+    /// <param name="amount">Сума до застосування знижки.</param>
+    /// <param name="createdAt">Дата створення документа.</param>
+    /// <returns>Сума знижки вихідного дня.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Сума від'ємна.</exception>
     public static decimal WeekendDiscountOf(
     decimal amount, DateOnly createdAt)
     {
@@ -91,6 +119,11 @@ public static class DocumentTotalCalculator
         : 0m;
     }
 
+    /// <summary>Визначає вартість доставки з урахуванням порогу безкоштовної доставки.</summary>
+    /// <param name="amount">Сума замовлення до доставки.</param>
+    /// <param name="deliveryPrice">Базова вартість доставки.</param>
+    /// <returns>Вартість доставки для цього замовлення.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Вартість доставки від'ємна.</exception>
     public static decimal DeliveryFeeOf(
     decimal amount, decimal deliveryPrice)
     {
@@ -101,6 +134,10 @@ public static class DocumentTotalCalculator
         : 0m;
     }
 
+    /// <summary>Визначає наступний стан документа за поточним станом і сумою.</summary>
+    /// <param name="current">Поточний стан документа.</param>
+    /// <param name="total">Розрахована сума.</param>
+    /// <returns>Наступний стан відповідно до правил життєвого циклу.</returns>
     public static DocumentStatus NextStatusOf(
     DocumentStatus current, decimal total)
     => current switch

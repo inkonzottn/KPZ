@@ -3,8 +3,11 @@ namespace OnlineCourses.App;
 using OnlineCourses.Core.Documents;
 using OnlineCourses.Core.Legacy;
 
+/// <summary>Зчитує демонстраційні дані документа з консолі та формує запит.</summary>
 public static class DocumentInputParser
 {
+    /// <summary>Формує запит на розрахунок із введених користувачем даних.</summary>
+    /// <returns>Запит із даними документа, клієнта та позицій.</returns>
     public static TotalRequest BuildRequestFromInput()
     {
         Console.Write("Введіть ID документа: ");

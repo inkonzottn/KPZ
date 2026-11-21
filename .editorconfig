@@ -118,3 +118,26 @@ dotnet_diagnostic.CS1591.severity = warning
 dotnet_diagnostic.CS1591.severity = warning
 [OnlineCourses.Core/Services/RegistrationService.cs]
 dotnet_diagnostic.CS1591.severity = warning
+
+[OnlineCourses.App/DocumentInputParser.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.App/IConsole.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.App/RegistrationItemParser.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.App/SystemConsoleAdapter.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/ClientInfo.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/DocumentGuards.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/DocumentTotalCalculator.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/PricingRules.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/TotalRequest.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Documents/TotalResult.cs]
+dotnet_diagnostic.CS1591.severity = warning
+[OnlineCourses.Core/Errors/Result.cs]
+dotnet_diagnostic.CS1591.severity = warning
